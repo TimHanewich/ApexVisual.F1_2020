@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "dgSpecHash": "mEWURQzJ0tF/Hh7GQ2QD3XxoRGhchoPGan2juKSy9ijJGSsl4JA/8plvO2TPxwitnTQe7zEi/eD4vk9MJMU+8g==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\TaHan\\Downloads\\ApexVisual.F1_2020\\src\\ApexVisual.F1_2020.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\TaHan\\.nuget\\packages\\codemasters.f1_2020\\0.5.0\\codemasters.f1_2020.0.5.0.nupkg.sha512",
+    "C:\\Users\\TaHan\\.nuget\\packages\\microsoft.azure.keyvault.core\\2.0.4\\microsoft.azure.keyvault.core.2.0.4.nupkg.sha512",
+    "C:\\Users\\TaHan\\.nuget\\packages\\microsoft.azure.storage.blob\\11.1.7\\microsoft.azure.storage.blob.11.1.7.nupkg.sha512",
+    "C:\\Users\\TaHan\\.nuget\\packages\\microsoft.azure.storage.common\\11.1.7\\microsoft.azure.storage.common.11.1.7.nupkg.sha512",
+    "C:\\Users\\TaHan\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\TaHan\\.nuget\\packages\\microsoft.netcore.targets\\1.0.1\\microsoft.netcore.targets.1.0.1.nupkg.sha512",
+    "C:\\Users\\TaHan\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512",
+    "C:\\Users\\TaHan\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
+    "C:\\Users\\TaHan\\.nuget\\packages\\system.runtime\\4.1.0\\system.runtime.4.1.0.nupkg.sha512",
+    "C:\\Users\\TaHan\\.nuget\\packages\\system.threading.tasks\\4.0.11\\system.threading.tasks.4.0.11.nupkg.sha512",
+    "C:\\Users\\TaHan\\.nuget\\packages\\timhanewich.csv\\1.0.0\\timhanewich.csv.1.0.0.nupkg.sha512",
+    "C:\\Users\\TaHan\\.nuget\\packages\\timhanewichtoolkit\\2.1.0\\timhanewichtoolkit.2.1.0.nupkg.sha512"
+  ],
+  "logs": []
+}
