@@ -19,6 +19,7 @@ namespace ApexVisual.F1_2020
         public ApexVisualUserAccount()
         {
             OwnedSessionIds = new List<string>();
+            AccountCreatedAt = DateTimeOffset.Now;
         }
     }
 }

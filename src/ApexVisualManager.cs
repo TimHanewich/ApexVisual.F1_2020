@@ -120,6 +120,57 @@ namespace ApexVisual.F1_2020
 
         #endregion
 
+
+        #region "User Account Operations"
+
+        public async Task<ApexVisualUserAccount> DownloadUserAccountAsync(string username)
+        {
+            CloudBlobContainer cont = cbc.GetContainerReference("useraccounts");
+            await cont.CreateIfNotExistsAsync();
+            CloudBlockBlob blb = cont.GetBlockBlobReference(username.ToLower());
+            if (blb.Exists() == false)
+            {
+                throw new Exception("User Account with username '" + username +"' does not exist.");
+            }
+            string down = await blb.DownloadTextAsync();
+            ApexVisualUserAccount acc = JsonConvert.DeserializeObject<ApexVisualUserAccount>(down);
+            return acc;
+        }
+
+        public async Task UploadUserAccountAsync(ApexVisualUserAccount account)
+        {
+            List<string> FlagChars = new List<string>();
+            FlagChars.Add(" ");
+            FlagChars.Add("*");
+            FlagChars.Add("-");
+            FlagChars.Add("#");
+            FlagChars.Add("@");
+            FlagChars.Add("!");
+            FlagChars.Add(".");
+            FlagChars.Add("%");
+            FlagChars.Add("^");
+            FlagChars.Add("&");
+            FlagChars.Add("(");
+            FlagChars.Add(")");
+            //Make sure the account username is acceptable
+            foreach (string s in FlagChars)
+            {
+                if (account.Username.Contains(s))
+                {
+                    throw new Exception("Your username cannot contain the character '" + s + "'.");
+                }
+            }
+
+            CloudBlobContainer cont = cbc.GetContainerReference("useraccounts");
+            await cont.CreateIfNotExistsAsync();
+            CloudBlockBlob blb = cont.GetBlockBlobReference(account.Username.ToLower());
+            string json = JsonConvert.SerializeObject(account);
+            await blb.UploadTextAsync(json);
+        }
+        
+        #endregion
+
+
         #region "Utility Functions"
 
         // UTLITY FUNCTIONS BELOW
