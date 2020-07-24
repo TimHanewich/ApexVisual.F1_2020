@@ -127,7 +127,7 @@ namespace ApexVisual.F1_2020
         {
             CloudBlobContainer cont = cbc.GetContainerReference("useraccounts");
             await cont.CreateIfNotExistsAsync();
-            CloudBlockBlob blb = cont.GetBlockBlobReference(username.ToLower());
+            CloudBlockBlob blb = cont.GetBlockBlobReference(username);
             if (blb.Exists() == false)
             {
                 throw new Exception("User Account with username '" + username +"' does not exist.");
@@ -163,7 +163,7 @@ namespace ApexVisual.F1_2020
 
             CloudBlobContainer cont = cbc.GetContainerReference("useraccounts");
             await cont.CreateIfNotExistsAsync();
-            CloudBlockBlob blb = cont.GetBlockBlobReference(account.Username.ToLower());
+            CloudBlockBlob blb = cont.GetBlockBlobReference(account.Username);
             string json = JsonConvert.SerializeObject(account);
             await blb.UploadTextAsync(json);
         }
