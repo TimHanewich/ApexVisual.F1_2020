@@ -12,11 +12,10 @@ namespace FunctionalTesting
     {
         static void Main(string[] args)
         {
-            string constr = System.IO.File.ReadAllText("C:\\Users\\TaHan\\Downloads\\av_test_az_constr.txt");
+            string constr = System.IO.File.ReadAllText("C:\\Users\\tihanewi\\Downloads\\az_con_str.txt");
             ApexVisualManager avm = ApexVisualManager.Create(constr);
 
-            ApexVisualUserAccount acc = avm.DownloadUserAccountAsync("TimHanefwich").Result;
-            Console.WriteLine(acc.Email);
+            
 
             Console.WriteLine("Done");
 
