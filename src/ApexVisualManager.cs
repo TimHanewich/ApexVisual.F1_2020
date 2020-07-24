@@ -36,6 +36,8 @@ namespace ApexVisual.F1_2020
             return ToReturn;
         }
     
+
+        #region "Setup Methods"
         /// <summary>
         /// Sets up all necessary blob containers (if they do not exist)
         /// </summary>
@@ -48,7 +50,7 @@ namespace ApexVisual.F1_2020
             await cbc.GetContainerReference("userphotos").CreateIfNotExistsAsync();
             await cbc.GetContainerReference("wallpapers").CreateIfNotExistsAsync();
         }
-    
+        #endregion
 
         #region "Listing data"    
         public async Task<string[]> ListSessionNamesAsync()
@@ -118,7 +120,7 @@ namespace ApexVisual.F1_2020
 
         #endregion
 
-        
+        #region "Utility Functions"
 
         // UTLITY FUNCTIONS BELOW
         private async Task<string[]> GetBlobNamesInContainerAsync(string container_name)
@@ -137,5 +139,7 @@ namespace ApexVisual.F1_2020
 
             return ToReturn.ToArray();
         }
+    
+        #endregion
     }
 }
