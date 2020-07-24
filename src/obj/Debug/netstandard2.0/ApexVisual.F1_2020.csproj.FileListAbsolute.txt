@@ -1,9 +1,0 @@
-C:\Users\TaHan\Downloads\ApexVisual.F1_2020\src\bin\Debug\netstandard2.0\ApexVisual.F1_2020.deps.json
-C:\Users\TaHan\Downloads\ApexVisual.F1_2020\src\bin\Debug\netstandard2.0\ApexVisual.F1_2020.dll
-C:\Users\TaHan\Downloads\ApexVisual.F1_2020\src\bin\Debug\netstandard2.0\ApexVisual.F1_2020.pdb
-C:\Users\TaHan\Downloads\ApexVisual.F1_2020\src\obj\Debug\netstandard2.0\ApexVisual.F1_2020.csprojAssemblyReference.cache
-C:\Users\TaHan\Downloads\ApexVisual.F1_2020\src\obj\Debug\netstandard2.0\ApexVisual.F1_2020.csproj.CoreCompileInputs.cache
-C:\Users\TaHan\Downloads\ApexVisual.F1_2020\src\obj\Debug\netstandard2.0\ApexVisual.F1_2020.AssemblyInfoInputs.cache
-C:\Users\TaHan\Downloads\ApexVisual.F1_2020\src\obj\Debug\netstandard2.0\ApexVisual.F1_2020.AssemblyInfo.cs
-C:\Users\TaHan\Downloads\ApexVisual.F1_2020\src\obj\Debug\netstandard2.0\ApexVisual.F1_2020.dll
-C:\Users\TaHan\Downloads\ApexVisual.F1_2020\src\obj\Debug\netstandard2.0\ApexVisual.F1_2020.pdb
