@@ -51,19 +51,19 @@ namespace ApexVisual.F1_2020
     
 
         #region "Listing data"    
-        public async Task<string[]> GetSessionNamesAsync()
+        public async Task<string[]> ListSessionNamesAsync()
         {
             string[] tr = await GetBlobNamesInContainerAsync("sessions");
             return tr;
         }
     
-        public async Task<string[]> GetSessionSummaryNamesAsync()
+        public async Task<string[]> ListSessionSummaryNamesAsync()
         {
             string[] tr = await GetBlobNamesInContainerAsync("sessionsummaries");
             return tr;
         }
     
-        public async Task<string[]> GetSessionAnalysisNamesAsync()
+        public async Task<string[]> LisSessionAnalysisNamesAsync()
         {
             string[] tr = await GetBlobNamesInContainerAsync("sessionanalyses");
             return tr;
@@ -96,7 +96,29 @@ namespace ApexVisual.F1_2020
             await blb.UploadTextAsync(JsonConvert.SerializeObject(session_data));
         }
 
+        public async Task UploadSessionSummaryAsync(SessionSummary summary)
+        {
+            CloudBlobContainer cont = cbc.GetContainerReference("sessionsummaries");
+            await cont.CreateIfNotExistsAsync();
+
+            CloudBlockBlob blb = cont.GetBlockBlobReference(summary.SessionId.ToString());
+            string json = JsonConvert.SerializeObject(summary);
+            await blb.UploadTextAsync(json);
+        }
+
+        public async Task UploadSessionAnalysisAsync(SessionAnalysis analysis)
+        {
+            CloudBlobContainer cont = cbc.GetContainerReference("sessionanalyses");
+            await cont.CreateIfNotExistsAsync();
+
+            CloudBlockBlob blb = cont.GetBlockBlobReference(analysis.SessionId.ToString());
+            string json = JsonConvert.SerializeObject(analysis);
+            await blb.UploadTextAsync(json);
+        }
+
         #endregion
+
+        
 
         // UTLITY FUNCTIONS BELOW
         private async Task<string[]> GetBlobNamesInContainerAsync(string container_name)
