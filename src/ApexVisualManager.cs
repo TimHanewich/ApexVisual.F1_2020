@@ -65,7 +65,7 @@ namespace ApexVisual.F1_2020
             return tr;
         }
     
-        public async Task<string[]> LisSessionAnalysisNamesAsync()
+        public async Task<string[]> ListSessionAnalysisNamesAsync()
         {
             string[] tr = await GetBlobNamesInContainerAsync("sessionanalyses");
             return tr;
