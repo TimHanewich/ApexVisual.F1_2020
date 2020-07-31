@@ -12,13 +12,13 @@ namespace FunctionalTesting
     {
         static void Main(string[] args)
         {
-            string constr = System.IO.File.ReadAllText("C:\\Users\\TaHan\\Downloads\\az_con_str.txt");
+            string constr = System.IO.File.ReadAllText("C:\\Users\\tihanewi\\Downloads\\az.txt");
             ApexVisualManager avm = ApexVisualManager.Create(constr);
 
-            SessionAnalysis sa = avm.DownloadSessionAnalysisAsync("15023035330288128055").Result;
+            //Sample session: 15023035330288128055
 
-            Console.WriteLine(JsonConvert.SerializeObject(sa));
-
+            bool exists = avm.SessionAnalysisExistsAsync("15023035330288128055").Result;
+            Console.WriteLine(exists.ToString());
         }
     }
 }

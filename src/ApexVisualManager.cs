@@ -250,6 +250,35 @@ namespace ApexVisual.F1_2020
 
         #endregion
 
+        #region "Basic Existance checks"
+
+        public async Task<bool> SessionExistsAsync(string sessionID)
+        {
+            CloudBlobContainer cont = cbc.GetContainerReference("sessions");
+            await cont.CreateIfNotExistsAsync();
+            CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
+            return await blb.ExistsAsync();
+        }
+
+        public async Task<bool> SessionSummaryExistsAsync(string sessionID)
+        {
+            CloudBlobContainer cont = cbc.GetContainerReference("sessionsummaries");
+            await cont.CreateIfNotExistsAsync();
+            CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
+            return await blb.ExistsAsync();
+        }
+
+        public async Task<bool> SessionAnalysisExistsAsync(string sessionID)
+        {
+            CloudBlobContainer cont = cbc.GetContainerReference("sessionanalyses");
+            await cont.CreateIfNotExistsAsync();
+            CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
+            return await blb.ExistsAsync();
+        }
+
+        #endregion
+
+
         #region "Utility Functions"
 
         // UTLITY FUNCTIONS BELOW
