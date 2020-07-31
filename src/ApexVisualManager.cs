@@ -120,7 +120,6 @@ namespace ApexVisual.F1_2020
 
         #endregion
 
-
         #region "User Account Operations"
 
         public async Task<ApexVisualUserAccount> DownloadUserAccountAsync(string username)
@@ -170,6 +169,86 @@ namespace ApexVisual.F1_2020
         
         #endregion
 
+        #region "Basic downloading"
+
+        public async Task<List<byte[]>> DownloadSessionAsync(string sessionID)
+        {
+            CloudBlobContainer cont = cbc.GetContainerReference("sessions");
+            await cont.CreateIfNotExistsAsync();
+
+            CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
+            if (blb.Exists() == false)
+            {
+                throw new Exception("Unable to find session with title '" + sessionID + "'.");
+            }
+
+            string content = await blb.DownloadTextAsync();
+            List<byte[]> data_to_return;
+            try
+            {
+                data_to_return = JsonConvert.DeserializeObject<List<byte[]>>(content);
+            }
+            catch
+            {
+                throw new Exception("Failure while deserializing content for session '" + sessionID.ToString() + "'.");
+            }
+
+            return data_to_return;
+        }
+
+        public async Task<SessionSummary> DownloadSessionSummaryAsync(string sessionID)
+        {
+            CloudBlobContainer cont = cbc.GetContainerReference("sessionsummaries");
+            await cont.CreateIfNotExistsAsync();
+
+            CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
+            if (blb.Exists() == false)
+            {
+                throw new Exception("Unable to find session summary with title '" + sessionID + "'.");
+            }
+
+            string content = await blb.DownloadTextAsync();
+            SessionSummary data_to_return;
+            try
+            {
+                data_to_return = JsonConvert.DeserializeObject<SessionSummary>(content);
+            }
+            catch
+            {
+                throw new Exception("Failure while deserializing content for session summary '" + sessionID.ToString() + "'.");
+            }
+
+            return data_to_return;
+        }
+
+        public async Task<SessionAnalysis> DownloadSessionAnalysisAsync(string sessionID)
+        {
+            CloudBlobContainer cont = cbc.GetContainerReference("sessionanalyses");
+            await cont.CreateIfNotExistsAsync();
+
+            CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
+            if (blb.Exists() == false)
+            {
+                throw new Exception("Unable to find session analysis with title '" + sessionID + "'.");
+            }
+
+            string content = await blb.DownloadTextAsync();
+            SessionAnalysis data_to_return;
+            try
+            {
+                data_to_return = JsonConvert.DeserializeObject<SessionAnalysis>(content);
+            }
+            catch
+            {
+                throw new Exception("Failure while deserializing content for session analysis '" + sessionID.ToString() + "'.");
+            }
+
+            return data_to_return;
+        }
+
+        
+
+        #endregion
 
         #region "Utility Functions"
 
