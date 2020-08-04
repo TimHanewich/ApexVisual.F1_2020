@@ -89,13 +89,23 @@ namespace ApexVisual.F1_2020
                 throw new Exception("Fatal error while getting unique session ID.");
             }
             
-            
             CloudBlobContainer cont = cbc.GetContainerReference("sessions");
             await cont.CreateIfNotExistsAsync();
 
+            //Serialize to a Stream
+            MemoryStream ms = new MemoryStream();
+            StreamWriter sw = new StreamWriter(ms);
+            JsonTextWriter jtw = new JsonTextWriter(sw);
+            JsonSerializer js = new JsonSerializer();
+            js.Serialize(jtw, session_data);
+            jtw.Flush();
+            await ms.FlushAsync();
+            ms.Position = 0;
+            
+
             //Upload
             CloudBlockBlob blb = cont.GetBlockBlobReference(file_name);
-            await blb.UploadTextAsync(JsonConvert.SerializeObject(session_data));
+            await blb.UploadFromStreamAsync(ms);
         }
 
         public async Task UploadSessionSummaryAsync(SessionSummary summary)
@@ -182,15 +192,23 @@ namespace ApexVisual.F1_2020
                 throw new Exception("Unable to find session with title '" + sessionID + "'.");
             }
 
-            string content = await blb.DownloadTextAsync();
+            //Download the Stream
+            MemoryStream ms = new MemoryStream();
+            await blb.DownloadToStreamAsync(ms);
+            ms.Position = 0;
+
+            //Desrialize
+            StreamReader sr = new StreamReader(ms);
+            JsonTextReader jtr = new JsonTextReader(sr);
+            JsonSerializer js = new JsonSerializer();
             List<byte[]> data_to_return;
             try
             {
-                data_to_return = JsonConvert.DeserializeObject<List<byte[]>>(content);
+                data_to_return = js.Deserialize<List<byte[]>>(jtr);
             }
-            catch
+            catch (Exception e)
             {
-                throw new Exception("Failure while deserializing content for session '" + sessionID.ToString() + "'.");
+                throw new Exception("Failure while deserializing content for session '" + sessionID.ToString() + "'. Message: " + e.Message);
             }
 
             return data_to_return;
