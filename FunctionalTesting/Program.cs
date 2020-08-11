@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Codemasters.F1_2020;
 using Codemasters.F1_2020.Analysis;
 using System.Threading.Tasks;
+using ApexVisual.F1_2020.LiveCoaching;
 
 namespace FunctionalTesting
 {
@@ -13,44 +14,28 @@ namespace FunctionalTesting
         static void Main(string[] args)
         {
             
-            DownloadFromCloud();
+            string path = "C:\\Users\\TaHan\\Downloads\\Silverstone Race Leclerc.json";
+            string content = System.IO.File.ReadAllText(path);
+            List<byte[]> bytes = JsonConvert.DeserializeObject<List<byte[]>>(content);
+            Packet[] packets = CodemastersToolkit.BulkConvertByteArraysToPackets(bytes);
+
+
+            LiveCoach lc = new LiveCoach(Track.Silverstone);
+
+            string all = "";
+            
+            foreach (Packet p in packets)
+            {
+                lc.InjestPacket(p);
+                all = all + lc.AtCorner.ToString() + " - " + lc.AtCornerStage.ToString() + Environment.NewLine;
+            }
+
+            System.IO.File.WriteAllText("C:\\Users\\TaHan\\Downloads\\TEST.txt", all);
+
             
         }
 
-        static void UploadSession()
-        {
-            string constr = System.IO.File.ReadAllText("C:\\Users\\tihanewi\\Downloads\\az.txt");
-            ApexVisualManager avm = ApexVisualManager.Create(constr);
-
-            string path = "C:\\Users\\tihanewi\\Downloads\\Telemetry 7-14-2020 8360128d-45ca-4242-84db-36a1d43d027a.json";
-            string content = System.IO.File.ReadAllText(path);
-
-            List<byte[]> data = JsonConvert.DeserializeObject<List<byte[]>>(content);
-            Console.WriteLine(data.Count.ToString());
-
-            avm.UploadSessionAsync(data).Wait();
-
-                        
         
-        
-        
-        }
-    
-        static void OpenFromLocal()
-        {
-            string path = "C:\\Users\\tihanewi\\Downloads\\11381929133624196240";
-            string content = System.IO.File.ReadAllText(path);
-            List<byte[]> data = JsonConvert.DeserializeObject<List<byte[]>>(content);
-            Console.WriteLine(data.Count.ToString());
-        }
-    
-        static void DownloadFromCloud()
-        {
-            string constr = System.IO.File.ReadAllText("C:\\Users\\tihanewi\\Downloads\\az.txt");
-            ApexVisualManager avm = ApexVisualManager.Create(constr);
-            List<byte[]> data = avm.DownloadSessionAsync("11381929133624196240").Result;
-            Console.WriteLine(data.Count.ToString());
-        }
     
     }
 }
