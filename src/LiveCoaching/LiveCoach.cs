@@ -9,9 +9,10 @@ namespace ApexVisual.F1_2020.LiveCoaching
     {
         //Vars
         private TrackDataContainer LoadedTrackData;
-        public byte AtCorner;
+        public byte AtCorner; //This is the corner number, not the corner index. So Corner #1 would be 1, not 0!
         public CornerStage AtCornerStage;
-        private bool CornerLockedOnAtLeastOnceAlready = false;
+        private bool Calibrating = true; //This means that the user has not yet hit an apex of a corner. Once they hit an apex of one corner (Came within a certain distance of it), we know we are calibrated.
+        private float ApexDistanceThreshold = 10f;
 
         //For change-context
         private PacketFrame LastReceivedPackets; //We will never receive a packet frame as a whole, but will use this to store each of them
@@ -36,85 +37,98 @@ namespace ApexVisual.F1_2020.LiveCoaching
                 MotionPacket mp = (MotionPacket)p;
                 TrackLocation my_loc = new TrackLocation() {PositionX = mp.FieldMotionData[mp.PlayerCarIndex].PositionX, PositionY = mp.FieldMotionData[mp.PlayerCarIndex].PositionY, PositionZ = mp.FieldMotionData[mp.PlayerCarIndex].PositionZ};
                 
-                
-                if (CornerLockedOnAtLeastOnceAlready) //We already have identified at least one corner that we have hit the apex of, so we know that the driver is either leaving that previous corner or entering the next corner
+                if (Calibrating == true) //This is a new instance and we have to wait until the user gets to within a certain distancce of ANY corner to know what corner he is on
                 {
-                    
-                }
-
-
-                
-                //Find out what corner we are closest to
-                byte nearest_corner = 0;
-                float nearest_corner_distance = float.MaxValue;
-                for (int i = 0; i < LoadedTrackData.Corners.Length; i++) //Loop through each corner, measure the distance, and if this one is closest save it
-                {
-                    TrackLocation tl = LoadedTrackData.Corners[i];
-                    if (tl.Sector == LastReceivedPackets.Lap.FieldLapData[LastReceivedPackets.Lap.PlayerCarIndex].Sector) //We will only evaluate corners that are in the current sector we are in.
+                    //Find out what corner we are closest to
+                    byte nearest_corner = 0;
+                    float nearest_corner_distance = float.MaxValue;
+                    for (int i = 0; i < LoadedTrackData.Corners.Length; i++) //Loop through each corner, measure the distance, and if this one is closest save it
                     {
-                        float this_distance = CodemastersToolkit.DistanceBetweenTwoPoints(my_loc, tl);
-                        if (this_distance < nearest_corner_distance)
+                        TrackLocation tl = LoadedTrackData.Corners[i];
+                        if (tl.Sector == LastReceivedPackets.Lap.FieldLapData[LastReceivedPackets.Lap.PlayerCarIndex].Sector) //We will only evaluate corners that are in the current sector we are in.
                         {
-                            nearest_corner_distance = this_distance;
-                            nearest_corner = (byte)(i + 1);
+                            float this_distance = CodemastersToolkit.DistanceBetweenTwoPoints(my_loc, tl);
+                            if (this_distance < nearest_corner_distance)
+                            {
+                                nearest_corner_distance = this_distance;
+                                nearest_corner = (byte)(i + 1); //Plus one because we want the corner number, not the index of the corner.
+                            }
                         }
                     }
-                }
-                
 
-                //If they are within ___ (we'll just say 12 for now) units of distance from the coner, we are AT the corner
-                if (nearest_corner_distance < 15)
-                {
-                    AtCorner = nearest_corner;
-                    AtCornerStage = CornerStage.Apex;
+                    //If the corner is within the threshold, mark this as an apex hit and mark the corner # we are on
+                    if (nearest_corner_distance <= ApexDistanceThreshold)
+                    {
+                        AtCorner = nearest_corner;
+                        AtCornerStage = CornerStage.Apex;
+                        Calibrating = false; //We are no longer calibrating
+                    }
+
                 }
-                else
+                else //We are no longer calibrating
                 {
                     
-                }
-
-
-
-                /////OLD BELOW///////////////////////
-
-                //Set that nearest corner data
-                AtCorner = nearest_corner;
-
-
-                //Now that we know what corner we are closest to, see if we are moving away from it or towards it
-                //The question we need to answer - are we approaching that corner, we're at the corner, or are we moving away from it
-                //ALSO - take into account that other corners on the track may be closer (i.e. through a wall) than the one we are going towards
-                    //To handle this, we will do this
-                    //If we are within the threshold to say we are "at the corner apex", just mark it down.
-                    //If we are NOT at that limit (we are moving away or closer)
-                //So this is what we will do...
-                //First - If they are within ___ (we'll just say 12 for now) units of distance from the coner, we are AT the corner
-                //If we are NOT at the corner, find out if we are moving away from it or moving closer to it
-                if (nearest_corner_distance <= 15) //We are AT the corner
-                {
-                    AtCornerStage = CornerStage.Apex;
-                }
-                else //We are either approaching it or are moving away from it. Check!
-                {
-                    float current_distance = nearest_corner_distance; //My current distance from the corner
-                    float last_distance = 0; // My last distance to the corner
-                    //The above variables will be compared to see what direction we are moving in
-
-                    //Find the last distance
-                    TrackLocation MyLastLocation = new TrackLocation() {PositionX = LastReceivedPackets.Motion.FieldMotionData[LastReceivedPackets.Motion.PlayerCarIndex].PositionX, PositionY = LastReceivedPackets.Motion.FieldMotionData[LastReceivedPackets.Motion.PlayerCarIndex].PositionY, PositionZ = LastReceivedPackets.Motion.FieldMotionData[LastReceivedPackets.Motion.PlayerCarIndex].PositionZ, Sector = LastReceivedPackets.Lap.FieldLapData[LastReceivedPackets.Lap.PlayerCarIndex].Sector};
-                    TrackLocation SubjectCorner = LoadedTrackData.Corners[nearest_corner-1]; //Minus one because this is an index
-                    last_distance = CodemastersToolkit.DistanceBetweenTwoPoints(MyLastLocation, SubjectCorner);
-
-                    //So did we get closer or further away?
-                    if (current_distance < last_distance) //We got closer - this is entry
+                    //If the mode is currently "at apex", then wait until the user leaves the threshold and then mark it as "leaving"
+                    if (AtCornerStage == CornerStage.Apex)
                     {
-                        AtCornerStage = CornerStage.Entry;
+                        //Measure the distance in between the car and that corner
+                        TrackLocation at_corner = LoadedTrackData.Corners[AtCorner-1]; 
+                        float distance_to_corner = CodemastersToolkit.DistanceBetweenTwoPoints(at_corner, my_loc);
+                        if (distance_to_corner > ApexDistanceThreshold)
+                        {
+                            AtCornerStage = CornerStage.Exit;
+                        }
                     }
-                    else if (current_distance > last_distance) //We got further away - this is exit
+                    else if (AtCornerStage == CornerStage.Exit) //If We are in the corner exit: check if we are closer to the previous corner that we are exiting or the next corner. If we are closer to the next corner, flip it to entry for that corner.
                     {
-                        AtCornerStage = CornerStage.Exit;
+
+                        //Get the previous corner index and the next corner index
+                        int Previous_Corner_Index = AtCorner - 1;
+                        int Next_Corner_Index; //This is a bit more complicated because if we are at the LAST corner of the lap, the next corner index would be 1!
+                        if (AtCorner == LoadedTrackData.Corners.Length) //If the current corner is the LAST corner in the track data location
+                        {
+                            Next_Corner_Index = 0;
+                        }
+                        else
+                        {
+                            Next_Corner_Index = Previous_Corner_Index + 1;
+                        }
+
+
+                        //Get the previous and next corners
+                        TrackLocation Previous_Corner = LoadedTrackData.Corners[Previous_Corner_Index]; //The current corner that we are exiting from (reduce by 1 for an index)
+                        TrackLocation Next_Corner = LoadedTrackData.Corners[Next_Corner_Index]; //The NEXT corner that we are now approaching.
+
+                        //Check which one we are closer to 
+                        float distance_to_prev = CodemastersToolkit.DistanceBetweenTwoPoints(Previous_Corner, my_loc);
+                        float distance_to_next = CodemastersToolkit.DistanceBetweenTwoPoints(Next_Corner, my_loc);
+
+                        //If we are closer to next corner, flip it to that corner entry
+                        if (distance_to_next <= distance_to_prev)
+                        {
+                            AtCorner = (byte)Next_Corner_Index; //Flip the corner to the new corner
+                            AtCornerStage = CornerStage.Entry; //Set it to entry
+                        }
                     }
+                    else if (AtCornerStage == CornerStage.Entry) //If we are at the corner entry stage, check to see if we are within the threshold to call it an apex hit
+                    {
+                        //Get this corner
+                        TrackLocation This_Corner = LoadedTrackData.Corners[AtCorner-1];
+
+                        //Measure the distance to that corner
+                        float distance_to_corner = CodemastersToolkit.DistanceBetweenTwoPoints(This_Corner, my_loc);
+
+                        //If the distance is within the threshold, call it an apex hit
+                        if (distance_to_corner <= ApexDistanceThreshold)
+                        {
+                            AtCornerStage = CornerStage.Apex;
+                        }
+                    }
+
+
+
                 }
+                
             }
 
 
