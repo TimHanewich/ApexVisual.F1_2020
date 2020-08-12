@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Codemasters.F1_2020" Version="0.5.0" />
+    <PackageReference Include="Codemasters.F1_2020" Version="1.1.0" />
     <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.1.7" />
   </ItemGroup>
 
