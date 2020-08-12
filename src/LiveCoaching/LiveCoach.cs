@@ -9,13 +9,17 @@ namespace ApexVisual.F1_2020.LiveCoaching
     {
         //Vars
         private TrackDataContainer LoadedTrackData;
-        public byte AtCorner; //This is the corner number, not the corner index. So Corner #1 would be 1, not 0!
-        public CornerStage AtCornerStage;
+        public byte AtCorner {get; set;} //This is the corner number, not the corner index. So Corner #1 would be 1, not 0!
+        public CornerStage AtCornerStage {get; set;}
         private bool Calibrating = true; //This means that the user has not yet hit an apex of a corner. Once they hit an apex of one corner (Came within a certain distance of it), we know we are calibrated.
         private float ApexDistanceThreshold = 18f;
 
         //For change-context
         private PacketFrame LastReceivedPackets; //We will never receive a packet frame as a whole, but will use this to store each of them
+
+        //Events
+        public CornerChangedEventHandler CornerChanged;
+        public CornerStageChangedEventHandler CornerStageChanged;
 
         public LiveCoach(Track track)
         {
@@ -62,6 +66,10 @@ namespace ApexVisual.F1_2020.LiveCoaching
                         AtCorner = nearest_corner;
                         AtCornerStage = CornerStage.Apex;
                         Calibrating = false; //We are no longer calibrating
+
+                        //Invoke the events
+                        CornerChanged.Invoke(nearest_corner);
+                        CornerStageChanged.Invoke(CornerStage.Apex);
                     }
 
                 }
@@ -77,6 +85,7 @@ namespace ApexVisual.F1_2020.LiveCoaching
                         if (distance_to_corner > ApexDistanceThreshold)
                         {
                             AtCornerStage = CornerStage.Exit;
+                            CornerStageChanged.Invoke(CornerStage.Exit);
                         }
                     }
                     else if (AtCornerStage == CornerStage.Exit) //If We are in the corner exit: check if we are closer to the previous corner that we are exiting or the next corner. If we are closer to the next corner, flip it to entry for that corner.
@@ -107,6 +116,10 @@ namespace ApexVisual.F1_2020.LiveCoaching
                         {
                             AtCorner = (byte)(Next_Corner_Index + 1); //Flip the corner to the new corner
                             AtCornerStage = CornerStage.Entry; //Set it to entry
+
+                            //Raise the events
+                            CornerChanged.Invoke((byte)(Next_Corner_Index + 1));
+                            CornerStageChanged.Invoke(CornerStage.Entry);
                         }
                     }
                     else if (AtCornerStage == CornerStage.Entry) //If we are at the corner entry stage, check to see if we are within the threshold to call it an apex hit
@@ -121,11 +134,11 @@ namespace ApexVisual.F1_2020.LiveCoaching
                         if (distance_to_corner <= ApexDistanceThreshold)
                         {
                             AtCornerStage = CornerStage.Apex;
+
+                            //Raise the events
+                            CornerStageChanged.Invoke(CornerStage.Apex);
                         }
                     }
-
-
-
                 }
                 
             }
