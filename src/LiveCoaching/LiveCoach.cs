@@ -12,7 +12,7 @@ namespace ApexVisual.F1_2020.LiveCoaching
         public byte AtCorner; //This is the corner number, not the corner index. So Corner #1 would be 1, not 0!
         public CornerStage AtCornerStage;
         private bool Calibrating = true; //This means that the user has not yet hit an apex of a corner. Once they hit an apex of one corner (Came within a certain distance of it), we know we are calibrated.
-        private float ApexDistanceThreshold = 10f;
+        private float ApexDistanceThreshold = 18f;
 
         //For change-context
         private PacketFrame LastReceivedPackets; //We will never receive a packet frame as a whole, but will use this to store each of them
