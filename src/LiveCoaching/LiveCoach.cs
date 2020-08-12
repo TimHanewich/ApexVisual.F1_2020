@@ -94,6 +94,10 @@ namespace ApexVisual.F1_2020.LiveCoaching
                             Next_Corner_Index = Previous_Corner_Index + 1;
                         }
 
+                        //DELETE ME PRINT
+                        // Console.WriteLine("Previous: " + Previous_Corner_Index.ToString() + "    " + "Next: " + Next_Corner_Index.ToString());
+                        // Console.ReadLine();
+
 
                         //Get the previous and next corners
                         TrackLocation Previous_Corner = LoadedTrackData.Corners[Previous_Corner_Index]; //The current corner that we are exiting from (reduce by 1 for an index)
@@ -103,10 +107,16 @@ namespace ApexVisual.F1_2020.LiveCoaching
                         float distance_to_prev = CodemastersToolkit.DistanceBetweenTwoPoints(Previous_Corner, my_loc);
                         float distance_to_next = CodemastersToolkit.DistanceBetweenTwoPoints(Next_Corner, my_loc);
 
+                        //DELETE ME PRINT
+                        // Console.WriteLine("Distance to prev: " + distance_to_prev.ToString("#,##0.0") + "   Distance to next: " + distance_to_next.ToString("#,##0.0"));
+                        // Console.ReadLine();
+
                         //If we are closer to next corner, flip it to that corner entry
                         if (distance_to_next <= distance_to_prev)
                         {
-                            AtCorner = (byte)Next_Corner_Index; //Flip the corner to the new corner
+                            //Console.WriteLine(AtCorner.ToString());
+                            AtCorner = (byte)(Next_Corner_Index + 1); //Flip the corner to the new corner
+                            //Console.WriteLine(AtCorner.ToString());
                             AtCornerStage = CornerStage.Entry; //Set it to entry
                         }
                     }
