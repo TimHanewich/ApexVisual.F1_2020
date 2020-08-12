@@ -4,6 +4,10 @@
     <ProjectReference Include="..\src\ApexVisual.F1_2020.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Net.Sockets" Version="4.3.0" />
+  </ItemGroup>
+
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
