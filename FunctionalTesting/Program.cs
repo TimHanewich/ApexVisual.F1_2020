@@ -20,6 +20,8 @@ namespace FunctionalTesting
             IPEndPoint ep = new IPEndPoint(IPAddress.Any, 0);
 
             LiveCoach lc = new LiveCoach(Track.Melbourne);
+            lc.CornerChanged += CornerCh;
+            lc.CornerStageChanged += CornerStageCh;
 
             Console.WriteLine("Receiving...");
             while (true)
@@ -38,14 +40,20 @@ namespace FunctionalTesting
                     lp.LoadBytes(rec);
                     lc.InjestPacket(lp);
                 }
-
-                Console.WriteLine("\r" + lc.AtCorner.ToString() + " - " + lc.AtCornerStage.ToString());
             }
             
             
         }
 
+        static void CornerCh(byte corner)
+        {
+            Console.WriteLine("New corner: " + corner.ToString());
+        }
         
+        static void CornerStageCh(CornerStage stage)
+        {
+            Console.WriteLine("New stage: " + stage.ToString());
+        }
     
     }
 }
