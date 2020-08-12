@@ -6,6 +6,8 @@ using Codemasters.F1_2020;
 using Codemasters.F1_2020.Analysis;
 using System.Threading.Tasks;
 using ApexVisual.F1_2020.LiveCoaching;
+using System.Net.Sockets;
+using System.Net;
 
 namespace FunctionalTesting
 {
@@ -14,24 +16,32 @@ namespace FunctionalTesting
         static void Main(string[] args)
         {
             
-            string path = "C:\\Users\\TaHan\\Downloads\\Silverstone Race Leclerc.json";
-            string content = System.IO.File.ReadAllText(path);
-            List<byte[]> bytes = JsonConvert.DeserializeObject<List<byte[]>>(content);
-            Packet[] packets = CodemastersToolkit.BulkConvertByteArraysToPackets(bytes);
+            UdpClient uc = new UdpClient(20777);
+            IPEndPoint ep = new IPEndPoint(IPAddress.Any, 0);
 
+            LiveCoach lc = new LiveCoach(Track.Melbourne);
 
-            LiveCoach lc = new LiveCoach(Track.Silverstone);
-
-            string all = "";
-            
-            foreach (Packet p in packets)
+            Console.WriteLine("Receiving...");
+            while (true)
             {
-                lc.InjestPacket(p);
-                all = all + lc.AtCorner.ToString() + " - " + lc.AtCornerStage.ToString() + Environment.NewLine;
+                byte[] rec = uc.Receive(ref ep);
+                PacketType pt = CodemastersToolkit.GetPacketType(rec);
+                if (pt == PacketType.Motion)
+                {
+                    MotionPacket mp = new MotionPacket();
+                    mp.LoadBytes(rec);
+                    lc.InjestPacket(mp);
+                }
+                else if (pt == PacketType.Lap)
+                {
+                    LapPacket lp = new LapPacket();
+                    lp.LoadBytes(rec);
+                    lc.InjestPacket(lp);
+                }
+
+                Console.WriteLine("\r" + lc.AtCorner.ToString() + " - " + lc.AtCornerStage.ToString());
             }
-
-            System.IO.File.WriteAllText("C:\\Users\\TaHan\\Downloads\\TEST.txt", all);
-
+            
             
         }
 
