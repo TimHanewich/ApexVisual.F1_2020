@@ -16,10 +16,12 @@ namespace ApexVisual.F1_2020.LiveCoaching
 
         //For change-context
         private PacketFrame LastReceivedPackets; //We will never receive a packet frame as a whole, but will use this to store each of them
+        private bool ApexTelemetryAlreadyBroadcastedForCurrentCorner = false;
 
         //Events
         public CornerChangedEventHandler CornerChanged;
         public CornerStageChangedEventHandler CornerStageChanged;
+        public CornerApexTelemetryDataReceivedEventHandler ApexTelemetryReceived;
 
         public LiveCoach(Track track)
         {
@@ -68,16 +70,29 @@ namespace ApexVisual.F1_2020.LiveCoaching
                         Calibrating = false; //We are no longer calibrating
 
                         //Invoke the events
-                        CornerChanged.Invoke(nearest_corner);
-                        CornerStageChanged.Invoke(CornerStage.Apex);
+                        try
+                        {
+                            CornerChanged.Invoke(nearest_corner);
+                        }
+                        catch
+                        {
+
+                        }
+                        try
+                        {
+                            CornerStageChanged.Invoke(CornerStage.Apex);
+                        }
+                        catch
+                        {
+
+                        }   
                     }
 
                 }
                 else //We are no longer calibrating
                 {
                     
-                    //If the mode is currently "at apex", then wait until the user leaves the threshold and then mark it as "leaving"
-                    if (AtCornerStage == CornerStage.Apex)
+                    if (AtCornerStage == CornerStage.Apex) //If the mode is currently "at apex", then wait until the user leaves the threshold and then mark it as "leaving"
                     {
                         //Measure the distance in between the car and that corner
                         TrackLocation at_corner = LoadedTrackData.Corners[AtCorner-1]; 
@@ -85,7 +100,36 @@ namespace ApexVisual.F1_2020.LiveCoaching
                         if (distance_to_corner > ApexDistanceThreshold)
                         {
                             AtCornerStage = CornerStage.Exit;
-                            CornerStageChanged.Invoke(CornerStage.Exit);
+                            try
+                            {
+                                CornerStageChanged.Invoke(CornerStage.Exit);
+                            }
+                            catch
+                            {
+
+                            }
+                        }
+                        else //If we are still inside the threshold, try to pinpoint if we are moving toward the apex or away from it. If we are move away from it (we have passed it), invoke the corner apex telemetry received received.
+                        {
+                            if (ApexTelemetryAlreadyBroadcastedForCurrentCorner == false) //We don't want to broadcast it twice, so we check to see if we already broadcasted it.
+                            {
+                                TrackLocation last_loc = new TrackLocation() {PositionX = LastReceivedPackets.Motion.FieldMotionData[LastReceivedPackets.Motion.PlayerCarIndex].PositionX, PositionY = LastReceivedPackets.Motion.FieldMotionData[LastReceivedPackets.Motion.PlayerCarIndex].PositionY, PositionZ = LastReceivedPackets.Motion.FieldMotionData[LastReceivedPackets.Motion.PlayerCarIndex].PositionZ};
+                                float last_distance_to_corner = CodemastersToolkit.DistanceBetweenTwoPoints(last_loc, at_corner);
+
+                                //If this distance is GREATER THAN the last distance, it means we are moving away from it (we passed it). So trigger the telemetry
+                                if (distance_to_corner >= last_distance_to_corner)
+                                {
+                                    try
+                                    {
+                                        ApexTelemetryReceived.Invoke(LastReceivedPackets.Telemetry.FieldTelemetryData[LastReceivedPackets.Telemetry.PlayerCarIndex], at_corner);
+                                    }
+                                    catch
+                                    {
+
+                                    } 
+                                    ApexTelemetryAlreadyBroadcastedForCurrentCorner = true; //Flip this to true so we dont broadcast it again in this corner. This will be flipped back to false once we leave this corner.
+                                }
+                            }
                         }
                     }
                     else if (AtCornerStage == CornerStage.Exit) //If We are in the corner exit: check if we are closer to the previous corner that we are exiting or the next corner. If we are closer to the next corner, flip it to entry for that corner.
@@ -118,8 +162,27 @@ namespace ApexVisual.F1_2020.LiveCoaching
                             AtCornerStage = CornerStage.Entry; //Set it to entry
 
                             //Raise the events
-                            CornerChanged.Invoke((byte)(Next_Corner_Index + 1));
-                            CornerStageChanged.Invoke(CornerStage.Entry);
+                            try
+                            {
+                                CornerChanged.Invoke((byte)(Next_Corner_Index + 1));
+                            }
+                            catch
+                            {
+                                
+                            }
+                            try
+                            {
+                                CornerStageChanged.Invoke(CornerStage.Entry);
+                            }
+                            catch
+                            {
+
+                            }
+                            
+                            
+
+                            //Flip the Already broadccasted telemetry for this apex corner to false
+                            ApexTelemetryAlreadyBroadcastedForCurrentCorner = false;
                         }
                     }
                     else if (AtCornerStage == CornerStage.Entry) //If we are at the corner entry stage, check to see if we are within the threshold to call it an apex hit
@@ -136,7 +199,14 @@ namespace ApexVisual.F1_2020.LiveCoaching
                             AtCornerStage = CornerStage.Apex;
 
                             //Raise the events
-                            CornerStageChanged.Invoke(CornerStage.Apex);
+                            try
+                            {
+                                CornerStageChanged.Invoke(CornerStage.Apex);
+                            }
+                            catch
+                            {
+
+                            }
                         }
                     }
                 }
