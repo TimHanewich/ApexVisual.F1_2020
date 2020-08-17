@@ -52,7 +52,7 @@ namespace ApexVisual.F1_2020
         }
         #endregion
 
-        #region "Listing data"    
+        #region "Listing session-related data"    
         public async Task<string[]> ListSessionNamesAsync()
         {
             string[] tr = await GetBlobNamesInContainerAsync("sessions");
@@ -72,7 +72,7 @@ namespace ApexVisual.F1_2020
         }
         #endregion
 
-        #region "Basic uploading"
+        #region "Basic session uploading"
 
         public async Task UploadSessionAsync(List<byte[]> session_data)
         {
@@ -179,7 +179,7 @@ namespace ApexVisual.F1_2020
         
         #endregion
 
-        #region "Basic downloading"
+        #region "Basic session downloading"
 
         public async Task<List<byte[]>> DownloadSessionAsync(string sessionID)
         {
@@ -268,7 +268,7 @@ namespace ApexVisual.F1_2020
 
         #endregion
 
-        #region "Basic Existance checks"
+        #region "Basic session Existance checks"
 
         public async Task<bool> SessionExistsAsync(string sessionID)
         {
