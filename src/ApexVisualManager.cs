@@ -7,6 +7,7 @@ using Codemasters.F1_2020;
 using Codemasters.F1_2020.Analysis;
 using Newtonsoft.Json;
 using System.IO;
+using ApexVisual.F1_2020.ActivityLogging;
 
 namespace ApexVisual.F1_2020
 {
@@ -298,6 +299,24 @@ namespace ApexVisual.F1_2020
         #endregion
 
         #region "Activity logging"
+
+        public async Task UploadActivityLogAsync(ActivityLog log)
+        {
+            //Get the container
+            CloudBlobContainer cont = cbc.GetContainerReference("activitylogs");
+            await cont.CreateIfNotExistsAsync();
+
+            //Get the append blob
+            string blob_name = DateTime.UtcNow.Year.ToString() + "." + DateTime.UtcNow.Month.ToString() + "." + DateTime.UtcNow.Day.ToString();
+            CloudAppendBlob blob = cont.GetAppendBlobReference(blob_name);
+
+            //Prepare the content to append
+            string as_json = JsonConvert.SerializeObject(log);
+            string to_append = as_json + "<:::SPLIT:::>";
+            
+            //Append it
+            await blob.AppendTextAsync(to_append);
+        }
 
         #endregion
 
