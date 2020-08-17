@@ -309,6 +309,12 @@ namespace ApexVisual.F1_2020
             //Get the append blob
             string blob_name = DateTime.UtcNow.Year.ToString() + "." + DateTime.UtcNow.Month.ToString() + "." + DateTime.UtcNow.Day.ToString();
             CloudAppendBlob blob = cont.GetAppendBlobReference(blob_name);
+            
+            //If the blob doesn't exist, start it off with something.
+            if (blob.Exists() == false)
+            {
+                blob.UploadText("");
+            }
 
             //Prepare the content to append
             string as_json = JsonConvert.SerializeObject(log);
