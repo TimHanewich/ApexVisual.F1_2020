@@ -49,6 +49,7 @@ namespace ApexVisual.F1_2020
             await cbc.GetContainerReference("useraccounts").CreateIfNotExistsAsync();
             await cbc.GetContainerReference("userphotos").CreateIfNotExistsAsync();
             await cbc.GetContainerReference("wallpapers").CreateIfNotExistsAsync();
+            await cbc.GetContainerReference("activitylogs").CreateIfNotExistsAsync();
         }
         #endregion
 
@@ -296,6 +297,9 @@ namespace ApexVisual.F1_2020
 
         #endregion
 
+        #region "Activity logging"
+
+        #endregion
 
         #region "Utility Functions"
 
