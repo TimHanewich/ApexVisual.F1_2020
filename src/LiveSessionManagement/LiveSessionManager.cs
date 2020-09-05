@@ -44,6 +44,23 @@ namespace ApexVisual.F1_2020.LiveSessionManagement
                     {
                         LiveDriverData[t].FeedLapData(lp.FieldLapData[t], lp.SessionTime);
                     }
+
+                    //Supply the driver ahead distance for all cars (except first place)
+                    foreach (LiveDriverSessionData ldsd in LiveDriverData)
+                    {
+                        if (ldsd.Position != 1) //Only do this for cars that are NOT in first place
+                        {
+                            //Find the car that is directly ahead
+                            foreach (LapPacket.LapData ld in lp.FieldLapData)
+                            {
+                                if (ld.CarPosition == ldsd.Position - 1) //If it is the car ahead
+                                {
+                                    ldsd.SetDriverAheadData(ld.TotalDistance);
+                                }
+                            }
+                        }
+                    }
+
                 }
                 else if (p.PacketType == PacketType.Session) //if it is a session packet, we have to plug the session type into each
                 {

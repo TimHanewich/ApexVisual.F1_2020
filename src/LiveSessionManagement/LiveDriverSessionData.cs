@@ -33,7 +33,6 @@ namespace ApexVisual.F1_2020.LiveSessionManagement
         
         //For tracking gap ahead - these variables will be constantly updated by the parent session manager
         private float Current_DriverAheadDistance;
-        private float Current_SnapshottedAtSessionTime;
 
         //For tracking gap ahead - The data will temporarily be stored here while we wait for our car to eclipse it. Then we will measure the time
         private float MeasuringSnapshot_DriverAheadDistance;
@@ -99,31 +98,40 @@ namespace ApexVisual.F1_2020.LiveSessionManagement
 
 
                     //Update Gap Ahead
-                    if (UpdatingGapAhead == false) //If we are not updating the gap aheaed right mow, let's check to see if it is time to
+                    if (Position == 1) //If we are in first place, just set the time to 0!
                     {
-                        float time_since_last_update = session_time - LastUpdatedGapAheadAtSessionTime;
-                        if (time_since_last_update > UpdateGapAheadEverySeconds) //Is it time to?
+                        Race_GapAhead = 0; 
+                    }
+                    else
+                    {
+                        if (UpdatingGapAhead == false) //If we are not updating the gap aheaed right mow, let's check to see if it is time to
                         {
-                            MeasuringSnapshot_DriverAheadDistance = Current_DriverAheadDistance; //Mark down the driver ahead's current lap distance
-                            MeasuringSnapshot_SnapshottedAtSessionTime = Current_SnapshottedAtSessionTime; //Mark down the current session time.
-                            UpdatingGapAhead = true; //Mark it as we are currently updating the gap ahead
+                            float time_since_last_update = session_time - LastUpdatedGapAheadAtSessionTime;
+                            if (time_since_last_update > UpdateGapAheadEverySeconds) //Is it time to?
+                            {
+                                MeasuringSnapshot_DriverAheadDistance = Current_DriverAheadDistance; //Mark down the driver ahead's current lap distance
+                                MeasuringSnapshot_SnapshottedAtSessionTime = session_time; //Mark down the current session time.
+                                UpdatingGapAhead = true; //Mark it as we are currently updating the gap ahead
+                            }
+                        }
+                        else //We are currently in the process of updating the gap ahead. Check to see if our car has ecclipsed or equalled the last measured car ahead time
+                        {
+                            if (ld.TotalDistance >= MeasuringSnapshot_DriverAheadDistance) //If we eclipsed or equalled it
+                            {
+                                Race_GapAhead = session_time - MeasuringSnapshot_SnapshottedAtSessionTime; //Get the gap ahead. (This is how long it took us to get to the driver ahead's position)
+                                LastUpdatedGapAheadAtSessionTime = session_time; //Mark that we just did that just now
+                                UpdatingGapAhead = false;
+                            }
                         }
                     }
-                    else //We are currently in the process of updating the gap ahead. Check to see if our car has ecclipsed or equalled the last measured car ahead time
-                    {
-                        if (ld.TotalDistance >= MeasuringSnapshot_DriverAheadDistance) //If we eclipsed or equalled it
-                        {
-                            Race_GapAhead = session_time - MeasuringSnapshot_SnapshottedAtSessionTime; //Get the gap ahead. (This is how long it took us to get to the driver ahead's position)
-                            LastUpdatedGapAheadAtSessionTime = session_time; //Mark that we just did that just now
-                            UpdatingGapAhead = false;
-                        }
-                    }
+                    
 
                 }
             }
 
             //Do the internal log updating for next time
             LastSeenLapData = ld;
+            
         }
 
         //For setting session type
@@ -133,10 +141,9 @@ namespace ApexVisual.F1_2020.LiveSessionManagement
         }
     
         //For tracking Gap Ahead
-        public void SetDriverAheadData(float driver_ahead_distance, float session_time)
+        public void SetDriverAheadData(float driver_ahead_distance)
         {
             Current_DriverAheadDistance = driver_ahead_distance;
-            Current_SnapshottedAtSessionTime = session_time;
         }
     
     }
