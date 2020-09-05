@@ -18,7 +18,7 @@ namespace FunctionalTesting
 
         static void Main(string[] args)
         {
-            string path = "D:\\Australia_Race_AlphaTauri.json";
+            string path = "D:\\Australia_Qualifying_AlphaTauri.json";
             Console.WriteLine("Reading content.");
             string conten = System.IO.File.ReadAllText(path);
             Console.WriteLine("Deserializing");
