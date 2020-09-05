@@ -9,6 +9,7 @@ using ApexVisual.F1_2020.LiveCoaching;
 using System.Net.Sockets;
 using System.Net;
 using ApexVisual.F1_2020.ActivityLogging;
+using ApexVisual.F1_2020.LiveSessionManagement;
 
 namespace FunctionalTesting
 {
@@ -17,19 +18,32 @@ namespace FunctionalTesting
 
         static void Main(string[] args)
         {
-            string path = "C:\\Users\\TaHan\\Downloads\\AZ KEY.txt";
-            string content = System.IO.File.ReadAllText(path);
-            
-            ApexVisualManager avm = ApexVisualManager.Create(content);
-            
-            ActivityLog al = new ActivityLog();
-            al.IpAddress = "7.8.9.0";
-            al.ActivityType = ActivityType.Launch;
-            al.ActivityId = "launch";
-            al.PackageVersion = new PackageVersion(9,8,7,6);
-            al.Notes = "First test?";
-            
-            avm.UploadActivityLogAsync(al).Wait();
+            string path = "D:\\Australia_Qualifying_AlphaTauri.json";
+            Console.WriteLine("Reading content.");
+            string conten = System.IO.File.ReadAllText(path);
+            Console.WriteLine("Deserializing");
+            List<byte[]> data = JsonConvert.DeserializeObject<List<byte[]>>(conten);
+            Console.WriteLine("Getting packets...");
+            Packet[] packets = Packet.BulkLoadAllSessionData(data);
+
+
+            LiveSessionManager lsm = new LiveSessionManager();
+
+            foreach (Packet p in packets)
+            {
+                lsm.InjestPacket(p);
+                if (lsm.LiveDriverData == null)
+                {
+                    Console.WriteLine("Null!");
+                }
+                else
+                {
+                    Console.WriteLine(JsonConvert.SerializeObject(lsm.LiveDriverData[0]));
+                }
+            }
+
+
+
         }
 
         

@@ -40,50 +40,57 @@ namespace ApexVisual.F1_2020.LiveSessionManagement
             Race_LapNumber = ld.CurrentLapNumber;
             Qualifying_DriverStatus = ld.CurrentDriverStatus;
 
-            //If it is Qualifying
-            if (ThisSessionType != SessionPacket.SessionType.Race && ThisSessionType != SessionPacket.SessionType.Race2) //If it is NOT a race
-            {
 
-                //Plug in the driver status
-                Qualifying_DriverStatus = ld.CurrentDriverStatus;
-                                
-                //If we just started a new lap and it is our best lap so far, plug in all of the times
-                if (ld.CurrentLapNumber != LastSeenLapData.CurrentLapNumber) //It is a new lap we just started
+            //Only run this stuff once we have seen at least one lap data before. This is for comparison purposes.
+            if (LastSeenLapData != null)
+            {
+                //If it is Qualifying
+                if (ThisSessionType != SessionPacket.SessionType.Race && ThisSessionType != SessionPacket.SessionType.Race2) //If it is NOT a race
                 {
-                    if (ld.LastLapTime == ld.BestLapNumber) //If the last lap (the one we just finished) is the fastest lap we have seen so far, update the s1, s2, s3, and lap time
+
+                    //Plug in the driver status
+                    Qualifying_DriverStatus = ld.CurrentDriverStatus;
+                                    
+                    //If we just started a new lap and it is our best lap so far, plug in all of the times
+                    if (ld.CurrentLapNumber != LastSeenLapData.CurrentLapNumber) //It is a new lap we just started
                     {
-                        Qualifying_Sector1Time = (float)LastSeenLapData.Sector1TimeMilliseconds / 1000f;
-                        Qualifying_Sector2Time = (float)LastSeenLapData.Sector2TimeMilliseconds / 1000f;
-                        Qualifying_Sector3Time = ld.LastLapTime - Qualifying_Sector1Time - Qualifying_Sector2Time;
-                        Qualifying_LapTime = ld.LastLapTime;
+                        if (ld.LastLapTime == ld.BestLapNumber) //If the last lap (the one we just finished) is the fastest lap we have seen so far, update the s1, s2, s3, and lap time
+                        {
+                            Qualifying_Sector1Time = (float)LastSeenLapData.Sector1TimeMilliseconds / 1000f;
+                            Qualifying_Sector2Time = (float)LastSeenLapData.Sector2TimeMilliseconds / 1000f;
+                            Qualifying_Sector3Time = ld.LastLapTime - Qualifying_Sector1Time - Qualifying_Sector2Time;
+                            Qualifying_LapTime = ld.LastLapTime;
+                        }
                     }
                 }
-            }
-            else //If it is a race
-            {
-                //Lap number
-                Race_LapNumber = ld.CurrentLapNumber;
-
-                //Did we just start a new lap? If we did, plug in the last lap time
-                if (ld.CurrentLapNumber != LastSeenLapData.CurrentLapNumber)
+                else //If it is a race
                 {
-                    Race_LastLapTime = ld.LastLapTime;
+                    //Lap number
+                    Race_LapNumber = ld.CurrentLapNumber;
+
+                    //Did we just start a new lap? If we did, plug in the last lap time
+                    if (ld.CurrentLapNumber != LastSeenLapData.CurrentLapNumber)
+                    {
+                        Race_LastLapTime = ld.LastLapTime;
+                    }
+
+                    //Plug in pit status
+                    Race_PitStatus = ld.CurrentPitStatus;
+
+                    //Increment the pit count? If the last one we saw they were in the pit lane but now they are on track, increase it
+                    if (LastSeenLapData.CurrentPitStatus == PitStatus.PitLane && ld.CurrentPitStatus == PitStatus.OnTrack)
+                    {
+                        Race_PitCount = Race_PitCount + 1;
+                    }
                 }
 
-                //Plug in pit status
-                Race_PitStatus = ld.CurrentPitStatus;
+                //Do the internal log updating for next time
+                LastSeenLapData = ld;
 
-                //Increment the pit count? If the last one we saw they were in the pit lane but now they are on track, increase it
-                if (LastSeenLapData.CurrentPitStatus == PitStatus.PitLane && ld.CurrentPitStatus == PitStatus.OnTrack)
-                {
-                    Race_PitCount = Race_PitCount + 1;
-                }
             }
-
-            //Do the internal log updating for next time
-            LastSeenLapData = ld;
         }
-    
+
+        
         //For setting session type
         public void SetSessionType(SessionPacket.SessionType ses_type)
         {
