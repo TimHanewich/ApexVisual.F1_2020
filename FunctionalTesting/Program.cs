@@ -29,16 +29,19 @@ namespace FunctionalTesting
 
             LiveSessionManager lsm = new LiveSessionManager();
 
+            Console.WriteLine("Goimng");
             foreach (Packet p in packets)
             {
                 lsm.InjestPacket(p);
-                if (lsm.LiveDriverData == null)
+                if (lsm.LiveDriverData != null)
                 {
-                    Console.WriteLine("Null!");
-                }
-                else
-                {
-                    Console.WriteLine(JsonConvert.SerializeObject(lsm.LiveDriverData[0]));
+                    foreach (LiveDriverSessionData ldsd in lsm.LiveDriverData)
+                    {
+                        if (ldsd.Qualifying_LapTime != 0)
+                        {
+                            Console.WriteLine(JsonConvert.SerializeObject(ldsd));
+                        }
+                    }
                 }
             }
 

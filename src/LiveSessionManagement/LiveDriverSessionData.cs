@@ -67,7 +67,7 @@ namespace ApexVisual.F1_2020.LiveSessionManagement
                     //If we just started a new lap and it is our best lap so far, plug in all of the times
                     if (ld.CurrentLapNumber != LastSeenLapData.CurrentLapNumber) //It is a new lap we just started
                     {
-                        if (ld.LastLapTime == ld.BestLapNumber) //If the last lap (the one we just finished) is the fastest lap we have seen so far, update the s1, s2, s3, and lap time
+                        if (ld.LastLapTime == ld.BestLapTimeSeconds) //If the last lap (the one we just finished) is the fastest lap we have seen so far, update the s1, s2, s3, and lap time
                         {
                             Qualifying_Sector1Time = (float)LastSeenLapData.Sector1TimeMilliseconds / 1000f;
                             Qualifying_Sector2Time = (float)LastSeenLapData.Sector2TimeMilliseconds / 1000f;
