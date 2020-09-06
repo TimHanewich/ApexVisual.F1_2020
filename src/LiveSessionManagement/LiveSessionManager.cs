@@ -40,7 +40,7 @@ namespace ApexVisual.F1_2020.LiveSessionManagement
                 if (p.PacketType == PacketType.Lap)
                 {
                     LapPacket lp = (LapPacket)p;
-                    for (int t = 0; t < lp.FieldLapData.Length; t++)
+                    for (int t = 0; t < LiveDriverData.Length; t++)
                     {
                         LiveDriverData[t].FeedLapData(lp.FieldLapData[t], lp.SessionTime);
                     }
