@@ -22,11 +22,11 @@ namespace ApexVisual.F1_2020.LiveSessionManagement
                 {
                     ParticipantPacket pp = (ParticipantPacket)p;
                     List<LiveDriverSessionData> NewData = new List<LiveDriverSessionData>();
-                    foreach (ParticipantPacket.ParticipantData pd in pp.FieldParticipantData)
+                    for (int t = 0; t < pp.NumberOfActiveCars; t++)
                     {
                         LiveDriverSessionData ldsd = new LiveDriverSessionData();
-                        ldsd.DriverDisplayName = CodemastersToolkit.GetDriverDisplayNameFromDriver(pd.PilotingDriver);
-                        ldsd.TeamColor =  CodemastersToolkit.GetTeamColorByTeam(pd.ManufacturingTeam);
+                        ldsd.DriverDisplayName = CodemastersToolkit.GetDriverDisplayNameFromDriver(pp.FieldParticipantData[t].PilotingDriver);
+                        ldsd.TeamColor =  CodemastersToolkit.GetTeamColorByTeam(pp.FieldParticipantData[t].ManufacturingTeam);
                         NewData.Add(ldsd);
                     }
                     LiveDriverData = NewData.ToArray();
