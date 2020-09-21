@@ -9,6 +9,7 @@
     <Copyright>Tim Hanewich</Copyright>
     <PackageIcon>package_icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/TimHanewich/ApexVisual.F1_2020</RepositoryUrl>
+    <PackageLicenseFile>License.md</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\License.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
     <None Include="package_icon.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
