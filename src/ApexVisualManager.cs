@@ -326,6 +326,31 @@ namespace ApexVisual.F1_2020
 
         #endregion
 
+        #region "Downloading profile picture image"
+
+        public async Task<Stream> DownloadProfilePictureImageAsync(string id)
+        {
+            //Get the container
+            CloudBlobContainer cont = cbc.GetContainerReference("userphotos");
+            await cont.CreateIfNotExistsAsync();
+
+            //Get the profile picture. Throw an error if it does not exist
+            CloudBlockBlob blb = cont.GetBlockBlobReference(id);
+            if (blb.Exists() == false)
+            {
+                throw new Exception("User photo with ID '" + id + "' does not exist.");
+            }
+
+            //Download the blob contents
+            MemoryStream ms = new MemoryStream();
+            await blb.DownloadToStreamAsync(ms);
+            ms.Position = 0;
+            
+            return ms;
+        }
+
+        #endregion
+
         #region "Utility Functions"
 
         // UTLITY FUNCTIONS BELOW
