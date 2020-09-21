@@ -328,7 +328,7 @@ namespace ApexVisual.F1_2020
 
         #region "Downloading profile picture image"
 
-        public async Task<Stream> DownloadProfilePictureImageAsync(string id)
+        public async Task<Stream> DownloadProfilePictureAsync(string id)
         {
             //Get the container
             CloudBlobContainer cont = cbc.GetContainerReference("userphotos");
