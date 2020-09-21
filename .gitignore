@@ -3,3 +3,4 @@ src/obj
 FunctionalTesting/bin/
 FunctionalTesting/obj/
 .vscode/
+src/.vs/
