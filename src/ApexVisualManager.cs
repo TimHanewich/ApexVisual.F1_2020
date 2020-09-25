@@ -351,6 +351,27 @@ namespace ApexVisual.F1_2020
 
         #endregion
 
+        #region "Uploading profile picture image"
+
+        /// <summary>
+        /// This uploads the image to Azure and then provides you with the unique ID that the image is called. You can then use this ID by plugging into the Apex Visual User account as the image ID. 
+        /// </summary>
+        public async Task<string> UploadProfilePictureAsync(Stream image_stream)
+        {
+            //Get the container
+            CloudBlobContainer cont = cbc.GetContainerReference("userphotos");
+            await cont.CreateIfNotExistsAsync();
+
+            //Get a name for it and upload it
+            string ToReturnId = Guid.NewGuid().ToString();
+            CloudBlockBlob blb = cont.GetBlockBlobReference(ToReturnId);
+            await blb.UploadFromStreamAsync(image_stream);
+            
+            return ToReturnId;
+        }
+
+        #endregion
+
         #region "Utility Functions"
 
         // UTLITY FUNCTIONS BELOW
