@@ -18,8 +18,7 @@ namespace FunctionalTesting
     {
 
         static void Main(string[] args)
-        {
-                        
+        {   
         }
 
         
