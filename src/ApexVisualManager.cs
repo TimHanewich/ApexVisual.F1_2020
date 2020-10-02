@@ -373,6 +373,29 @@ namespace ApexVisual.F1_2020
 
         #endregion
 
+        #region "Uploading message submissions"
+
+        public async Task UploadMessageSubmissionAsync(MessageSubmission message)
+        {
+            //Get the container
+            CloudBlobContainer cont = cbc.GetContainerReference("messagesubmissions");
+            await cont.CreateIfNotExistsAsync();
+
+            //Get the name that we are going to use.
+            string name = message.CreatedAt.Year.ToString("0000") + "." + message.CreatedAt.Month.ToString("00") + "." + message.CreatedAt.Day.ToString("00") + "." + message.CreatedAt.Hour.ToString("00") + "." + message.CreatedAt.Minute.ToString("00") + "." + message.CreatedAt.Second.ToString("00");
+
+            //Upload it
+            CloudBlockBlob blb = cont.GetBlockBlobReference(name);
+            if (blb.Exists())
+            {
+                name = name + "." + Guid.NewGuid().ToString();
+                blb = cont.GetBlockBlobReference(name);
+            }
+            await blb.UploadTextAsync(JsonConvert.SerializeObject(message));
+        }
+
+        #endregion
+
         #region "Utility Functions"
 
         // UTLITY FUNCTIONS BELOW
