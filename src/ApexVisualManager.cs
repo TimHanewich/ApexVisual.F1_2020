@@ -51,6 +51,7 @@ namespace ApexVisual.F1_2020
             await cbc.GetContainerReference("userphotos").CreateIfNotExistsAsync();
             await cbc.GetContainerReference("wallpapers").CreateIfNotExistsAsync();
             await cbc.GetContainerReference("activitylogs").CreateIfNotExistsAsync();
+            await cbc.GetContainerReference("messagesubmissions").CreateIfNotExistsAsync();
         }
         #endregion
 
