@@ -135,6 +135,14 @@ namespace ApexVisual.F1_2020
 
         #region "User Account Operations"
 
+        public async Task<bool> UserAccountExistsAsync(string username)
+        {
+            CloudBlobContainer cont = cbc.GetContainerReference("useraccounts");
+            await cont.CreateIfNotExistsAsync();
+            CloudBlockBlob blb = cont.GetBlockBlobReference(username);
+            return blb.Exists();
+        }
+
         public async Task<ApexVisualUserAccount> DownloadUserAccountAsync(string username)
         {
             CloudBlobContainer cont = cbc.GetContainerReference("useraccounts");
