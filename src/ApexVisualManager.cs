@@ -381,7 +381,7 @@ namespace ApexVisual.F1_2020
 
         #endregion
 
-        #region "Uploading message submissions"
+        #region "Uploading/Downloading message submissions"
 
         public async Task UploadMessageSubmissionAsync(MessageSubmission message)
         {
@@ -404,6 +404,47 @@ namespace ApexVisual.F1_2020
             {
                 await cab.UploadTextAsync(to_append);
             }
+        }
+
+        public async Task<MessageSubmission[]> DownloadMessageSubmissionsAsync(DateTime day)
+        {
+            //Get the container
+            CloudBlobContainer cont = cbc.GetContainerReference("messagesubmissions");
+            await cont.CreateIfNotExistsAsync();
+
+            //Get the blob name we are searching for
+            List<MessageSubmission> ToReturn = new List<MessageSubmission>();
+            string name = day.Year.ToString("0000") + "." + day.Month.ToString("00") + "." + day.Day.ToString("00");
+            CloudAppendBlob cab = cont.GetAppendBlobReference(name);
+
+            //If it doesn't exist, return an empty array.
+            bool exists = await cab.ExistsAsync();
+            if (exists == false)
+            {
+                ToReturn.Clear();
+                return ToReturn.ToArray(); //Return an empty array.
+            }
+            
+            //Download the contents and split them
+            string content = await cab.DownloadTextAsync();
+            List<string> Splitter = new List<string>();
+            Splitter.Add("<:::SPLIT:::>");
+            string[] parts = content.Split(Splitter.ToArray(), StringSplitOptions.RemoveEmptyEntries);
+            foreach (string s in parts)
+            {
+                try
+                {
+                    MessageSubmission ms = JsonConvert.DeserializeObject<MessageSubmission>(s);
+                    ToReturn.Add(ms);
+                }
+                catch
+                {
+
+                }
+            }
+            
+            //Return the list of them now
+            return ToReturn.ToArray();
         }
 
         #endregion
