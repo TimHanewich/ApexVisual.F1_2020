@@ -389,17 +389,21 @@ namespace ApexVisual.F1_2020
             CloudBlobContainer cont = cbc.GetContainerReference("messagesubmissions");
             await cont.CreateIfNotExistsAsync();
 
-            //Get the name that we are going to use.
-            string name = message.CreatedAt.Year.ToString("0000") + "." + message.CreatedAt.Month.ToString("00") + "." + message.CreatedAt.Day.ToString("00") + "." + message.CreatedAt.Hour.ToString("00") + "." + message.CreatedAt.Minute.ToString("00") + "." + message.CreatedAt.Second.ToString("00");
+            //Get the name that we are going to use and the string we are going to append to.
+            string name = message.CreatedAt.Year.ToString("0000") + "." + message.CreatedAt.Month.ToString("00") + "." + message.CreatedAt.Day.ToString("00");
+            string to_append = JsonConvert.SerializeObject(message) + "<:::SPLIT:::>";
+
 
             //Upload it
-            CloudBlockBlob blb = cont.GetBlockBlobReference(name);
-            if (blb.Exists())
+            CloudAppendBlob cab = cont.GetAppendBlobReference(name);
+            if (cab.Exists())
             {
-                name = name + "." + Guid.NewGuid().ToString();
-                blb = cont.GetBlockBlobReference(name);
+                await cab.AppendTextAsync(to_append);
             }
-            await blb.UploadTextAsync(JsonConvert.SerializeObject(message));
+            else
+            {
+                await cab.UploadTextAsync(to_append);
+            }
         }
 
         #endregion
