@@ -1,6 +1,6 @@
 using System;
 using ApexVisual.F1_2020;
-using Codemasters.F1_2020.Analysis;
+using ApexVisual.F1_2020.Analysis;
 using Codemasters.F1_2020;
 
 namespace ApexVisual.F1_2020.LiveCoaching
