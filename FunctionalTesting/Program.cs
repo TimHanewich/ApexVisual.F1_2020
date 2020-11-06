@@ -3,7 +3,6 @@ using ApexVisual.F1_2020;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Codemasters.F1_2020;
-using Codemasters.F1_2020.Analysis;
 using System.Threading.Tasks;
 using ApexVisual.F1_2020.LiveCoaching;
 using System.Net.Sockets;
