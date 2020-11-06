@@ -4,7 +4,7 @@ using Microsoft.Azure.Storage;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Codemasters.F1_2020;
-using Codemasters.F1_2020.Analysis;
+using ApexVisual.F1_2020.Analysis;
 using Newtonsoft.Json;
 using System.IO;
 using ApexVisual.F1_2020.ActivityLogging;
