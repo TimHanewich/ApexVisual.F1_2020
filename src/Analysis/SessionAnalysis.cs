@@ -3,7 +3,7 @@ using Codemasters.F1_2020;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Codemasters.F1_2020.Analysis
+namespace ApexVisual.F1_2020.Analysis
 {
     public class SessionAnalysis
     {

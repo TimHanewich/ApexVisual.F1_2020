@@ -2,7 +2,7 @@ using System;
 using Codemasters.F1_2020;
 using System.Collections.Generic;
 
-namespace Codemasters.F1_2020.Analysis
+namespace ApexVisual.F1_2020.Analysis
 {
     public class PacketFrame
     {
