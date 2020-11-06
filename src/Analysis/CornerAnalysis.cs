@@ -1,4 +1,5 @@
 using System;
+using Codemasters.F1_2020;
 
 namespace ApexVisual.F1_2020.Analysis
 {
@@ -23,7 +24,7 @@ namespace ApexVisual.F1_2020.Analysis
             car_loc.PositionZ = Motion.PositionZ;
             car_loc.Sector = Lap.Sector;
 
-            float distance = CodemastersToolkit.DistanceBetweenTwoPoints(CornerData, car_loc);
+            float distance = ApexVisualToolkit.DistanceBetweenTwoPoints(CornerData, car_loc);
             return distance;
         }
 
