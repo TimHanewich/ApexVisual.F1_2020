@@ -1,5 +1,5 @@
 using System;
-using Codemasters.F1_2020.Analysis;
+using Codemasters.F1_2020;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using TimHanewich.Csv;
