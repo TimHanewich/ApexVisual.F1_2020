@@ -53,7 +53,7 @@ namespace ApexVisual.F1_2020.LiveCoaching
                         TrackLocation tl = LoadedTrackData.Corners[i];
                         if (tl.Sector == LastReceivedPackets.Lap.FieldLapData[LastReceivedPackets.Lap.PlayerCarIndex].Sector) //We will only evaluate corners that are in the current sector we are in.
                         {
-                            float this_distance = CodemastersToolkit.DistanceBetweenTwoPoints(my_loc, tl);
+                            float this_distance = ApexVisualToolkit.DistanceBetweenTwoPoints(my_loc, tl);
                             if (this_distance < nearest_corner_distance)
                             {
                                 nearest_corner_distance = this_distance;
@@ -96,7 +96,7 @@ namespace ApexVisual.F1_2020.LiveCoaching
                     {
                         //Measure the distance in between the car and that corner
                         TrackLocation at_corner = LoadedTrackData.Corners[AtCorner-1]; 
-                        float distance_to_corner = CodemastersToolkit.DistanceBetweenTwoPoints(at_corner, my_loc);
+                        float distance_to_corner = ApexVisualToolkit.DistanceBetweenTwoPoints(at_corner, my_loc);
                         if (distance_to_corner > ApexDistanceThreshold)
                         {
                             AtCornerStage = CornerStage.Exit;
@@ -114,7 +114,7 @@ namespace ApexVisual.F1_2020.LiveCoaching
                             if (ApexTelemetryAlreadyBroadcastedForCurrentCorner == false) //We don't want to broadcast it twice, so we check to see if we already broadcasted it.
                             {
                                 TrackLocation last_loc = new TrackLocation() {PositionX = LastReceivedPackets.Motion.FieldMotionData[LastReceivedPackets.Motion.PlayerCarIndex].PositionX, PositionY = LastReceivedPackets.Motion.FieldMotionData[LastReceivedPackets.Motion.PlayerCarIndex].PositionY, PositionZ = LastReceivedPackets.Motion.FieldMotionData[LastReceivedPackets.Motion.PlayerCarIndex].PositionZ};
-                                float last_distance_to_corner = CodemastersToolkit.DistanceBetweenTwoPoints(last_loc, at_corner);
+                                float last_distance_to_corner = ApexVisualToolkit.DistanceBetweenTwoPoints(last_loc, at_corner);
 
                                 //If this distance is GREATER THAN the last distance, it means we are moving away from it (we passed it). So trigger the telemetry
                                 if (distance_to_corner >= last_distance_to_corner)
@@ -152,8 +152,8 @@ namespace ApexVisual.F1_2020.LiveCoaching
                         TrackLocation Next_Corner = LoadedTrackData.Corners[Next_Corner_Index]; //The NEXT corner that we are now approaching.
 
                         //Check which one we are closer to 
-                        float distance_to_prev = CodemastersToolkit.DistanceBetweenTwoPoints(Previous_Corner, my_loc);
-                        float distance_to_next = CodemastersToolkit.DistanceBetweenTwoPoints(Next_Corner, my_loc);
+                        float distance_to_prev = ApexVisualToolkit.DistanceBetweenTwoPoints(Previous_Corner, my_loc);
+                        float distance_to_next = ApexVisualToolkit.DistanceBetweenTwoPoints(Next_Corner, my_loc);
 
                         //If we are closer to next corner, flip it to that corner entry
                         if (distance_to_next <= distance_to_prev)
@@ -191,7 +191,7 @@ namespace ApexVisual.F1_2020.LiveCoaching
                         TrackLocation This_Corner = LoadedTrackData.Corners[AtCorner-1];
 
                         //Measure the distance to that corner
-                        float distance_to_corner = CodemastersToolkit.DistanceBetweenTwoPoints(This_Corner, my_loc);
+                        float distance_to_corner = ApexVisualToolkit.DistanceBetweenTwoPoints(This_Corner, my_loc);
 
                         //If the distance is within the threshold, call it an apex hit
                         if (distance_to_corner <= ApexDistanceThreshold)
