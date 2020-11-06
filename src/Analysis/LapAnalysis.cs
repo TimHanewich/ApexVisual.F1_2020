@@ -1,4 +1,5 @@
 using System;
+using Codemasters.F1_2020;
 
 namespace ApexVisual.F1_2020.Analysis
 {
