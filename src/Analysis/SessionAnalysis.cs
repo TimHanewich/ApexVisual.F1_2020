@@ -9,6 +9,7 @@ namespace ApexVisual.F1_2020.Analysis
     {
         public ulong SessionId {get; set;}
         public LapAnalysis[] Laps {get; set;}
+        public CornerPerformanceAnalysis[] Corners {get; set;}
 
         //For reporting purposes
         public float PercentLoadComplete;
