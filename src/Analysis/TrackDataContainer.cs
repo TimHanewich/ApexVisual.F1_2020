@@ -10,7 +10,7 @@ namespace ApexVisual.F1_2020.Analysis
     public class TrackDataContainer
     {
         public Track Circuit { get; set; }
-        public TrackLocation[] Corners { get; set; }
+        public TrackLocationOptima[] Corners { get; set; }
 
         public static TrackDataContainer LoadTrack(Track track_)
         {
@@ -153,7 +153,7 @@ namespace ApexVisual.F1_2020.Analysis
             ToReturn = "Sector,PositionX,PositionY,PositionZ,OptimalSpeedMph,OptimalGear,OptimalSteer,OptimalThrottle,OptimalBrake" + Environment.NewLine;
 
             //Corners
-            foreach (TrackLocation corner in Corners)
+            foreach (TrackLocationOptima corner in Corners)
             {
                 ToReturn = ToReturn + corner.Sector.ToString() + ",";
                 ToReturn = ToReturn + corner.PositionX.ToString() + ",";
@@ -189,11 +189,11 @@ namespace ApexVisual.F1_2020.Analysis
             tdc.Circuit = circuit;
 
             //Get corners
-            List<TrackLocation> corners = new List<TrackLocation>();
+            List<TrackLocationOptima> corners = new List<TrackLocationOptima>();
             int t = 0;
             for (t=1;t<csv.Rows.Count;t++)
             {
-                TrackLocation tl = new TrackLocation();
+                TrackLocationOptima tl = new TrackLocationOptima();
 
                 tl.Sector = Convert.ToByte(csv.Rows[t].Values[0]);
                 tl.PositionX = Convert.ToSingle(csv.Rows[t].Values[1]);
