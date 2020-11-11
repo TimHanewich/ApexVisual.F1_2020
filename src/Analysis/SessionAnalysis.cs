@@ -2,6 +2,7 @@ using System;
 using Codemasters.F1_2020;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace ApexVisual.F1_2020.Analysis
 {
@@ -582,8 +583,76 @@ namespace ApexVisual.F1_2020.Analysis
 
             #endregion
 
-            //Close off
+            //Close off the laps
             Laps = _LapAnalysis.ToArray();
+
+            #region "Now that we have the lap analyses, generate the corner performance analyses (Lap Analyses MUST BE DONE before this)"
+
+            //Generate all of the corner performances
+            List<CornerPerformanceAnalysis> corner_performances = new List<CornerPerformanceAnalysis>();
+            for (int c = 0; c < tdc.Corners.Length; c++)
+            {
+                CornerPerformanceAnalysis cpa = new CornerPerformanceAnalysis();
+
+                //Copy over the data from the TrackLocationOptima (by doing a quick Json serialization/deserialization)
+                cpa = JsonConvert.DeserializeObject<CornerPerformanceAnalysis>(JsonConvert.SerializeObject(tdc.Corners[c]));
+
+                List<ushort> Speeds = new List<ushort>(); //A list of speeds that were carried through this corner
+                List<sbyte> Gears = new List<sbyte>(); //A list of gears that the driver used through this corner
+
+                //Collect the data for each lap
+                foreach (LapAnalysis la in Laps)
+                {
+                    TelemetryPacket.CarTelemetryData ctd = la.Corners[c].Telemetry;
+                    if (ctd != null) //If we have telemetry data for this corner (the only way this would be null is if we did not get close enough to the apex or if we did not complete the lap)
+                    {
+                        Speeds.Add(ctd.SpeedMph);
+                        Gears.Add(ctd.Gear);
+                    }
+                }
+
+                //Get the average speed
+                if (Speeds.Count > 0)
+                {
+                    float speed_avg = 0;
+                    foreach (ushort us in Speeds)
+                    {
+                        speed_avg = speed_avg + (float)us;
+                    }
+                    speed_avg = speed_avg / (float)Speeds.Count;
+                    cpa.AverageSpeed = speed_avg;
+                }
+                else
+                {
+                    cpa.AverageSpeed = float.NaN;
+                }
+
+                //Get the average gear
+                if (Gears.Count > 0)
+                {
+                    float gear_avg = 0;
+                    foreach (sbyte sb in Gears)
+                    {
+                        gear_avg = gear_avg + (float)sb;
+                    }
+                    gear_avg = gear_avg / (float)Gears.Count;
+                    cpa.AverageGear = gear_avg;
+                }
+                else
+                {
+                    cpa.AverageGear = float.NaN;
+                }
+
+                corner_performances.Add(cpa);
+
+            }
+
+            //Plug in all of the corner performances
+            Corners = corner_performances.ToArray();
+
+            #endregion
+
+
 
             //Shut down
             PercentLoadComplete = 1; //Mark the percent complete as 100%
