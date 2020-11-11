@@ -23,6 +23,11 @@ namespace ApexVisual.F1_2020.Analysis
                 throw new Exception("Unable to calculate distance to Apex: CornerData was null.");
             }
 
+            if (Motion == null)
+            {
+                throw new Exception("Unable to calculate distance to Apex: Motion data was null. Perhaps this corner record does not exist");
+            }
+
             TrackLocation car_loc = new TrackLocation();
             car_loc.PositionX = Motion.PositionX;
             car_loc.PositionY = Motion.PositionY;
