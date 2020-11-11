@@ -3,6 +3,7 @@ using Codemasters.F1_2020;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using TimHanewich.Toolkit;
 
 namespace ApexVisual.F1_2020.Analysis
 {
@@ -667,6 +668,38 @@ namespace ApexVisual.F1_2020.Analysis
                 {
                     cpa.AverageDistanceToApex = float.NaN;
                 }
+
+                #region "Consistency rating"
+
+                //Get a list of floats - speeds
+                List<float> Speeds_float = new List<float>();
+                foreach (ushort us in Speeds)
+                {
+                    Speeds_float.Add((float)us);
+                }
+
+                //Get a list of floats - gears
+                List<float> Gears_float = new List<float>();
+                foreach (sbyte sb in Gears)
+                {
+                    Gears_float.Add((float)sb);
+                }
+
+                //Calculate the standard deviations
+                float stdev_Speeds = MathToolkit.StandardDeviation(Speeds_float.ToArray());
+                float stdev_Gears = MathToolkit.StandardDeviation(Gears_float.ToArray());
+                float stdev_Distances = MathToolkit.StandardDeviation(Distances.ToArray());
+
+                //Calculate the consistency rating
+                List<float> ConsistencyRatingAgg = new List<float>();
+                ConsistencyRatingAgg.Add(stdev_Speeds);
+                ConsistencyRatingAgg.Add(stdev_Gears * 0.5f); //The float is a weight (higher = this category deserves more weight)
+                ConsistencyRatingAgg.Add(stdev_Distances * 0.35f);
+                
+                //Plug in the consistency rating
+                cpa.CornerConsistencyRating = ConsistencyRatingAgg.Sum();
+    
+                #endregion
 
                 corner_performances.Add(cpa);
 
