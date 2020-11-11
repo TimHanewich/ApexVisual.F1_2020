@@ -613,9 +613,9 @@ namespace ApexVisual.F1_2020.Analysis
                     }
 
                     //Collect the distance to apex
-                    if (la.Corners.Length >= c) //If this lap has a high enough number for this corner number
+                    CornerAnalysis ca = la.Corners[c];
+                    if (ca.Motion != null) //The motion packet is required to calculate distance to apex BECAUSE the motion packet contains position data
                     {
-                        CornerAnalysis ca = la.Corners[c];
                         Distances.Add(ca.DistanceToApex());
                     }
                 }
