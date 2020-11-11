@@ -622,9 +622,9 @@ namespace ApexVisual.F1_2020.Analysis
                 }
 
                 //Get the average speed
+                float speed_avg = 0;
                 if (Speeds.Count > 0)
                 {
-                    float speed_avg = 0;
                     foreach (ushort us in Speeds)
                     {
                         speed_avg = speed_avg + (float)us;
@@ -638,9 +638,9 @@ namespace ApexVisual.F1_2020.Analysis
                 }
 
                 //Get the average gear
+                float gear_avg = 0;
                 if (Gears.Count > 0)
                 {
-                    float gear_avg = 0;
                     foreach (sbyte sb in Gears)
                     {
                         gear_avg = gear_avg + (float)sb;
@@ -654,9 +654,9 @@ namespace ApexVisual.F1_2020.Analysis
                 }
 
                 //Get average distance to apex
+                float distance_avg = 0;
                 if (Distances.Count > 0)
                 {
-                    float distance_avg = 0;
                     foreach (float f in Distances)
                     {
                         distance_avg = distance_avg + f;
@@ -690,11 +690,16 @@ namespace ApexVisual.F1_2020.Analysis
                 float stdev_Gears = MathToolkit.StandardDeviation(Gears_float.ToArray());
                 float stdev_Distances = MathToolkit.StandardDeviation(Distances.ToArray());
 
+                //Turn them into ratings by turning them into percentages of the average (if you don't do this, the higher numbers on corners would result in higher st deviation)
+                float rating_Speeds = stdev_Speeds / speed_avg;
+                float rating_Gears = stdev_Gears / gear_avg;
+                float rating_Distances = stdev_Distances / distance_avg;
+
                 //Calculate the consistency rating
                 List<float> ConsistencyRatingAgg = new List<float>();
-                ConsistencyRatingAgg.Add(stdev_Speeds);
-                ConsistencyRatingAgg.Add(stdev_Gears * 0.5f); //The float is a weight (higher = this category deserves more weight)
-                ConsistencyRatingAgg.Add(stdev_Distances * 0.35f);
+                ConsistencyRatingAgg.Add(rating_Speeds);
+                ConsistencyRatingAgg.Add(rating_Gears * 0.5f); //The float is a weight (higher = this category deserves more weight)
+                ConsistencyRatingAgg.Add(rating_Distances * 0.35f);
                 
                 //Plug in the consistency rating
                 cpa.CornerConsistencyRating = ConsistencyRatingAgg.Sum();
