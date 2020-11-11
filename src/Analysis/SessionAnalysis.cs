@@ -599,15 +599,24 @@ namespace ApexVisual.F1_2020.Analysis
 
                 List<ushort> Speeds = new List<ushort>(); //A list of speeds that were carried through this corner
                 List<sbyte> Gears = new List<sbyte>(); //A list of gears that the driver used through this corner
+                List<float> Distances = new List<float>();
 
                 //Collect the data for each lap
                 foreach (LapAnalysis la in Laps)
                 {
+                    //Collect speed and gear
                     TelemetryPacket.CarTelemetryData ctd = la.Corners[c].Telemetry;
                     if (ctd != null) //If we have telemetry data for this corner (the only way this would be null is if we did not get close enough to the apex or if we did not complete the lap)
                     {
                         Speeds.Add(ctd.SpeedMph);
                         Gears.Add(ctd.Gear);
+                    }
+
+                    //Collect the distance to apex
+                    if (la.Corners.Length >= c) //If this lap has a high enough number for this corner number
+                    {
+                        CornerAnalysis ca = la.Corners[c];
+                        Distances.Add(ca.DistanceToApex());
                     }
                 }
 
@@ -641,6 +650,22 @@ namespace ApexVisual.F1_2020.Analysis
                 else
                 {
                     cpa.AverageGear = float.NaN;
+                }
+
+                //Get average distance to apex
+                if (Distances.Count > 0)
+                {
+                    float distance_avg = 0;
+                    foreach (float f in Distances)
+                    {
+                        distance_avg = distance_avg + f;
+                    }
+                    distance_avg = distance_avg / (float)Distances.Count;
+                    cpa.AverageDistanceToApex = distance_avg;
+                }
+                else
+                {
+                    cpa.AverageDistanceToApex = float.NaN;
                 }
 
                 corner_performances.Add(cpa);
