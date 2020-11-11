@@ -598,6 +598,9 @@ namespace ApexVisual.F1_2020.Analysis
                 //Copy over the data from the TrackLocationOptima (by doing a quick Json serialization/deserialization)
                 cpa = JsonConvert.DeserializeObject<CornerPerformanceAnalysis>(JsonConvert.SerializeObject(tdc.Corners[c]));
 
+                //Plug in the corner #
+                cpa.CornerNumber = (byte)(c + 1);
+
                 List<ushort> Speeds = new List<ushort>(); //A list of speeds that were carried through this corner
                 List<sbyte> Gears = new List<sbyte>(); //A list of gears that the driver used through this corner
                 List<float> Distances = new List<float>();
