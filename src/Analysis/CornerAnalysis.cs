@@ -18,6 +18,11 @@ namespace ApexVisual.F1_2020.Analysis
 
         public float DistanceToApex()
         {
+            if (CornerData == null)
+            {
+                throw new Exception("Unable to calculate distance to Apex: CornerData was null.");
+            }
+
             TrackLocation car_loc = new TrackLocation();
             car_loc.PositionX = Motion.PositionX;
             car_loc.PositionY = Motion.PositionY;
