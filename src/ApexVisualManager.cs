@@ -13,7 +13,7 @@ namespace ApexVisual.F1_2020
 {
     public class ApexVisualManager
     {
-        private string con_str = "";
+        public string con_str = "";
         private CloudStorageAccount csa;
         private CloudBlobClient cbc;
 
