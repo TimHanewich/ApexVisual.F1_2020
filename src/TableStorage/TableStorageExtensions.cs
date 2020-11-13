@@ -17,7 +17,7 @@ namespace ApexVisual.F1_2020.TableStorage
             await ct.CreateIfNotExistsAsync();
 
             //Retrieve the user
-            TableOperation to = TableOperation.Retrieve("user", username);
+            TableOperation to = TableOperation.Retrieve<ApexVisualUserAccountTbl>("user", username);
             TableResult tr = await ct.ExecuteAsync(to);
             if (tr.HttpStatusCode != 200)
             {
@@ -47,7 +47,7 @@ namespace ApexVisual.F1_2020.TableStorage
             //Prepare and execute the action
             TableOperation to = TableOperation.InsertOrReplace(tble);
             TableResult tr = await ct.ExecuteAsync(to);
-            if (tr.HttpStatusCode != 200)
+            if (tr.HttpStatusCode != 204)
             {
                 throw new Exception("Unable to upload user account '" + account.Username + "'.");
             }
