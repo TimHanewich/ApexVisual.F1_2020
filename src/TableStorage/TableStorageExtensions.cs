@@ -7,6 +7,22 @@ namespace ApexVisual.F1_2020.TableStorage
 {
     public static class TableStorageExtensions
     {
+
+        #region "Initialization"
+
+        public static async Task InitializeTablesAsync(this ApexVisualManager avm)
+        {
+            //Log in
+            CloudTableClient ctc = GetCloudTableClient(avm.con_str);
+
+            //useraccounts
+            CloudTable useraccounts = ctc.GetTableReference("useraccounts");
+            await useraccounts.CreateIfNotExistsAsync();
+        }
+
+        #endregion
+
+        #region "User account transactions"
         /// <summary>
         /// Uses cloud table storage to fulfill request.
         /// </summary>
@@ -58,6 +74,8 @@ namespace ApexVisual.F1_2020.TableStorage
                 throw new Exception("Unable to upload user account '" + account.Username + "'.");
             }
         }
+
+        #endregion
 
         #region "Utility functions"
         private static CloudTableClient GetCloudTableClient(string connection_string)
