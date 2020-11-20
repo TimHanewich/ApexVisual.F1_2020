@@ -13,7 +13,7 @@ namespace ApexVisual.F1_2020.CloudStorage
         public static async Task InitializeTablesAsync(this ApexVisualManager avm)
         {
             //Log in
-            CloudTableClient ctc = GetCloudTableClient(avm.con_str);
+            CloudTableClient ctc = GetCloudTableClient(avm.AzureStorageConnectionString);
 
             //useraccounts
             CloudTable useraccounts = ctc.GetTableReference("useraccounts");
@@ -29,7 +29,7 @@ namespace ApexVisual.F1_2020.CloudStorage
         public static async Task<ApexVisualUserAccount> DownloadUserAccountAsync(this ApexVisualManager manager, string username)
         {
             //Get cloud table client
-            CloudTableClient ctc = GetCloudTableClient(manager.con_str);
+            CloudTableClient ctc = GetCloudTableClient(manager.AzureStorageConnectionString);
 
             //Get the user table
             CloudTable ct = ctc.GetTableReference("useraccounts");
@@ -57,7 +57,7 @@ namespace ApexVisual.F1_2020.CloudStorage
         public static async Task UploadUserAccountAsync(this ApexVisualManager manager, ApexVisualUserAccount account)
         {
             //Get cloud table client
-            CloudTableClient ctc = GetCloudTableClient(manager.con_str);
+            CloudTableClient ctc = GetCloudTableClient(manager.AzureStorageConnectionString);
 
             //Get the user table
             CloudTable ct = ctc.GetTableReference("useraccounts");

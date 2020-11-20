@@ -20,7 +20,7 @@ namespace ApexVisual.F1_2020.CloudStorage
         /// </summary>
         public static async Task InitializeBlobContainersAsync(this ApexVisualManager avm)
         {  
-            CloudBlobClient cbc = GetCloudBlobClient(avm.con_str);
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             await cbc.GetContainerReference("sessions").CreateIfNotExistsAsync();
             await cbc.GetContainerReference("sessionsummaries").CreateIfNotExistsAsync();
             await cbc.GetContainerReference("sessionanalyses").CreateIfNotExistsAsync();
@@ -68,7 +68,7 @@ namespace ApexVisual.F1_2020.CloudStorage
                 throw new Exception("Fatal error while getting unique session ID.");
             }
             
-            CloudBlobClient cbc = GetCloudBlobClient(avm.con_str);
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("sessions");
             await cont.CreateIfNotExistsAsync();
 
@@ -90,7 +90,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         public static async Task UploadSessionSummaryAsync(this ApexVisualManager avm, SessionSummary summary)
         {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.con_str);
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("sessionsummaries");
             await cont.CreateIfNotExistsAsync();
 
@@ -101,7 +101,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         public static async Task UploadSessionAnalysisAsync(this ApexVisualManager avm, SessionAnalysis analysis)
         {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.con_str);
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("sessionanalyses");
             await cont.CreateIfNotExistsAsync();
 
@@ -116,7 +116,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         public static async Task<List<byte[]>> DownloadSessionAsync(this ApexVisualManager avm, string sessionID)
         {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.con_str);
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("sessions");
             await cont.CreateIfNotExistsAsync();
 
@@ -150,7 +150,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         public static async Task<SessionSummary> DownloadSessionSummaryAsync(this ApexVisualManager avm, string sessionID)
         {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.con_str);
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("sessionsummaries");
             await cont.CreateIfNotExistsAsync();
 
@@ -176,7 +176,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         public static async Task<SessionAnalysis> DownloadSessionAnalysisAsync(this ApexVisualManager avm, string sessionID)
         {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.con_str);
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("sessionanalyses");
             await cont.CreateIfNotExistsAsync();
 
@@ -208,7 +208,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         public static async Task<bool> SessionExistsAsync(this ApexVisualManager avm, string sessionID)
         {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.con_str);
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("sessions");
             await cont.CreateIfNotExistsAsync();
             CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
@@ -217,7 +217,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         public static async Task<bool> SessionSummaryExistsAsync(this ApexVisualManager avm, string sessionID)
         {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.con_str);
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("sessionsummaries");
             await cont.CreateIfNotExistsAsync();
             CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
@@ -226,7 +226,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         public static async Task<bool> SessionAnalysisExistsAsync(this ApexVisualManager avm, string sessionID)
         {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.con_str);
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("sessionanalyses");
             await cont.CreateIfNotExistsAsync();
             CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
@@ -240,7 +240,7 @@ namespace ApexVisual.F1_2020.CloudStorage
         public static async Task UploadActivityLogAsync(this ApexVisualManager avm, ActivityLog log)
         {
             //Get the container
-            CloudBlobClient cbc = GetCloudBlobClient(avm.con_str);
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("activitylogs");
             await cont.CreateIfNotExistsAsync();
 
@@ -269,7 +269,7 @@ namespace ApexVisual.F1_2020.CloudStorage
         public static async Task<Stream> DownloadProfilePictureAsync(this ApexVisualManager avm, string id)
         {
             //Get the container
-            CloudBlobClient cbc = GetCloudBlobClient(avm.con_str);
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("userphotos");
             await cont.CreateIfNotExistsAsync();
 
@@ -298,7 +298,7 @@ namespace ApexVisual.F1_2020.CloudStorage
         public static async Task<string> UploadProfilePictureAsync(this ApexVisualManager avm, Stream image_stream)
         {
             //Get the container
-            CloudBlobClient cbc = GetCloudBlobClient(avm.con_str);
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("userphotos");
             await cont.CreateIfNotExistsAsync();
 
@@ -317,7 +317,7 @@ namespace ApexVisual.F1_2020.CloudStorage
         public static async Task UploadMessageSubmissionAsync(this ApexVisualManager avm, MessageSubmission message)
         {
             //Get the container
-            CloudBlobClient cbc = GetCloudBlobClient(avm.con_str);
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("messagesubmissions");
             await cont.CreateIfNotExistsAsync();
 
@@ -341,7 +341,7 @@ namespace ApexVisual.F1_2020.CloudStorage
         public static async Task<MessageSubmission[]> DownloadMessageSubmissionsAsync(this ApexVisualManager avm, DateTime day)
         {
             //Get the container
-            CloudBlobClient cbc = GetCloudBlobClient(avm.con_str);
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("messagesubmissions");
             await cont.CreateIfNotExistsAsync();
 
@@ -394,7 +394,7 @@ namespace ApexVisual.F1_2020.CloudStorage
         // UTLITY FUNCTIONS BELOW
         private static async Task<string[]> GetBlobNamesInContainerAsync(this ApexVisualManager avm, string container_name)
         {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.con_str);
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
 
             List<string> ToReturn = new List<string>();
 
