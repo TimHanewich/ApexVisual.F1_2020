@@ -14,8 +14,6 @@ namespace ApexVisual.F1_2020
     public class ApexVisualManager
     {
         public string AzureStorageConnectionString {get;}
-        private CloudStorageAccount csa;
-        private CloudBlobClient cbc;
 
         public ApexVisualManager(string azure_storage_connection_string)
         {
