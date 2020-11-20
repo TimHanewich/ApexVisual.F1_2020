@@ -26,7 +26,7 @@ namespace ApexVisual.F1_2020.CloudStorage
         /// <summary>
         /// Uses cloud table storage to fulfill request.
         /// </summary>
-        public static async Task<ApexVisualUserAccount> DownloadUserAccountAsyncV2(this ApexVisualManager manager, string username)
+        public static async Task<ApexVisualUserAccount> DownloadUserAccountAsync(this ApexVisualManager manager, string username)
         {
             //Get cloud table client
             CloudTableClient ctc = GetCloudTableClient(manager.con_str);
@@ -54,7 +54,7 @@ namespace ApexVisual.F1_2020.CloudStorage
         /// <summary>
         /// Uses cloud table storage to fulfill request.
         /// </summary>
-        public static async Task UploadUserAccountAsyncV2(this ApexVisualManager manager, ApexVisualUserAccount account)
+        public static async Task UploadUserAccountAsync(this ApexVisualManager manager, ApexVisualUserAccount account)
         {
             //Get cloud table client
             CloudTableClient ctc = GetCloudTableClient(manager.con_str);
