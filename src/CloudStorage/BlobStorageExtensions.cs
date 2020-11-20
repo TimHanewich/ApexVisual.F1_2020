@@ -18,7 +18,7 @@ namespace ApexVisual.F1_2020.CloudStorage
         /// <summary>
         /// Sets up all necessary blob containers (if they do not exist)
         /// </summary>
-        public static async Task InitializeAsync(this ApexVisualManager avm)
+        public static async Task InitializeBlobContainersAsync(this ApexVisualManager avm)
         {  
             CloudBlobClient cbc = GetCloudBlobClient(avm.con_str);
             await cbc.GetContainerReference("sessions").CreateIfNotExistsAsync();
