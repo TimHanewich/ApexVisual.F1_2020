@@ -3,7 +3,7 @@ using Microsoft.Azure.Cosmos.Table;
 using ApexVisual.F1_2020;
 using System.Threading.Tasks;
 
-namespace ApexVisual.F1_2020.TableStorage
+namespace ApexVisual.F1_2020.CloudStorage
 {
     public static class TableStorageExtensions
     {
