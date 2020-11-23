@@ -27,38 +27,28 @@ namespace ApexVisual.F1_2020.SqlCloudStorage
 
 
             List<string> TableCreationCommands = new List<string>();
-            
-            //SessionSummary
-            if (TablesThatAlreadyExist.Contains("SessionSummary") == false)
+
+            #region "Tracks"
+
+            #region "Create track tables"
+
+            if (TablesThatAlreadyExist.Contains("Track") == false)
             {
-                string cmd_sessionsummary = "create table SessionSummary (SessionId varchar(30), Circuit tinyint, SelectedTeam tinyint, DriverName varchar(255), SessionSummaryCreatedAt datetime)";
-                TableCreationCommands.Add(cmd_sessionsummary);
-            }
-            
-            //SessionAnalysis
-            if (TablesThatAlreadyExist.Contains("SessionAnalysis") == false)
-            {
-                string cmd_sessionanalysis = "create table SessionAnalysis (SessionId varchar(30), SessionAnalysisGeneratedAt datetime)";
-                TableCreationCommands.Add(cmd_sessionanalysis);
-            }
-            
-            //LapAnalysis
-            if (TablesThatAlreadyExist.Contains("LapAnalysis") == false)
-            {
-                TableCreationCommands.Add("create table LapAnalysis (Id uniqueidentifier, SessionId varchar(30), LapNumber tinyint, Sector1Time real, Sector2Time real, LapTime real, FuelConsumed real, PercentOnThrottle real, PercentOnBrake real, PercentCoasting real, PercentThrottleBrakeOverlap real, PercentOnMaxThrottle real, PercentOnMaxBrake real, ErsDeployed real, ErsHarvested real, GearChanges int, TopSpeedKph smallint, EquippedTyreCompound tinyint, IncrementalTyreWear uniqueidentifier, BeginningTyreWear uniqueidentifier)");
+                TableCreationCommands.Add("create table Track (Id tinyint not null primary key, CountryCode varchar(2), Latitude real, Longitude real)");
             }
 
-            //CornerPerformanceAnalysis
-            if (TablesThatAlreadyExist.Contains("CornerPerformanceAnalysis") == false)
-            {
-                TableCreationCommands.Add("create table CornerPerformanceAnalysis (Id uniqueidentifier, SessionId varchar(30), AverageSpeed real, AverageGear real, AverageDistanceToApex real, CornerConsistencyRating real, CornerNumber tinyint)");
-            }
+            #endregion
 
-            //CornerAnalysis
-            if (TablesThatAlreadyExist.Contains("CornerAnalysis") == false)
+            #endregion
+
+            #region "Sessions"
+   
+            //Session
+            if (TablesThatAlreadyExist.Contains("Session") == false)
             {
-                TableCreationCommands.Add("create table CornerAnalysis (Id uniqueidentifier, LapAnalysisId uniqueidentifier, CornerData uniqueidentifier, Motion uniqueidentifier, Lap uniqueidentifier, Telemetry uniqueidentifier, CarStatus uniqueidentifier)");
+                
             }
+            
             
             //WheelDataArray
             if (TablesThatAlreadyExist.Contains("WheelDataArray") == false)
@@ -66,29 +56,8 @@ namespace ApexVisual.F1_2020.SqlCloudStorage
                 
             }
 
-            //CarMotionData
-            if (TablesThatAlreadyExist.Contains("CarMotionData") == false)
-            {
-                
-            }
-
-            //LapData
-            if (TablesThatAlreadyExist.Contains("LapData") == false)
-            {
-                
-            }
-
-            //CarTelemetryData
-            if (TablesThatAlreadyExist.Contains("CarTelemetryData") == false)
-            {
-                
-            }
-
-            //CarStatusData
-            if (TablesThatAlreadyExist.Contains("CarStatusData") == false)
-            {
-                
-            }
+            #endregion
+            
             
 
             //Create the tables
