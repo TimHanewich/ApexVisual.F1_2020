@@ -11,7 +11,7 @@ namespace ApexVisual.F1_2020.Analysis
     {
         public ulong SessionId {get; set;}
         public Lap[] Laps {get; set;}
-        public CornerPerformanceAnalysis[] Corners {get; set;}
+        public LocationPerformanceAnalysis[] Corners {get; set;}
 
         //For reporting purposes
         public float PercentLoadComplete;
@@ -590,13 +590,13 @@ namespace ApexVisual.F1_2020.Analysis
             #region "Now that we have the lap analyses, generate the corner performance analyses (Lap Analyses MUST BE DONE before this)"
 
             //Generate all of the corner performances
-            List<CornerPerformanceAnalysis> corner_performances = new List<CornerPerformanceAnalysis>();
+            List<LocationPerformanceAnalysis> corner_performances = new List<LocationPerformanceAnalysis>();
             for (int c = 0; c < tdc.Corners.Length; c++)
             {
-                CornerPerformanceAnalysis cpa = new CornerPerformanceAnalysis();
+                LocationPerformanceAnalysis cpa = new LocationPerformanceAnalysis();
 
                 //Copy over the data from the TrackLocationOptima (by doing a quick Json serialization/deserialization)
-                cpa = JsonConvert.DeserializeObject<CornerPerformanceAnalysis>(JsonConvert.SerializeObject(tdc.Corners[c]));
+                cpa = JsonConvert.DeserializeObject<LocationPerformanceAnalysis>(JsonConvert.SerializeObject(tdc.Corners[c]));
 
                 //Plug in the corner #
                 cpa.CornerNumber = (byte)(c + 1);
