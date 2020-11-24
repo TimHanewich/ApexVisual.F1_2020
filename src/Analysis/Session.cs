@@ -26,6 +26,46 @@ namespace ApexVisual.F1_2020.Analysis
         public float PercentLoadComplete;
         public bool LoadComplete;
 
+        public void LoadSummary(Packet[] packets, byte driver_index)
+        {
+            if (packets.Length == 0)
+            {
+                throw new Exception("The length of the supplied packet array was 0!");
+            }
+
+            SessionId = packets[0].UniqueSessionId;
+            
+            //Get circuit
+            foreach (Packet p in packets)
+            {
+                if (p.PacketType == PacketType.Session)
+                {
+                    SessionPacket sp = (SessionPacket)p;
+
+                    //Circuit
+                    Circuit = sp.SessionTrack;
+
+                    //Session mode
+                    SessionMode = sp.SessionTypeMode;
+                }
+
+                if (p.PacketType == PacketType.Participants)
+                {
+                    ParticipantPacket pp = (ParticipantPacket)p;
+
+                    //Selected team
+                    SelectedTeam = pp.FieldParticipantData[driver_index].ManufacturingTeam;
+
+                    //Selected Driver
+                    SelectedDriver = pp.FieldParticipantData[driver_index].PilotingDriver;
+
+                    //Name
+                    DriverName = pp.FieldParticipantData[driver_index].Name;
+                }
+            }
+            SessionSummaryCreatedAt = DateTimeOffset.Now;
+        }
+
         public void Load(Packet[] packets, byte driver_index)
         {
             PercentLoadComplete = 0;
