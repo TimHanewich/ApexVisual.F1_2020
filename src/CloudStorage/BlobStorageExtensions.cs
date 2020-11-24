@@ -99,7 +99,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             await blb.UploadTextAsync(json);
         }
 
-        public static async Task UploadSessionAnalysisAsync(this ApexVisualManager avm, SessionAnalysis analysis)
+        public static async Task UploadSessionAnalysisAsync(this ApexVisualManager avm, Session analysis)
         {
             CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("sessionanalyses");
@@ -174,7 +174,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             return data_to_return;
         }
 
-        public static async Task<SessionAnalysis> DownloadSessionAnalysisAsync(this ApexVisualManager avm, string sessionID)
+        public static async Task<Session> DownloadSessionAnalysisAsync(this ApexVisualManager avm, string sessionID)
         {
             CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("sessionanalyses");
@@ -187,10 +187,10 @@ namespace ApexVisual.F1_2020.CloudStorage
             }
 
             string content = await blb.DownloadTextAsync();
-            SessionAnalysis data_to_return;
+            Session data_to_return;
             try
             {
-                data_to_return = JsonConvert.DeserializeObject<SessionAnalysis>(content);
+                data_to_return = JsonConvert.DeserializeObject<Session>(content);
             }
             catch
             {

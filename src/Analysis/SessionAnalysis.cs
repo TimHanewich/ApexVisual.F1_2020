@@ -7,7 +7,7 @@ using TimHanewich.Toolkit;
 
 namespace ApexVisual.F1_2020.Analysis
 {
-    public class SessionAnalysis
+    public class Session
     {
         public ulong SessionId {get; set;}
         public LapAnalysis[] Laps {get; set;}
