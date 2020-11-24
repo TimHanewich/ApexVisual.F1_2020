@@ -9,7 +9,16 @@ namespace ApexVisual.F1_2020.Analysis
 {
     public class Session
     {
+        //Session data
         public ulong SessionId {get; set;}
+        public Track Circuit {get; set;}
+        public SessionPacket.SessionType SessionMode {get; set;}
+        public Team SelectedTeam {get; set;}
+        public Driver SelectedDriver {get; set;}
+        public string DriverName {get; set;}
+        public DateTimeOffset SessionSummaryCreatedAt {get; set;}
+
+        //Analysis objects
         public Lap[] Laps {get; set;}
         public LocationPerformanceAnalysis[] Corners {get; set;}
 
