@@ -34,7 +34,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
             if (TablesThatAlreadyExist.Contains("Track") == false)
             {
-                TableCreationCommands.Add("create table Track (Id tinyint not null primary key, CountryCode varchar(2), Latitude real, Longitude real)");
+                TableCreationCommands.Add("create table Track (Id tinyint, CountryCode varchar(2), Latitude real, Longitude real)");
             }
 
             #endregion
@@ -70,7 +70,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             //LocationPerformanceAnalysis
             if (TablesThatAlreadyExist.Contains("LocationPerformanceAnalysis") == false)
             {
-                
+                TableCreationCommands.Add("create table LocationPerformanceAnalysis (Id uniqueidentifier, SessionId varchar(30), LocationType tinyint, LocationNumber tinyint, AverageSpeedKph real, AverageGear real, AverageDistanceToApex real, CornerConsistencyRating real)");
             }
 
             #endregion
