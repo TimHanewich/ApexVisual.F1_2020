@@ -7,7 +7,7 @@ namespace ApexVisual.F1_2020.Analysis
     public class LocationPerformanceAnalysis : TrackLocationOptima
     {
         public byte CornerNumber {get; set;}
-        public float AverageSpeed {get; set;}
+        public float AverageSpeedKph {get; set;}
         public float AverageGear {get; set;}
         public float AverageDistanceToApex {get; set;}
         /// <summary>
