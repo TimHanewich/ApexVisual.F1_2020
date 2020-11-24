@@ -685,11 +685,11 @@ namespace ApexVisual.F1_2020.Analysis
                         speed_avg = speed_avg + (float)us;
                     }
                     speed_avg = speed_avg / (float)Speeds.Count;
-                    cpa.AverageSpeed = speed_avg;
+                    cpa.AverageSpeedKph = speed_avg;
                 }
                 else
                 {
-                    cpa.AverageSpeed = float.NaN;
+                    cpa.AverageSpeedKph = float.NaN;
                 }
 
                 //Get the average gear
