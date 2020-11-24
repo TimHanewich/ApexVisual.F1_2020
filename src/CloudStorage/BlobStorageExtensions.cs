@@ -88,16 +88,16 @@ namespace ApexVisual.F1_2020.CloudStorage
             await blb.UploadFromStreamAsync(ms);
         }
 
-        public static async Task UploadSessionSummaryAsync(this ApexVisualManager avm, SessionSummary summary)
-        {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
-            CloudBlobContainer cont = cbc.GetContainerReference("sessionsummaries");
-            await cont.CreateIfNotExistsAsync();
+        // public static async Task UploadSessionSummaryAsync(this ApexVisualManager avm, SessionSummary summary)
+        // {
+        //     CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
+        //     CloudBlobContainer cont = cbc.GetContainerReference("sessionsummaries");
+        //     await cont.CreateIfNotExistsAsync();
 
-            CloudBlockBlob blb = cont.GetBlockBlobReference(summary.SessionId.ToString());
-            string json = JsonConvert.SerializeObject(summary);
-            await blb.UploadTextAsync(json);
-        }
+        //     CloudBlockBlob blb = cont.GetBlockBlobReference(summary.SessionId.ToString());
+        //     string json = JsonConvert.SerializeObject(summary);
+        //     await blb.UploadTextAsync(json);
+        // }
 
         public static async Task UploadSessionAnalysisAsync(this ApexVisualManager avm, Session analysis)
         {
@@ -148,31 +148,31 @@ namespace ApexVisual.F1_2020.CloudStorage
             return data_to_return;
         }
 
-        public static async Task<SessionSummary> DownloadSessionSummaryAsync(this ApexVisualManager avm, string sessionID)
-        {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
-            CloudBlobContainer cont = cbc.GetContainerReference("sessionsummaries");
-            await cont.CreateIfNotExistsAsync();
+        // public static async Task<SessionSummary> DownloadSessionSummaryAsync(this ApexVisualManager avm, string sessionID)
+        // {
+        //     CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
+        //     CloudBlobContainer cont = cbc.GetContainerReference("sessionsummaries");
+        //     await cont.CreateIfNotExistsAsync();
 
-            CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
-            if (blb.Exists() == false)
-            {
-                throw new Exception("Unable to find session summary with title '" + sessionID + "'.");
-            }
+        //     CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
+        //     if (blb.Exists() == false)
+        //     {
+        //         throw new Exception("Unable to find session summary with title '" + sessionID + "'.");
+        //     }
 
-            string content = await blb.DownloadTextAsync();
-            SessionSummary data_to_return;
-            try
-            {
-                data_to_return = JsonConvert.DeserializeObject<SessionSummary>(content);
-            }
-            catch
-            {
-                throw new Exception("Failure while deserializing content for session summary '" + sessionID.ToString() + "'.");
-            }
+        //     string content = await blb.DownloadTextAsync();
+        //     SessionSummary data_to_return;
+        //     try
+        //     {
+        //         data_to_return = JsonConvert.DeserializeObject<SessionSummary>(content);
+        //     }
+        //     catch
+        //     {
+        //         throw new Exception("Failure while deserializing content for session summary '" + sessionID.ToString() + "'.");
+        //     }
 
-            return data_to_return;
-        }
+        //     return data_to_return;
+        // }
 
         public static async Task<Session> DownloadSessionAnalysisAsync(this ApexVisualManager avm, string sessionID)
         {
