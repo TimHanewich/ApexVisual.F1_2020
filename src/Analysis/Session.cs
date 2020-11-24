@@ -123,21 +123,70 @@ namespace ApexVisual.F1_2020.Analysis
 
                     //Add the corner analysis
                     TelemetrySnapshot ca = new TelemetrySnapshot();
-                    ca.CornerNumber = (byte)c;
-                    ca.CornerData = this_corner;
-                    if (min_distance_found < float.MaxValue) //we found a suitable packet, so therefore the min distance shold be less than max
+                    ca.LocationNumber = (byte)c;
+                    if (min_distance_found < float.MaxValue) //we found a suitable packet, so therefore the min distance shold be less than max. Fill in the details
                     {
-                        ca.Motion = winner.Motion.FieldMotionData[driver_index];
-                        ca.Lap = winner.Lap.FieldLapData[driver_index];
-                        ca.Telemetry = winner.Telemetry.FieldTelemetryData[driver_index];
-                        ca.CarStatus = winner.CarStatus.FieldCarStatusData[driver_index];
+                        //Position
+                        ca.PositionX = winner.Motion.FieldMotionData[driver_index].PositionX;
+                        ca.PositionY = winner.Motion.FieldMotionData[driver_index].PositionY;
+                        ca.PositionZ = winner.Motion.FieldMotionData[driver_index].PositionZ;
+
+                        //Velocity
+                        ca.VelocityX = winner.Motion.FieldMotionData[driver_index].VelocityX;
+                        ca.VelocityY = winner.Motion.FieldMotionData[driver_index].VelocityY;
+                        ca.VelocityZ = winner.Motion.FieldMotionData[driver_index].VelocityZ;
+
+                        //gForce
+                        ca.gForceLateral = winner.Motion.FieldMotionData[driver_index].gForceLateral;
+                        ca.gForceLongitudinal = winner.Motion.FieldMotionData[driver_index].gForceLongitudinal;
+                        ca.gForceVertical = winner.Motion.FieldMotionData[driver_index].gForceVertical;
+
+                        //Yaw, pitch, roll
+                        ca.Yaw = winner.Motion.FieldMotionData[driver_index].Yaw;
+                        ca.Pitch = winner.Motion.FieldMotionData[driver_index].Pitch;
+                        ca.Roll = winner.Motion.FieldMotionData[driver_index].Roll;
+
+                        //Lap data
+                        ca.CurrentLapTime = winner.Lap.FieldLapData[driver_index].CurrentLapTime;
+                        ca.CarPosition = winner.Lap.FieldLapData[driver_index].CarPosition;
+                        ca.LapInvalid = winner.Lap.FieldLapData[driver_index].CurrentLapInvalid;
+                        ca.Penalties = winner.Lap.FieldLapData[driver_index].Penalties;
+                        
+                        //Telemetry data
+                        ca.SpeedKph = winner.Telemetry.FieldTelemetryData[driver_index].SpeedKph;
+                        ca.Throttle = winner.Telemetry.FieldTelemetryData[driver_index].Throttle;
+                        ca.Steer = winner.Telemetry.FieldTelemetryData[driver_index].Steer;
+                        ca.Brake = winner.Telemetry.FieldTelemetryData[driver_index].Brake;
+                        ca.Clutch = winner.Telemetry.FieldTelemetryData[driver_index].Clutch;
+                        ca.Gear = winner.Telemetry.FieldTelemetryData[driver_index].Gear;
+                        ca.EngineRpm = winner.Telemetry.FieldTelemetryData[driver_index].EngineRpm;
+                        ca.DrsActive = winner.Telemetry.FieldTelemetryData[driver_index].DrsActive;
+                        
+                        //Wheel data arrays
+                        ca.BrakeTemperature = winner.Telemetry.FieldTelemetryData[driver_index].BrakeTemperature;
+                        ca.TyreSurfaceTemperature = winner.Telemetry.FieldTelemetryData[driver_index].TyreSurfaceTemperature;
+                        ca.TyreInnerTemperature = winner.Telemetry.FieldTelemetryData[driver_index].TyreInnerTemperature;
+
+                        //Other data
+                        ca.EngineTemperature = winner.Telemetry.FieldTelemetryData[driver_index].EngineTemperature;
+                        
+                        //Car status
+                        ca.SelectedFuelMix = winner.CarStatus.FieldCarStatusData[driver_index].SelectedFuelMix;
+                        ca.FuelLevel = winner.CarStatus.FieldCarStatusData[driver_index].FuelLevel;
+
+                        //Other wheel data arrays
+                        ca.TyreWearPercentage = winner.CarStatus.FieldCarStatusData[driver_index].TyreWearPercentage;
+                        ca.TyreDamagePercent = winner.CarStatus.FieldCarStatusData[driver_index].TyreDamagePercentage;
+
+                        //Other data
+                        ca.FrontLeftWingDamage = winner.CarStatus.FieldCarStatusData[driver_index].FrontLeftWingDamagePercent;
+                        ca.FrontRightWingDamage = winner.CarStatus.FieldCarStatusData[driver_index].FrontRightWingDamagePercent;
+                        ca.RearWingDamage = winner.CarStatus.FieldCarStatusData[driver_index].RearWingDamagePercent;
+                        ca.ErsStored = winner.CarStatus.FieldCarStatusData[driver_index].ErsStoredEnergyJoules;
                     }
                     else //if we were not able to find a suitable packet for that corner, populate it with just a blank PacketFrame as a place holder.
                     {
-                        ca.Motion = null;
-                        ca.Lap = null;
-                        ca.Telemetry = null;
-                        ca.CarStatus = null;
+                        //Do nothing (that Lap just won't have data for that corner. It can scan through all of the track locations )
                     }
                     _TelemetrySnapshot.Add(ca);
                 }
@@ -608,20 +657,23 @@ namespace ApexVisual.F1_2020.Analysis
                 //Collect the data for each lap
                 foreach (Lap la in Laps)
                 {
-                    //Collect speed and gear
-                    TelemetryPacket.CarTelemetryData ctd = la.Corners[c].Telemetry;
-                    if (ctd != null) //If we have telemetry data for this corner (the only way this would be null is if we did not get close enough to the apex or if we did not complete the lap)
+                    //Go through all of the corners for this lap. If you find a corner that matches the corner number that we are analyzing, add the details to the list.
+                    foreach (TelemetrySnapshot ts in la.Corners)
                     {
-                        Speeds.Add(ctd.SpeedMph);
-                        Gears.Add(ctd.Gear);
+                        if (ts.LocationNumber == (c + 1))
+                        {
+                            Speeds.Add(ts.SpeedKph);
+                            Gears.Add(ts.Gear);
+                        }
                     }
 
-                    //Collect the distance to apex
-                    TelemetrySnapshot ca = la.Corners[c];
-                    if (ca.Motion != null) //The motion packet is required to calculate distance to apex BECAUSE the motion packet contains position data
-                    {
-                        Distances.Add(ca.DistanceToApex());
-                    }
+                    // Had to comment out the below on 11/24/2020. The distance to apex method is removed.
+                    // //Collect the distance to apex
+                    // TelemetrySnapshot ca = la.Corners[c];
+                    // if (ca.Motion != null) //The motion packet is required to calculate distance to apex BECAUSE the motion packet contains position data
+                    // {
+                    //     Distances.Add(ca.DistanceToApex());
+                    // }
                 }
 
                 //Get the average speed
