@@ -3,7 +3,7 @@ using Codemasters.F1_2020;
 
 namespace ApexVisual.F1_2020.Analysis
 {
-    public class LapAnalysis
+    public class Lap
     {
         public byte LapNumber {get; set;}
         public CornerAnalysis[] Corners {get; set;} 

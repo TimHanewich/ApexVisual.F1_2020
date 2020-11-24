@@ -10,7 +10,7 @@ namespace ApexVisual.F1_2020.Analysis
     public class Session
     {
         public ulong SessionId {get; set;}
-        public LapAnalysis[] Laps {get; set;}
+        public Lap[] Laps {get; set;}
         public CornerPerformanceAnalysis[] Corners {get; set;}
 
         //For reporting purposes
@@ -71,11 +71,11 @@ namespace ApexVisual.F1_2020.Analysis
             //Create the lap analysis objects and fill it with corner analysis data.
             //This process also fills in the LapNumber property
             //This process below should take up the % complete from 15% to 90%
-            List<LapAnalysis> _LapAnalysis = new List<LapAnalysis>();
+            List<Lap> _Lap = new List<Lap>();
             foreach (byte lap_num in AllLaps)
             {
 
-                LapAnalysis this_lap_analysis = new LapAnalysis();
+                Lap this_lap_analysis = new Lap();
 
                 //Fill in the lap number
                 this_lap_analysis.LapNumber = lap_num;
@@ -193,7 +193,7 @@ namespace ApexVisual.F1_2020.Analysis
 
 
                 //Add this to the list of lap analyses
-                _LapAnalysis.Add(this_lap_analysis);
+                _Lap.Add(this_lap_analysis);
 
                 //Update the percent complete
                 float AdditionalPercentCompletePerLap = (0.90f - 0.15f) / (float)AllLaps.Count;
@@ -255,11 +255,11 @@ namespace ApexVisual.F1_2020.Analysis
                     }
 
 
-                    //If any of the numbers up there changed (are not 0), it means that we either changed sector or changed lap. If we did, we need to plug that data into the lapanalysis
+                    //If any of the numbers up there changed (are not 0), it means that we either changed sector or changed lap. If we did, we need to plug that data into the Lap
                     if (S1_Time_S > 0 || S2_Time_S > 0 || S3_Time_S > 0 || Lap_Invalid_In_Last_Frame)
                     {
                         //Find the lap analysis
-                        foreach (LapAnalysis la in _LapAnalysis)
+                        foreach (Lap la in _Lap)
                         {
                             if (la.LapNumber == last_frame.Lap.FieldLapData[driver_index].CurrentLapNumber)
                             {
@@ -322,7 +322,7 @@ namespace ApexVisual.F1_2020.Analysis
                     float fuel_used = fuel_end - fuel_start;
                     fuel_used = fuel_used * -1;
 
-                    foreach (LapAnalysis la in _LapAnalysis)
+                    foreach (Lap la in _Lap)
                     {
                         if (la.LapNumber == lapnum)
                         {
@@ -402,7 +402,7 @@ namespace ApexVisual.F1_2020.Analysis
                 float full_brake = (float)FullBrake / (float)lap_frames.Count;
 
                 //plug them in
-                foreach (LapAnalysis la in _LapAnalysis)
+                foreach (Lap la in _Lap)
                 {
                     if (la.LapNumber == lapnum)
                     {
@@ -436,7 +436,7 @@ namespace ApexVisual.F1_2020.Analysis
                 float ers_har = lap_frames[lap_frames.Count-1].CarStatus.FieldCarStatusData[driver_index].ErsHarvestedThisLapByMGUH + lap_frames[lap_frames.Count-1].CarStatus.FieldCarStatusData[driver_index].ErsHarvestedThisLapByMGUK;
 
                 //plug them in
-                foreach (LapAnalysis la in _LapAnalysis)
+                foreach (Lap la in _Lap)
                 {
                     if (la.LapNumber == lapnum)
                     {
@@ -480,7 +480,7 @@ namespace ApexVisual.F1_2020.Analysis
                 }
 
                 //Plug it in
-                foreach (LapAnalysis la in _LapAnalysis)
+                foreach (Lap la in _Lap)
                 {
                     if (la.LapNumber == lapnum)
                     {
@@ -523,7 +523,7 @@ namespace ApexVisual.F1_2020.Analysis
                 }
 
                 //Plug it in
-                foreach (LapAnalysis la in _LapAnalysis)
+                foreach (Lap la in _Lap)
                 {
                     if (la.LapNumber == lapnum)
                     {
@@ -558,7 +558,7 @@ namespace ApexVisual.F1_2020.Analysis
                 float avginctyrewear = AvgTyreWear_End - AvgTyreWear_Start;
 
                 //Plug it in
-                foreach (LapAnalysis la in _LapAnalysis)
+                foreach (Lap la in _Lap)
                 {
                     if (la.LapNumber == lapnum)
                     {
@@ -585,7 +585,7 @@ namespace ApexVisual.F1_2020.Analysis
             #endregion
 
             //Close off the laps
-            Laps = _LapAnalysis.ToArray();
+            Laps = _Lap.ToArray();
 
             #region "Now that we have the lap analyses, generate the corner performance analyses (Lap Analyses MUST BE DONE before this)"
 
@@ -606,7 +606,7 @@ namespace ApexVisual.F1_2020.Analysis
                 List<float> Distances = new List<float>();
 
                 //Collect the data for each lap
-                foreach (LapAnalysis la in Laps)
+                foreach (Lap la in Laps)
                 {
                     //Collect speed and gear
                     TelemetryPacket.CarTelemetryData ctd = la.Corners[c].Telemetry;
