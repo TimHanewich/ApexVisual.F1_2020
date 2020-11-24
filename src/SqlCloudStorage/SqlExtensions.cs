@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-namespace ApexVisual.F1_2020.SqlCloudStorage
+namespace ApexVisual.F1_2020.CloudStorage
 {
     public static class SqlExtensions
     {
