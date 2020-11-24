@@ -5,16 +5,6 @@ namespace ApexVisual.F1_2020.Analysis
 {
     public class TelemetrySnapshot
     {
-        //Info about the corner
-        public byte CornerNumber {get; set;}
-        public TrackLocation CornerData {get; set;}
-
-        //The data
-        public MotionPacket.CarMotionData Motion {get; set;}
-        public LapPacket.LapData Lap {get; set;}
-        public TelemetryPacket.CarTelemetryData Telemetry {get; set;}
-        public CarStatusPacket.CarStatusData CarStatus {get; set;}
-
         //Identifying data
         public TrackLocationType LocationType {get; set;} //For example, Corner or Speed Trap
         public byte LocationNumber {get; set;} //For example, 1, 2, 3, etc. So this paired with the location type would be 'Corner 2, Speed Trap 3, Corner 13' etc.
@@ -56,28 +46,5 @@ namespace ApexVisual.F1_2020.Analysis
         public float FrontRightWingDamage {get; set;}
         public float RearWingDamage {get; set;}
         public float ErsStored {get; set;}
-
-        public float DistanceToApex()
-        {
-            if (CornerData == null)
-            {
-                throw new Exception("Unable to calculate distance to Apex: CornerData was null.");
-            }
-
-            if (Motion == null)
-            {
-                throw new Exception("Unable to calculate distance to Apex: Motion data was null. Perhaps this corner record does not exist");
-            }
-
-            TrackLocation car_loc = new TrackLocation();
-            car_loc.PositionX = Motion.PositionX;
-            car_loc.PositionY = Motion.PositionY;
-            car_loc.PositionZ = Motion.PositionZ;
-            car_loc.Sector = Lap.Sector;
-
-            float distance = ApexVisualToolkit.DistanceBetweenTwoPoints(CornerData, car_loc);
-            return distance;
-        }
-
     }
 }
