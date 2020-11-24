@@ -3,7 +3,7 @@ using Codemasters.F1_2020;
 
 namespace ApexVisual.F1_2020.Analysis
 {
-    public class CornerAnalysis
+    public class TelemetrySnapshot
     {
         //Info about the corner
         public byte CornerNumber {get; set;}

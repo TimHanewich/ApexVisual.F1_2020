@@ -93,7 +93,7 @@ namespace ApexVisual.F1_2020.Analysis
 
 
                 //Find the best packetframe for each corner
-                List<CornerAnalysis> _CornerAnalysis = new List<CornerAnalysis>();
+                List<TelemetrySnapshot> _TelemetrySnapshot = new List<TelemetrySnapshot>();
                 int c = 1;
                 for (c=1;c<=tdc.Corners.Length;c++)
                 {
@@ -122,7 +122,7 @@ namespace ApexVisual.F1_2020.Analysis
                     }
 
                     //Add the corner analysis
-                    CornerAnalysis ca = new CornerAnalysis();
+                    TelemetrySnapshot ca = new TelemetrySnapshot();
                     ca.CornerNumber = (byte)c;
                     ca.CornerData = this_corner;
                     if (min_distance_found < float.MaxValue) //we found a suitable packet, so therefore the min distance shold be less than max
@@ -139,9 +139,9 @@ namespace ApexVisual.F1_2020.Analysis
                         ca.Telemetry = null;
                         ca.CarStatus = null;
                     }
-                    _CornerAnalysis.Add(ca);
+                    _TelemetrySnapshot.Add(ca);
                 }
-                this_lap_analysis.Corners = _CornerAnalysis.ToArray();
+                this_lap_analysis.Corners = _TelemetrySnapshot.ToArray();
                 
 
                 //Get the tyre compound that is being used for this lap
@@ -617,7 +617,7 @@ namespace ApexVisual.F1_2020.Analysis
                     }
 
                     //Collect the distance to apex
-                    CornerAnalysis ca = la.Corners[c];
+                    TelemetrySnapshot ca = la.Corners[c];
                     if (ca.Motion != null) //The motion packet is required to calculate distance to apex BECAUSE the motion packet contains position data
                     {
                         Distances.Add(ca.DistanceToApex());

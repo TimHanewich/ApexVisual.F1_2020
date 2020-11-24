@@ -6,7 +6,7 @@ namespace ApexVisual.F1_2020.Analysis
     public class Lap
     {
         public byte LapNumber {get; set;}
-        public CornerAnalysis[] Corners {get; set;} 
+        public TelemetrySnapshot[] Corners {get; set;} 
         public float Sector1Time {get; set;}
         public float Sector2Time {get; set;}
         public float Sector3Time {get; set;}
