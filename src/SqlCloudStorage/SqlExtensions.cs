@@ -58,13 +58,13 @@ namespace ApexVisual.F1_2020.CloudStorage
             //TelemetrySnapshot
             if (TablesThatAlreadyExist.Contains("TelemetrySnapshot") == false)
             {
-                TableCreationCommands.Add("create table TelemetrySnapshot (Id uniqueidentifier, LapAnalysisId uniqueidentifier, LocationType tinyint, LocationNumber tinyint, PositionX real, PositionY real, PositionZ real, VelocityX real, VelocityY real, VelocityZ real, gForceLateral real, gForceLongitudinal real, gForceVertical real, Yaw real, Pitch real, Roll real, CurrentLapTime real, CarPosition tinyint, LapInvalid bit, Penalties tinyint, SpeedKph int, Throttle real, Steer real, Brake real, Clutch real, Gear smallint, EngineRpm, DrsActive bit, BrakeTemperature uniqueidentifier, TyreSurfaceTemperature uniqueidentifier, TyreInnerTemperature uniqueidentifier, EngineTemperature int, SelectedFuelMix tinyint, FuelLevel real, TyreWearPercentage uniqueidentifier, TyreDamagePercent uniqueidentifier, FrontLeftWingDamage real, FrontRightWingDamage real, RearWingDamage real, ErsStores real)");
+                TableCreationCommands.Add("create table TelemetrySnapshot (Id uniqueidentifier, LapAnalysisId uniqueidentifier, LocationType tinyint, LocationNumber tinyint, PositionX real, PositionY real, PositionZ real, VelocityX real, VelocityY real, VelocityZ real, gForceLateral real, gForceLongitudinal real, gForceVertical real, Yaw real, Pitch real, Roll real, CurrentLapTime real, CarPosition tinyint, LapInvalid bit, Penalties tinyint, SpeedKph int, Throttle real, Steer real, Brake real, Clutch real, Gear smallint, EngineRpm int, DrsActive bit, BrakeTemperature uniqueidentifier, TyreSurfaceTemperature uniqueidentifier, TyreInnerTemperature uniqueidentifier, EngineTemperature int, SelectedFuelMix tinyint, FuelLevel real, TyreWearPercentage uniqueidentifier, TyreDamagePercent uniqueidentifier, FrontLeftWingDamage real, FrontRightWingDamage real, RearWingDamage real, ErsStores real)");
             }
                
             //WheelDataArray
             if (TablesThatAlreadyExist.Contains("WheelDataArray") == false)
             {
-                TableCreationCommands.Add("create table WheelDataArray (Id uniqueidentifier, RearLeft real, RearRight real, FrontLeft real, FrontRight real");
+                TableCreationCommands.Add("create table WheelDataArray (Id uniqueidentifier, RearLeft real, RearRight real, FrontLeft real, FrontRight real)");
             }
 
             //LocationPerformanceAnalysis
