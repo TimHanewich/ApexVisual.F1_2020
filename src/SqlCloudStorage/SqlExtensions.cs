@@ -46,12 +46,29 @@ namespace ApexVisual.F1_2020.CloudStorage
             //Session
             if (TablesThatAlreadyExist.Contains("Session") == false)
             {
-                
+                TableCreationCommands.Add("create table Session (SessionId varchar(30), SessionMode tinyint, SelectedTeam tinyint, SelectedDriver tinyint, DriverName varchar(255), SessionSummaryCreatedAt datetime)");
             }
-            
-            
+
+            //Lap
+            if (TablesThatAlreadyExist.Contains("Lap") == false)
+            {
+                TableCreationCommands.Add("create table Lap (Id uniqueidentifier, SessionId varchar(30), LapNumber tinyint, Sector1Time real, Sector2Time real, Sector3Time real, LapTime real, FuelConsumed real, PercentOnThrottle real, PercentOnBrake real, PercentCoasting real, PercentThrottleBrakeOverlap real, PercentOnMaxThrottle real, PercentOnMaxBrake real, ErsDeployed real, ErsHarvested real, GearChanges int, TopSpeedKph smallint, EquippedTyreCompount tinyint, IncrementalTyreWear uniqueidentifier, BeginningTyreWear uniqueidentifier)");
+            }
+
+            //TelemetrySnapshot
+            if (TablesThatAlreadyExist.Contains("TelemetrySnapshot") == false)
+            {
+                TableCreationCommands.Add("create table TelemetrySnapshot (Id uniqueidentifier, LapAnalysisId uniqueidentifier, LocationType tinyint, LocationNumber tinyint, PositionX real, PositionY real, PositionZ real, VelocityX real, VelocityY real, VelocityZ real, gForceLateral real, gForceLongitudinal real, gForceVertical real, Yaw real, Pitch real, Roll real, CurrentLapTime real, CarPosition tinyint, LapInvalid bit, Penalties tinyint, SpeedKph int, Throttle real, Steer real, Brake real, Clutch real, Gear smallint, EngineRpm, DrsActive bit, BrakeTemperature uniqueidentifier, TyreSurfaceTemperature uniqueidentifier, TyreInnerTemperature uniqueidentifier, EngineTemperature int, SelectedFuelMix tinyint, FuelLevel real, TyreWearPercentage uniqueidentifier, TyreDamagePercent uniqueidentifier, FrontLeftWingDamage real, FrontRightWingDamage real, RearWingDamage real, ErsStores real)");
+            }
+               
             //WheelDataArray
             if (TablesThatAlreadyExist.Contains("WheelDataArray") == false)
+            {
+                TableCreationCommands.Add("create table WheelDataArray (Id uniqueidentifier, RearLeft real, RearRight real, FrontLeft real, FrontRight real");
+            }
+
+            //LocationPerformanceAnalysis
+            if (TablesThatAlreadyExist.Contains("LocationPerformanceAnalysis") == false)
             {
                 
             }
