@@ -6,8 +6,7 @@ namespace ApexVisual.F1_2020.Analysis
     public class TelemetrySnapshot
     {
         //Identifying data
-        public TrackLocationType LocationType {get; set;} //For example, Corner or Speed Trap
-        public byte LocationNumber {get; set;} //For example, 1, 2, 3, etc. So this paired with the location type would be 'Corner 2, Speed Trap 3, Corner 13' etc.
+        public byte LocationNumber {get; set;} //For example, 1, 2, 3, etc. So corner 1, 2, 3, 4, etc, or a speed trap for example.
 
         //The data
         public float PositionX {get; set;}
