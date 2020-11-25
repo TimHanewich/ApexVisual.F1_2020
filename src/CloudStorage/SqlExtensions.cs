@@ -187,8 +187,10 @@ namespace ApexVisual.F1_2020.CloudStorage
             ColumnValuePairs.Add(new KeyValuePair<string, string>("EngineTemperature", snapshot.EngineTemperature.ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("SelectedFuelMix", Convert.ToInt32(snapshot.SelectedFuelMix).ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("FuelLevel", snapshot.FuelLevel.ToString()));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("TyreWearPercentage", snapshot.TyreWearPercentage.ToString()));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("TyreDamagePercent", snapshot.TyreDamagePercent.ToString()));
+
+            //Skip TyreWearPercentage (it is a lookup to a WheelDataArray)
+            //Skup TyreDamagePercentage (it is a lookup to a WheelDataArray)
+
             ColumnValuePairs.Add(new KeyValuePair<string, string>("FrontLeftWingDamage", snapshot.FrontLeftWingDamage.ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("FrontRightWingDamage", snapshot.FrontRightWingDamage.ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("RearWingDamage", snapshot.RearWingDamage.ToString()));
