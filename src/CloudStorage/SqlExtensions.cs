@@ -54,7 +54,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             //Lap
             if (TablesThatAlreadyExist.Contains("Lap") == false)
             {
-                TableCreationCommands.Add("create table Lap (Id uniqueidentifier, SessionId varchar(30), LapNumber tinyint, Sector1Time real, Sector2Time real, Sector3Time real, LapTime real, FuelConsumed real, PercentOnThrottle real, PercentOnBrake real, PercentCoasting real, PercentThrottleBrakeOverlap real, PercentOnMaxThrottle real, PercentOnMaxBrake real, ErsDeployed real, ErsHarvested real, GearChanges int, TopSpeedKph smallint, EquippedTyreCompount tinyint, IncrementalTyreWear uniqueidentifier, BeginningTyreWear uniqueidentifier)");
+                TableCreationCommands.Add("create table Lap (Id uniqueidentifier, SessionId varchar(30), LapNumber tinyint, Sector1Time real, Sector2Time real, Sector3Time real, LapTime real, FuelConsumed real, PercentOnThrottle real, PercentOnBrake real, PercentCoasting real, PercentThrottleBrakeOverlap real, PercentOnMaxThrottle real, PercentOnMaxBrake real, ErsDeployed real, ErsHarvested real, GearChanges int, TopSpeedKph smallint, EquippedTyreCompound tinyint, IncrementalTyreWear uniqueidentifier, BeginningTyreWear uniqueidentifier)");
             }
 
             //TelemetrySnapshot
