@@ -194,8 +194,18 @@ namespace ApexVisual.F1_2020.CloudStorage
             ColumnValuePairs.Add(new KeyValuePair<string, string>("RearWingDamage", snapshot.RearWingDamage.ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("ErsStored", snapshot.ErsStored.ToString()));
 
+            //Prepare the command string
+            string Component_Columns = "";
+            string Component_Values = "";
+            foreach (KeyValuePair<string, string> kvp in ColumnValuePairs)
+            {
+                Component_Columns = Component_Columns + kvp.Key + ",";
+                Component_Values = Component_Values + kvp.Value + ",";
+            }
+            Component_Columns = Component_Columns.Substring(0, Component_Columns.Length-1); //Remove the last comma
+            Component_Values = Component_Values.Substring(0, Component_Values.Length - 1);//Remove the last comma
 
-            string cmd = "insert into TelemetrySnapshot values (";
+            string cmd = "insert into TelemetrySnapshot (" + Component_Columns + ") + values (" + Component_Values + ")";
 
             //Make the call
             SqlConnection sql = GetSqlConnection(avm);
