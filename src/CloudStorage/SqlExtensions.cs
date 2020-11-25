@@ -128,14 +128,15 @@ namespace ApexVisual.F1_2020.CloudStorage
     
         #region "Shallow Transactions (affecting a single table only, not meant to be used outside this)"
 
-        public async static Task UploadTelemetrySnapshotAsync(this ApexVisualManager avm, TelemetrySnapshot snapshot)
+        public async static Task<Guid> UploadTelemetrySnapshotAsync(this ApexVisualManager avm, TelemetrySnapshot snapshot)
         {
             
 
             List<KeyValuePair<string, string>> ColumnValuePairs = new List<KeyValuePair<string, string>>();
 
             //Id (uniqueidentifier)
-            string uniqueidentifier = Guid.NewGuid().ToString();
+            Guid g = Guid.NewGuid();
+            string uniqueidentifier = g.ToString();
             ColumnValuePairs.Add(new KeyValuePair<string, string>("Id", "cast('" + uniqueidentifier + "' as uniqueidentifier)"));
 
             //Skip parent lap analysis (this is a lookup to Lap, will have to be done after upload)            
@@ -201,6 +202,11 @@ namespace ApexVisual.F1_2020.CloudStorage
             sql.Open();
             SqlCommand sqlcmd = new SqlCommand(cmd, sql);
             await sqlcmd.ExecuteNonQueryAsync();
+
+            //Close the connecton
+            sql.Close();
+
+            return g;
         }
 
         public async static Task<Guid> UploadWheelDataArrayAsync(this ApexVisualManager avm, WheelDataArray wda)
