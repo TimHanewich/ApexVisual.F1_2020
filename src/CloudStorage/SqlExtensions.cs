@@ -128,6 +128,64 @@ namespace ApexVisual.F1_2020.CloudStorage
     
         #region "Shallow Transactions (affecting a single table only, not meant to be used outside this)"
 
+        public async static Task<Guid> UploadLapAsync(this ApexVisualManager avm, Lap l)
+        {
+            Guid g = new Guid();
+            string this_guid = g.ToString();
+
+            List<KeyValuePair<string, string>> ColumnValuePairs = new List<KeyValuePair<string, string>>();
+
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Id", "cast('" + this_guid + "' as uniqueidentifier)"));
+            
+            //Skip SessionId (this is a look up to the parent session. This will be done later)
+
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("LapNumber", l.LapNumber.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Sector1Time", l.Sector1Time.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Sector2Time", l.Sector2Time.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Sector3Time", l.Sector3Time.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("LapTime", l.LapTime.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("FuelConsumed", l.FuelConsumed.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("PercentOnThrottle", l.PercentOnThrottle.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("PercentOnBrake", l.PercentOnBrake.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("PercentCoasting", l.PercentCoasting.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("PercentThrottleBrakeOverlap", l.PercentThrottleBrakeOverlap.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("PercentOnMaxThrottle", l.PercentOnMaxThrottle.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("PercentOnMaxBrake", l.PercentOnMaxBrake.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("ErsDeployed", l.ErsDeployed.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("ErsHarvested", l.ErsHarvested.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("GearChanges", l.GearChanges.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("TopSpeedKph", l.TopSpeedKph.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("EquippedTyreCompound", Convert.ToInt32(l.EquippedTyreCompound).ToString()));
+
+            //Skip IncrementalTyreWear (this is a lookup to a WheelDataArray, will plug it in later)
+            //Skip BeginningTyreWear (this is a lookup to a WheelDataArray, will plug it in later)
+
+            //Prepare the cmd
+            
+            //Prepare the command string
+            string Component_Columns = "";
+            string Component_Values = "";
+            foreach (KeyValuePair<string, string> kvp in ColumnValuePairs)
+            {
+                Component_Columns = Component_Columns + kvp.Key + ",";
+                Component_Values = Component_Values + kvp.Value + ",";
+            }
+            Component_Columns = Component_Columns.Substring(0, Component_Columns.Length-1); //Remove the last comma
+            Component_Values = Component_Values.Substring(0, Component_Values.Length - 1);//Remove the last comma
+
+            string cmd = "insert into Lap (" + Component_Columns + ") values (" + Component_Values + ")";
+
+            //Make the call
+            SqlConnection con = GetSqlConnection(avm);
+            con.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, con);
+            await sqlcmd.ExecuteNonQueryAsync();
+            con.Close();
+
+            //Return
+            return g;
+        }
+
         public async static Task<Guid> UploadTelemetrySnapshotAsync(this ApexVisualManager avm, TelemetrySnapshot snapshot)
         {
             
