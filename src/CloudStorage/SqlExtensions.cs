@@ -128,6 +128,27 @@ namespace ApexVisual.F1_2020.CloudStorage
     
         #region "Shallow Transactions (affecting a single table only, not meant to be used outside this)"
 
+        public async static Task<Guid> UploadLocationPerformanceAnalysis(this ApexVisualManager avm, LocationPerformanceAnalysis lpa)
+        {
+            Guid g = Guid.NewGuid();
+
+            List<KeyValuePair<string, string>> ColumnValuePairs = new List<KeyValuePair<string, string>>();
+
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Id", "cast('" + g.ToString() + "' as uniqueidentifier)"));
+            //Skip SessionId (reference to parent. This can be done later)
+            //Skip LocationType (this is a SQL-level only property. This will be done by the Session upload method)
+            //ColumnValuePairs.Add(new KeyValuePair<string, string>("LocationNumber", lpa.));
+
+
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
+
+        }
+
         public async static Task<Guid> UploadLapAsync(this ApexVisualManager avm, Lap l)
         {
             Guid g = Guid.NewGuid();
