@@ -148,8 +148,8 @@ namespace ApexVisual.F1_2020.CloudStorage
 
             //Positions
             ColumnValuePairs.Add(new KeyValuePair<string, string>("PositionX", snapshot.PositionX.ToString()));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("PositionX", snapshot.PositionY.ToString()));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("PositionX", snapshot.PositionZ.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("PositionY", snapshot.PositionY.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("PositionZ", snapshot.PositionZ.ToString()));
 
             //Velocities
             ColumnValuePairs.Add(new KeyValuePair<string, string>("VelocityX", snapshot.VelocityX.ToString()));
