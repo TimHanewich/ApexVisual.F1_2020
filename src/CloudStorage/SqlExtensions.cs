@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using ApexVisual.F1_2020.Analysis;
+using Codemasters.F1_2020;
 
 namespace ApexVisual.F1_2020.CloudStorage
 {
@@ -130,27 +131,59 @@ namespace ApexVisual.F1_2020.CloudStorage
         public async static Task UploadTelemetrySnapshotAsync(this ApexVisualManager avm, TelemetrySnapshot snapshot, Guid parent_lap_analysis, TrackLocationType location_type)
         {
             
-            List<string> values = new List<string>();
+
+            List<KeyValuePair<string, string>> ColumnValuePairs = new List<KeyValuePair<string, string>>();
 
             //Id (uniqueidentifier)
             string uniqueidentifier = Guid.NewGuid().ToString();
-            values.Add("cast('" + uniqueidentifier + "' as uniqueidentifier)");
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Id", "cast('" + uniqueidentifier + "' as uniqueidentifier)"));
 
             //parent lap analysis
-            values.Add("cast('" + parent_lap_analysis.ToString() + "' as uniqueidentifier)");
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("LapAnalysisId", "cast('" + parent_lap_analysis.ToString() + "' as uniqueidentifier)"));
 
             //Location type
-            values.Add(Convert.ToInt32(location_type).ToString());
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("LocationType", Convert.ToInt32(location_type).ToString()));
 
             //Location number
-            values.Add(snapshot.LocationNumber.ToString());
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("LocationNumber", snapshot.LocationNumber.ToString()));
 
             //Positions
-            values.Add(snapshot.PositionX.ToString());
-            values.Add(snapshot.PositionY.ToString());
-            values.Add(snapshot.PositionZ.ToString());
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("PositionX", snapshot.PositionX.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("PositionX", snapshot.PositionY.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("PositionX", snapshot.PositionZ.ToString()));
 
-            //
+            //Velocities
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("VelocityX", snapshot.VelocityX.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("VelocityY", snapshot.VelocityY.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("VelocityZ", snapshot.VelocityZ.ToString()));
+
+            //gForce
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("gForceLateral", snapshot.gForceLateral.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("gForceLongitudinal", snapshot.gForceLongitudinal.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("gForceVertical", snapshot.gForceVertical.ToString()));
+
+            //Yaw, pitch, and roll
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Yaw", snapshot.Yaw.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Pitch", snapshot.Pitch.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Roll", snapshot.Roll.ToString()));
+
+            //Current lap time
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("CurrentLapTime", snapshot.CurrentLapTime.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("CarPosition", snapshot.CarPosition.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("LapInvalid", Convert.ToInt32(snapshot.LapInvalid).ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Penalties", snapshot.Penalties.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("SpeedKph", snapshot.SpeedKph.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Throttle", snapshot.Throttle.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Steer", snapshot.Steer.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Brake", snapshot.Brake.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Clutch", snapshot.Clutch.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Gear", snapshot.Gear.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("EngineRpm", snapshot.EngineRpm.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("DrsActive", Convert.ToInt32(snapshot.DrsActive).ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("BrakeTemperature", ""));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
 
 
             string cmd = "insert into TelemetrySnapshot values (";
@@ -160,6 +193,23 @@ namespace ApexVisual.F1_2020.CloudStorage
             sql.Open();
             SqlCommand sqlcmd = new SqlCommand(cmd, sql);
             await sqlcmd.ExecuteNonQueryAsync();
+        }
+
+        public async static Task<Guid> UploadWheelDataArrayAsync(this ApexVisualManager avm, WheelDataArray wda)
+        {
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+
+            Guid g = Guid.NewGuid();
+            string this_guid = g.ToString();
+
+            string cmd = "insert into WheelDataArray (Id, RearLeft, RearRight, FrontLeft, FrontRight) values (" + "cast('" + this_guid + "' as uniqueidentifier), " + wda.RearLeft.ToString() + ", " + wda.RearRight.ToString() + ", " + wda.FrontLeft.ToString() + ", " + wda.FrontRight.ToString() + ")";
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            await sqlcmd.ExecuteNonQueryAsync();
+
+            sqlcon.Close();
+
+            return g;
         }
 
         #endregion
