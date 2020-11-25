@@ -626,7 +626,6 @@ namespace ApexVisual.F1_2020.Analysis
                     if (la.LapNumber == lapnum)
                     {
                         la.TopSpeedKph = max_kph;
-                        la.TopSpeedMph = max_mph;
                     }
                 }
 

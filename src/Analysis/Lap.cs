@@ -23,7 +23,6 @@ namespace ApexVisual.F1_2020.Analysis
         public float ErsHarvested {get; set;}
         public int GearChanges {get; set;}
         public ushort TopSpeedKph {get; set;}
-        public ushort TopSpeedMph {get; set;}
         public TyreCompound EquippedTyreCompound {get; set;}
 
         //Incremental Tyre Wear
