@@ -128,7 +128,7 @@ namespace ApexVisual.F1_2020.CloudStorage
     
         #region "Shallow Transactions (affecting a single table only, not meant to be used outside this)"
 
-        public async static Task UploadTelemetrySnapshotAsync(this ApexVisualManager avm, TelemetrySnapshot snapshot, Guid parent_lap_analysis, TrackLocationType location_type)
+        public async static Task UploadTelemetrySnapshotAsync(this ApexVisualManager avm, TelemetrySnapshot snapshot)
         {
             
 
@@ -138,11 +138,9 @@ namespace ApexVisual.F1_2020.CloudStorage
             string uniqueidentifier = Guid.NewGuid().ToString();
             ColumnValuePairs.Add(new KeyValuePair<string, string>("Id", "cast('" + uniqueidentifier + "' as uniqueidentifier)"));
 
-            //parent lap analysis
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("LapAnalysisId", "cast('" + parent_lap_analysis.ToString() + "' as uniqueidentifier)"));
+            //Skip parent lap analysis (this is a lookup to Lap, will have to be done after upload)            
 
-            //Location type
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("LocationType", Convert.ToInt32(location_type).ToString()));
+            //Skip location type (this will have to be done after the fact)
 
             //Location number
             ColumnValuePairs.Add(new KeyValuePair<string, string>("LocationNumber", snapshot.LocationNumber.ToString()));
