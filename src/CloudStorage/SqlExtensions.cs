@@ -180,10 +180,20 @@ namespace ApexVisual.F1_2020.CloudStorage
             ColumnValuePairs.Add(new KeyValuePair<string, string>("Gear", snapshot.Gear.ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("EngineRpm", snapshot.EngineRpm.ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("DrsActive", Convert.ToInt32(snapshot.DrsActive).ToString()));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("BrakeTemperature", ""));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
+            
+            //Skip BrakeTemperature (it is a lookup to a WheelDataArray)
+            //Skip TyreSurfaceTemperature (it is a lookup to a WheelDataArray)
+            //Skip TyreInnerTemperature (it is a lookup to a WheelDataArray)
+
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("EngineTemperature", snapshot.EngineTemperature.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("SelectedFuelMix", Convert.ToInt32(snapshot.SelectedFuelMix).ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("FuelLevel", snapshot.FuelLevel.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("TyreWearPercentage", snapshot.TyreWearPercentage.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("TyreDamagePercent", snapshot.TyreDamagePercent.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("FrontLeftWingDamage", snapshot.FrontLeftWingDamage.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("FrontRightWingDamage", snapshot.FrontRightWingDamage.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("RearWingDamage", snapshot.RearWingDamage.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("ErsStored", snapshot.ErsStored.ToString()));
 
 
             string cmd = "insert into TelemetrySnapshot values (";
