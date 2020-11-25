@@ -130,7 +130,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         public async static Task<Guid> UploadLapAsync(this ApexVisualManager avm, Lap l)
         {
-            Guid g = new Guid();
+            Guid g = Guid.NewGuid();
             string this_guid = g.ToString();
 
             List<KeyValuePair<string, string>> ColumnValuePairs = new List<KeyValuePair<string, string>>();
