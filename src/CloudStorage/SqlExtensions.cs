@@ -2,6 +2,7 @@ using System;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using ApexVisual.F1_2020.Analysis;
 
 namespace ApexVisual.F1_2020.CloudStorage
 {
@@ -107,6 +108,11 @@ namespace ApexVisual.F1_2020.CloudStorage
             return exists;
         }
 
+        public static async Task UploadSessionAsync(this ApexVisualManager avm, Session to_upload)
+        {
+
+        }
+
         #endregion
 
         #region "Helper functions"
@@ -115,6 +121,45 @@ namespace ApexVisual.F1_2020.CloudStorage
         {
             SqlConnection con = new SqlConnection(avm.AzureSqlDbConnectionString);
             return con;
+        }
+
+        #endregion
+    
+        #region "Shallow Transactions (affecting a single table only, not meant to be used outside this)"
+
+        public async static Task UploadTelemetrySnapshotAsync(this ApexVisualManager avm, TelemetrySnapshot snapshot, Guid parent_lap_analysis, TrackLocationType location_type)
+        {
+            
+            List<string> values = new List<string>();
+
+            //Id (uniqueidentifier)
+            string uniqueidentifier = Guid.NewGuid().ToString();
+            values.Add("cast('" + uniqueidentifier + "' as uniqueidentifier)");
+
+            //parent lap analysis
+            values.Add("cast('" + parent_lap_analysis.ToString() + "' as uniqueidentifier)");
+
+            //Location type
+            values.Add(Convert.ToInt32(location_type).ToString());
+
+            //Location number
+            values.Add(snapshot.LocationNumber.ToString());
+
+            //Positions
+            values.Add(snapshot.PositionX.ToString());
+            values.Add(snapshot.PositionY.ToString());
+            values.Add(snapshot.PositionZ.ToString());
+
+            //
+
+
+            string cmd = "insert into TelemetrySnapshot values (";
+
+            //Make the call
+            SqlConnection sql = GetSqlConnection(avm);
+            sql.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sql);
+            await sqlcmd.ExecuteNonQueryAsync();
         }
 
         #endregion
