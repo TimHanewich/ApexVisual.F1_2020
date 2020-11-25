@@ -143,7 +143,6 @@ namespace ApexVisual.F1_2020.CloudStorage
             ColumnValuePairs.Add(new KeyValuePair<string, string>("Sector1Time", l.Sector1Time.ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("Sector2Time", l.Sector2Time.ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("Sector3Time", l.Sector3Time.ToString()));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("LapTime", l.LapTime.ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("FuelConsumed", l.FuelConsumed.ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("PercentOnThrottle", l.PercentOnThrottle.ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("PercentOnBrake", l.PercentOnBrake.ToString()));
