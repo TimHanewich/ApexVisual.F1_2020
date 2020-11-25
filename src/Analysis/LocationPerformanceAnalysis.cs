@@ -4,9 +4,9 @@ using Codemasters.F1_2020;
 
 namespace ApexVisual.F1_2020.Analysis
 {
-    public class LocationPerformanceAnalysis : TrackLocationOptima
+    public class LocationPerformanceAnalysis
     {
-        public byte CornerNumber {get; set;}
+        public byte LocationNumber {get; set;}
         public float AverageSpeedKph {get; set;}
         public float AverageGear {get; set;}
         public float AverageDistanceToApex {get; set;}

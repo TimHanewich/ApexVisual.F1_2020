@@ -696,7 +696,7 @@ namespace ApexVisual.F1_2020.Analysis
                 cpa = JsonConvert.DeserializeObject<LocationPerformanceAnalysis>(JsonConvert.SerializeObject(tdc.Corners[c]));
 
                 //Plug in the corner #
-                cpa.CornerNumber = (byte)(c + 1);
+                cpa.LocationNumber = (byte)(c + 1);
 
                 List<ushort> Speeds = new List<ushort>(); //A list of speeds that were carried through this corner
                 List<sbyte> Gears = new List<sbyte>(); //A list of gears that the driver used through this corner
