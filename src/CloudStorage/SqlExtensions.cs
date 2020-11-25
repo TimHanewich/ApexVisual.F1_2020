@@ -96,7 +96,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             SqlConnection sql = GetSqlConnection(avm);
             sql.Open();
 
-            string cmd = "select SessionId from Session where SessionId=" + session_id;
+            string cmd = "select SessionId from Session where SessionId='" + session_id + "'";
             SqlCommand sqlcmd = new SqlCommand(cmd, sql);
             SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
             
