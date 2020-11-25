@@ -206,14 +206,14 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         #region "Basic session Existance checks"
 
-        public static async Task<bool> SessionExistsAsync(this ApexVisualManager avm, string sessionID)
-        {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
-            CloudBlobContainer cont = cbc.GetContainerReference("sessions");
-            await cont.CreateIfNotExistsAsync();
-            CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
-            return await blb.ExistsAsync();
-        }
+        // public static async Task<bool> SessionExistsAsync(this ApexVisualManager avm, string sessionID)
+        // {
+        //     CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
+        //     CloudBlobContainer cont = cbc.GetContainerReference("sessions");
+        //     await cont.CreateIfNotExistsAsync();
+        //     CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
+        //     return await blb.ExistsAsync();
+        // }
 
         public static async Task<bool> SessionSummaryExistsAsync(this ApexVisualManager avm, string sessionID)
         {
