@@ -137,16 +137,32 @@ namespace ApexVisual.F1_2020.CloudStorage
             ColumnValuePairs.Add(new KeyValuePair<string, string>("Id", "cast('" + g.ToString() + "' as uniqueidentifier)"));
             //Skip SessionId (reference to parent. This can be done later)
             //Skip LocationType (this is a SQL-level only property. This will be done by the Session upload method)
-            //ColumnValuePairs.Add(new KeyValuePair<string, string>("LocationNumber", lpa.));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("LocationNumber", lpa.LocationNumber.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageSpeedKph", lpa.AverageSpeedKph.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageGear", lpa.AverageGear.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageDistanceToApex", lpa.AverageDistanceToApex.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("CornerConsistencyRating", lpa.CornerConsistencyRating.ToString()));
 
+            //Prepare the command string
+            string Component_Columns = "";
+            string Component_Values = "";
+            foreach (KeyValuePair<string, string> kvp in ColumnValuePairs)
+            {
+                Component_Columns = Component_Columns + kvp.Key + ",";
+                Component_Values = Component_Values + kvp.Value + ",";
+            }
+            Component_Columns = Component_Columns.Substring(0, Component_Columns.Length-1); //Remove the last comma
+            Component_Values = Component_Values.Substring(0, Component_Values.Length - 1);//Remove the last comma
 
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("", ""));
+            //Make the call
+            string cmd = "insert into LocationPerformanceAnalysis (" + Component_Columns + ") values (" + Component_Values + ")";
+            SqlConnection connection = GetSqlConnection(avm);
+            connection.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, connection);
+            await sqlcmd.ExecuteNonQueryAsync();
+            connection.Close();
 
+            return g;
         }
 
         public async static Task<Guid> UploadLapAsync(this ApexVisualManager avm, Lap l)
