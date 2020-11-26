@@ -16,7 +16,7 @@ namespace ApexVisual.F1_2020.Analysis
         public Team SelectedTeam {get; set;}
         public Driver SelectedDriver {get; set;}
         public string DriverName {get; set;}
-        public DateTimeOffset SessionSummaryCreatedAt {get; set;}
+        public DateTimeOffset SessionCreatedAt {get; set;}
 
         //Analysis objects
         public Lap[] Laps {get; set;}
@@ -63,7 +63,7 @@ namespace ApexVisual.F1_2020.Analysis
                     DriverName = pp.FieldParticipantData[driver_index].Name;
                 }
             }
-            SessionSummaryCreatedAt = DateTimeOffset.Now;
+            SessionCreatedAt = DateTimeOffset.Now;
         }
 
         public void Load(Packet[] packets, byte driver_index)
