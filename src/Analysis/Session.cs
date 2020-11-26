@@ -71,8 +71,9 @@ namespace ApexVisual.F1_2020.Analysis
             PercentLoadComplete = 0;
             LoadComplete = false;
 
+            //Load the session summary data first
+            LoadSummary(packets, driver_index);
             
-
             //Summon this track
             Track ToLoad = Track.Unknown;
             foreach (Packet p in packets)
