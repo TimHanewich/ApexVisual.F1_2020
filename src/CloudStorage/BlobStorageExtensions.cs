@@ -53,7 +53,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         #region "Basic session uploading"
 
-        public static async Task UploadSessionAsync(this ApexVisualManager avm, List<byte[]> session_data)
+        public static async Task UploadSessionDataAsync(this ApexVisualManager avm, List<byte[]> session_data)
         {
             //Get unique session
             string file_name = "";
