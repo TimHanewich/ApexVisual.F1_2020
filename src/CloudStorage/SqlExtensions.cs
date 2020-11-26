@@ -36,7 +36,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
             if (TablesThatAlreadyExist.Contains("Track") == false)
             {
-                TableCreationCommands.Add("create table Track (Id tinyint, CountryCode varchar(2), Latitude real, Longitude real)");
+                TableCreationCommands.Add("create table Track (Id tinyint not null primary key, CountryCode varchar(2), Latitude real, Longitude real)");
             }
 
             #endregion
