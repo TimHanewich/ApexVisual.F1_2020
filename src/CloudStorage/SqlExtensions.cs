@@ -129,7 +129,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
                 //Set the laps parent Session, incremental tyre wear, and beginning tyre wear
                 sqlcon.Open();
-                SqlCommand sqlcmdal = new SqlCommand("update Lap set SessionId = " + session_id + ", IncrementalTyreWear = cast('" + incremental_tyre_wear_id.ToString() + "' as uniqueidentifier), BeginningTyreWear = cast('" + beginning_tyre_wear_id.ToString() + "' as uniqueidentifier) where Id = cast('" + lap_id.ToString() + "' as uniqueidentifier)" , sqlcon);
+                SqlCommand sqlcmdal = new SqlCommand("update Lap set SessionId = '" + session_id + "', IncrementalTyreWear = cast('" + incremental_tyre_wear_id.ToString() + "' as uniqueidentifier), BeginningTyreWear = cast('" + beginning_tyre_wear_id.ToString() + "' as uniqueidentifier) where Id = cast('" + lap_id.ToString() + "' as uniqueidentifier)" , sqlcon);
                 await sqlcmdal.ExecuteNonQueryAsync();
                 sqlcon.Close();
 
