@@ -91,7 +91,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         #endregion
 
-        #region "Session operations"
+        #region "Full Session operations"
 
         public static async Task<bool> SessionExistsAsync(this ApexVisualManager avm, string session_id)
         {
@@ -109,7 +109,34 @@ namespace ApexVisual.F1_2020.CloudStorage
             return exists;
         }
 
-        
+        public static async Task<ulong> CascadeUploadSessionAsync(this ApexVisualManager avm, Session s, string owner_username = null)
+        {
+            SqlConnection sqlcon = GetSqlConnection(avm);
+
+            //Upload the session
+            ulong session_id = await avm.UploadSessionAsync(s);
+
+            //Upload all lap
+            foreach (Lap l in s.Laps)
+            {
+                //Upload the lap
+                Guid lap_id = await avm.UploadLapAsync(l);
+
+                //Upload all of the corners
+                foreach (TelemetrySnapshot ts in l.Corners)
+                {
+                    //Upload the corner
+                    Guid ts_id = await avm.UploadTelemetrySnapshotAsync(ts);
+
+                    //Set the corner's parent lap id
+                    sqlcon.Open();
+                    SqlCommand sqlcmd = new SqlCommand("update TelemetrySnapshot set LapAlaysisId = cast('" + lap_id.ToString() + "' as uniqueidentifier) where Id = cast('" + ts_id.ToString() + "' as uniqueidentifier)", sqlcon);
+                    await sqlcmd.ExecuteNonQueryAsync();
+                    sqlcon.Close();
+
+                }
+            }
+        }
 
         #endregion
 
