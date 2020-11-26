@@ -48,7 +48,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             //Session
             if (TablesThatAlreadyExist.Contains("Session") == false)
             {
-                TableCreationCommands.Add("create table Session (SessionId varchar(30), Owner varchar(255), Circuit tinyint, SessionMode tinyint, SelectedTeam tinyint, SelectedDriver tinyint, DriverName varchar(255), SessionCreatedAt datetime)");
+                TableCreationCommands.Add("create table Session (SessionId varchar(30) not null primary key, Owner varchar(255), Circuit tinyint, SessionMode tinyint, SelectedTeam tinyint, SelectedDriver tinyint, DriverName varchar(255), SessionCreatedAt datetime)");
             }
 
             //Lap
