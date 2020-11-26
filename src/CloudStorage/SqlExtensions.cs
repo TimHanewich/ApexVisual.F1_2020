@@ -122,6 +122,17 @@ namespace ApexVisual.F1_2020.CloudStorage
                 //Upload the lap
                 Guid lap_id = await avm.UploadLapAsync(l);
 
+                //Upload the incremental and beginning tyre wear for this lap
+                Guid incremental_tyre_wear_id = await avm.UploadWheelDataArrayAsync(l.IncrementalTyreWear);
+                Guid beginning_tyre_wear_id = await avm.UploadWheelDataArrayAsync(l.BeginningTyreWear);
+
+
+                //Set the laps parent Session, incremental tyre wear, and beginning tyre wear
+                sqlcon.Open();
+                SqlCommand sqlcmdal = new SqlCommand("update Lap set SessionId = " + session_id + ", IncrementalTyreWear = cast('" + incremental_tyre_wear_id.ToString() + "' as uniqueidentifier), BeginningTyreWear = cast('" + beginning_tyre_wear_id.ToString() + "' as uniqueidentifier) where Id = cast('" + lap_id.ToString() + "' as uniqueidentifier)" , sqlcon);
+                await sqlcmdal.ExecuteNonQueryAsync();
+                sqlcon.Close();
+
                 //Upload all of the corners
                 foreach (TelemetrySnapshot ts in l.Corners)
                 {
@@ -136,6 +147,8 @@ namespace ApexVisual.F1_2020.CloudStorage
 
                 }
             }
+
+            return session_id;
         }
 
         #endregion
