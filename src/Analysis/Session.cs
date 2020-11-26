@@ -60,7 +60,17 @@ namespace ApexVisual.F1_2020.Analysis
                     SelectedDriver = pp.FieldParticipantData[driver_index].PilotingDriver;
 
                     //Name
-                    DriverName = pp.FieldParticipantData[driver_index].Name.TrimEnd('\0');
+                    string driver_name = pp.FieldParticipantData[driver_index].Name.TrimEnd('\0');
+                    string driver_name_clean = "";
+                    foreach (char c in driver_name)
+                    {
+                        int as_int = Convert.ToInt32(c);
+                        if ((as_int < 127 && as_int != 92) == true || as_int == 160) //It is in the normal character range and not a backward slash OR it is a blank space.
+                        {
+                            driver_name_clean = driver_name_clean + c.ToString();
+                        }
+                    }
+                    DriverName = driver_name_clean;
                 }
             }
             SessionCreatedAt = DateTimeOffset.Now;
