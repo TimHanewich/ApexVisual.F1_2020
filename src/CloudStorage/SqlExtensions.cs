@@ -116,6 +116,15 @@ namespace ApexVisual.F1_2020.CloudStorage
             //Upload the session
             ulong session_id = await avm.UploadSessionAsync(s);
 
+            //If owner username is provided, set the owner
+            if (owner_username != null)
+            {
+                sqlcon.Open();
+                SqlCommand sqlcmdau = new SqlCommand("update Session set Owner = '" + owner_username + "' where SessionId = '" + session_id.ToString() + "'", sqlcon);
+                await sqlcmdau.ExecuteNonQueryAsync();
+                sqlcon.Close();
+            }
+
             //Upload all lap
             foreach (Lap l in s.Laps)
             {
@@ -126,26 +135,25 @@ namespace ApexVisual.F1_2020.CloudStorage
                 Guid incremental_tyre_wear_id = await avm.UploadWheelDataArrayAsync(l.IncrementalTyreWear);
                 Guid beginning_tyre_wear_id = await avm.UploadWheelDataArrayAsync(l.BeginningTyreWear);
 
-
                 //Set the laps parent Session, incremental tyre wear, and beginning tyre wear
                 sqlcon.Open();
                 SqlCommand sqlcmdal = new SqlCommand("update Lap set SessionId = '" + session_id + "', IncrementalTyreWear = cast('" + incremental_tyre_wear_id.ToString() + "' as uniqueidentifier), BeginningTyreWear = cast('" + beginning_tyre_wear_id.ToString() + "' as uniqueidentifier) where Id = cast('" + lap_id.ToString() + "' as uniqueidentifier)" , sqlcon);
                 await sqlcmdal.ExecuteNonQueryAsync();
                 sqlcon.Close();
 
-                //Upload all of the corners
-                foreach (TelemetrySnapshot ts in l.Corners)
-                {
-                    //Upload the corner
-                    Guid ts_id = await avm.UploadTelemetrySnapshotAsync(ts);
+                // //Upload all of the corners
+                // foreach (TelemetrySnapshot ts in l.Corners)
+                // {
+                //     //Upload the corner
+                //     Guid ts_id = await avm.UploadTelemetrySnapshotAsync(ts);
 
-                    //Set the corner's parent lap id
-                    sqlcon.Open();
-                    SqlCommand sqlcmd = new SqlCommand("update TelemetrySnapshot set LapAlaysisId = cast('" + lap_id.ToString() + "' as uniqueidentifier) where Id = cast('" + ts_id.ToString() + "' as uniqueidentifier)", sqlcon);
-                    await sqlcmd.ExecuteNonQueryAsync();
-                    sqlcon.Close();
+                //     //Set the corner's parent lap id
+                //     sqlcon.Open();
+                //     SqlCommand sqlcmd = new SqlCommand("update TelemetrySnapshot set LapAlaysisId = cast('" + lap_id.ToString() + "' as uniqueidentifier) where Id = cast('" + ts_id.ToString() + "' as uniqueidentifier)", sqlcon);
+                //     await sqlcmd.ExecuteNonQueryAsync();
+                //     sqlcon.Close();
 
-                }
+                // }
             }
 
             return session_id;
