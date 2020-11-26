@@ -130,14 +130,14 @@ namespace ApexVisual.F1_2020.CloudStorage
         
             List<KeyValuePair<string, string>> ColumnValuePairs = new List<KeyValuePair<string, string>>();
 
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("SessionId", to_upload.SessionId.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("SessionId", "'" + to_upload.SessionId.ToString() + "'"));
             //Skip the "Owner" field right now - that is a lookup to the user, so that can be done later.
             ColumnValuePairs.Add(new KeyValuePair<string, string>("Circuit", Convert.ToInt32(to_upload.Circuit).ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("SessionMode", Convert.ToInt32(to_upload.SessionMode).ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("SelectedTeam", Convert.ToInt32(to_upload.SelectedTeam).ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("SelectedDriver", Convert.ToInt32(to_upload.SelectedDriver).ToString()));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("DriverName", to_upload.DriverName));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("SessionCreatedAt", "'" + to_upload.SessionCreatedAt.Year.ToString("0000") + "-" + to_upload.SessionCreatedAt.Month.ToString("00") + "-" + to_upload.SessionCreatedAt.Day.ToString("00") + "T" + to_upload.SessionCreatedAt.Hour.ToString() + ":" + to_upload.SessionCreatedAt.Minute.ToString() + ":" + to_upload.SessionCreatedAt.Second.ToString() + "'"));          
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("DriverName", "'" + to_upload.DriverName + "'"));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("SessionCreatedAt", "'" + to_upload.SessionCreatedAt.Year.ToString("0000") + "-" + to_upload.SessionCreatedAt.Month.ToString("00") + "-" + to_upload.SessionCreatedAt.Day.ToString("00") + " " + to_upload.SessionCreatedAt.Hour.ToString() + ":" + to_upload.SessionCreatedAt.Minute.ToString() + ":" + to_upload.SessionCreatedAt.Second.ToString() + "'"));          
 
             //Prepare the command string
             string Component_Columns = "";
