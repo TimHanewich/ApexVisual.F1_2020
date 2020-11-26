@@ -60,7 +60,7 @@ namespace ApexVisual.F1_2020.Analysis
                     SelectedDriver = pp.FieldParticipantData[driver_index].PilotingDriver;
 
                     //Name
-                    DriverName = pp.FieldParticipantData[driver_index].Name;
+                    DriverName = pp.FieldParticipantData[driver_index].Name.TrimEnd('\0');
                 }
             }
             SessionCreatedAt = DateTimeOffset.Now;
