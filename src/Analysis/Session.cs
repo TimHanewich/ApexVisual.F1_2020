@@ -243,12 +243,14 @@ namespace ApexVisual.F1_2020.Analysis
                         ca.FrontRightWingDamage = winner.CarStatus.FieldCarStatusData[driver_index].FrontRightWingDamagePercent;
                         ca.RearWingDamage = winner.CarStatus.FieldCarStatusData[driver_index].RearWingDamagePercent;
                         ca.ErsStored = winner.CarStatus.FieldCarStatusData[driver_index].ErsStoredEnergyJoules;
+
+                        //Add it to the list. (This is in this block because nothing should be added to the list if the corner was not found. So NO EMPTY TelemetrySnapshots in this array to represent a corner that was not found)
+                        _TelemetrySnapshot.Add(ca);
                     }
                     else //if we were not able to find a suitable packet for that corner, populate it with just a blank PacketFrame as a place holder.
                     {
                         //Do nothing (that Lap just won't have data for that corner. It can scan through all of the track locations )
                     }
-                    _TelemetrySnapshot.Add(ca);
                 }
                 this_lap_analysis.Corners = _TelemetrySnapshot.ToArray();
                 
