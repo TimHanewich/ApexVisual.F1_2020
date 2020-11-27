@@ -496,6 +496,67 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn;
         }
 
+        public async static Task<Lap> DownloadLapAsync(this ApexVisualManager avm, Guid id, bool timings_only = false)
+        {
+            //Set the column selector
+            string column_selector = "";
+            if (timings_only)
+            {
+                column_selector = "LapNumber, Sector1Time, Sector2Time, Sector3Time";
+            }
+            else
+            {
+                //Select every column except those that will not be used (will not be used: Id, SessionId, IncrementalTyreWear, BeginningTyreWear)
+                column_selector = "LapNumber, Sector1Time, Sector2Time, Sector3Time, FuelConsumed, PercentOnThrottle, PercentOnBrake, PercentCoasting, PercentThrottleBrakeOverlap, PercentOnMaxThrottle, PercentOnMaxBrake, ErsDeployed, ErsHarvested, GearChanges, TopSpeedKph, EquippedTyreCompound";
+            }
+
+            string cmd = "select " + column_selector + " from Lap where Id = '" + id.ToString() + "'";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+
+            if (dr.HasRows == false)
+            {
+                throw new Exception("Unable to find Lap record with Id '" + id.ToString() + "'");
+            }
+
+            //Parse it into an object
+            await dr.ReadAsync();
+            Lap ToReturn = new Lap();
+            if (timings_only)
+            {
+                ToReturn.LapNumber = dr.GetByte(0);
+                ToReturn.Sector1Time = dr.GetFloat(1);
+                ToReturn.Sector2Time = dr.GetFloat(2);
+                ToReturn.Sector3Time = dr.GetFloat(3);
+            }
+            else
+            {
+                ToReturn.LapNumber = dr.GetByte(0);
+                ToReturn.Sector1Time = dr.GetFloat(1);
+                ToReturn.Sector2Time = dr.GetFloat(2);
+                ToReturn.Sector3Time = dr.GetFloat(3);
+                ToReturn.FuelConsumed = dr.GetFloat(4);
+                ToReturn.PercentOnThrottle = dr.GetFloat(5);
+                ToReturn.PercentOnBrake = dr.GetFloat(6);
+                ToReturn.PercentCoasting = dr.GetFloat(7);
+                ToReturn.PercentThrottleBrakeOverlap = dr.GetFloat(8);
+                ToReturn.PercentOnMaxThrottle = dr.GetFloat(9);
+                ToReturn.PercentOnMaxBrake = dr.GetFloat(10);
+                ToReturn.ErsDeployed = dr.GetFloat(11);
+                ToReturn.ErsHarvested = dr.GetFloat(12);
+                ToReturn.GearChanges = dr.GetInt32(13);
+                ToReturn.TopSpeedKph = Convert.ToUInt16(dr.GetInt16(14));
+                ToReturn.EquippedTyreCompound = (TyreCompound)dr.GetByte(15);
+            }
+
+            //Close the connection
+            sqlcon.Close();
+
+            return ToReturn;
+        }
+
         #endregion
     }
 }
