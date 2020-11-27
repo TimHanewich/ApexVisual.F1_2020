@@ -144,15 +144,14 @@ namespace ApexVisual.F1_2020.CloudStorage
                 //Upload all of the corners
                 foreach (TelemetrySnapshot ts in l.Corners)
                 {
-                    //Upload the corner
-                    Guid ts_id = await avm.UploadTelemetrySnapshotAsync(ts);
+                    //Cascade upload the corner
+                    Guid ts_id = await avm.CascadeUploadTelemetrySnapshotAsync(ts);
 
-                    //Set the corner's parent lap id
+                    //Set the corner's parent lap id and the corner type. since this is a corner, location type will be corner. Reference is in the draw.io ERD for what values these correspond to.
                     sqlcon.Open();
-                    SqlCommand sqlcmd = new SqlCommand("update TelemetrySnapshot set LapId = cast('" + lap_id.ToString() + "' as uniqueidentifier) where Id = cast('" + ts_id.ToString() + "' as uniqueidentifier)", sqlcon);
+                    SqlCommand sqlcmd = new SqlCommand("update TelemetrySnapshot set LapId = cast('" + lap_id.ToString() + "' as uniqueidentifier), LocationType=1 where Id = cast('" + ts_id.ToString() + "' as uniqueidentifier)", sqlcon);
                     await sqlcmd.ExecuteNonQueryAsync();
                     sqlcon.Close();
-
                 }
             }
 
