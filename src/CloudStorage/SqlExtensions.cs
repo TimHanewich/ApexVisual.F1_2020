@@ -149,7 +149,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
                     //Set the corner's parent lap id
                     sqlcon.Open();
-                    SqlCommand sqlcmd = new SqlCommand("update TelemetrySnapshot set LapAlaysisId = cast('" + lap_id.ToString() + "' as uniqueidentifier) where Id = cast('" + ts_id.ToString() + "' as uniqueidentifier)", sqlcon);
+                    SqlCommand sqlcmd = new SqlCommand("update TelemetrySnapshot set LapId = cast('" + lap_id.ToString() + "' as uniqueidentifier) where Id = cast('" + ts_id.ToString() + "' as uniqueidentifier)", sqlcon);
                     await sqlcmd.ExecuteNonQueryAsync();
                     sqlcon.Close();
 
