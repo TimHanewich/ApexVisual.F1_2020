@@ -390,11 +390,6 @@ namespace ApexVisual.F1_2020.Analysis
                                     la.Sector3Time = S3_Time_S;
                                 }
 
-                                if (LapTime_S > 0)
-                                {
-                                    la.LapTime = LapTime_S;
-                                }
-
                                 if (Lap_Invalid_In_Last_Frame)
                                 {
                                     la.LapInvalid = true;

@@ -10,7 +10,6 @@ namespace ApexVisual.F1_2020.Analysis
         public float Sector1Time {get; set;}
         public float Sector2Time {get; set;}
         public float Sector3Time {get; set;}
-        public float LapTime {get; set;}
         public bool LapInvalid {get; set;}
         public float FuelConsumed {get; set;}
         public float PercentOnThrottle {get; set;}
@@ -30,5 +29,10 @@ namespace ApexVisual.F1_2020.Analysis
 
         //Beginning tyre wear (snapshot)
         public WheelDataArray BeginningTyreWear {get; set;}
+
+        public float LapTime()
+        {
+            return Sector1Time + Sector2Time + Sector3Time;
+        }
     }
 }
