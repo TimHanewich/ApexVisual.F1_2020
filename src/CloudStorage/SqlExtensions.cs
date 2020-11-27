@@ -155,7 +155,7 @@ namespace ApexVisual.F1_2020.CloudStorage
                 }
             }
 
-            //Upload all LocationPerformanceAnalysis
+            //Upload all LocationPerformanceAnalysis for Corners
             foreach (LocationPerformanceAnalysis lpa in s.Corners)
             {
                 //Upload it
