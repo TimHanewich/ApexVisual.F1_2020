@@ -27,10 +27,8 @@ namespace ApexVisual.F1_2020.Analysis
 
         //Incremental Tyre Wear
         public WheelDataArray IncrementalTyreWear {get; set;}
-        public float IncrementalAverageTyreWear {get; set;}
 
         //Beginning tyre wear (snapshot)
         public WheelDataArray BeginningTyreWear {get; set;}
-        public float BeginningAverageTyreWear {get; set;}
     }
 }
