@@ -471,6 +471,31 @@ namespace ApexVisual.F1_2020.CloudStorage
             return g;
         }
 
+        public async static Task<WheelDataArray> DownloadWheelDataArrayAsync(this ApexVisualManager avm, Guid id)
+        {
+            string cmd = "select * from WheelDataArray where Id = '" + id.ToString() + "'";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+
+            if (dr.HasRows == false)
+            {
+                throw new Exception("Unable to find WheelDataArray record with Id '" + id.ToString() + "'");
+            }
+
+            //Get the data into the object to return
+            dr.Read();
+            WheelDataArray ToReturn = new WheelDataArray();
+            ToReturn.RearLeft = dr.GetFloat(1);
+            ToReturn.RearRight = dr.GetFloat(2);
+            ToReturn.FrontLeft = dr.GetFloat(3);
+            ToReturn.FrontRight = dr.GetFloat(4);
+            sqlcon.Close();
+
+            return ToReturn;
+        }
+
         #endregion
     }
 }
