@@ -893,6 +893,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             //Get the return package
             await dr.ReadAsync();
             Session ToReturn = new Session();
+            ToReturn.SessionId = session_id;
             ToReturn.Circuit = (Track)dr.GetByte(0);
             ToReturn.SessionMode = (SessionPacket.SessionType)dr.GetByte(1);
             ToReturn.SelectedTeam = (Team)dr.GetByte(2);
