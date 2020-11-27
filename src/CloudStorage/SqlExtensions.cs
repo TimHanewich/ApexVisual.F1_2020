@@ -159,6 +159,42 @@ namespace ApexVisual.F1_2020.CloudStorage
             return session_id;
         }
 
+        public static async Task<Guid> CascadeUploadTelemetrySnapshot(this ApexVisualManager avm, TelemetrySnapshot ts)
+        {
+            //Upload the TS
+            Guid ts_guid = await avm.UploadTelemetrySnapshotAsync(ts);
+
+            //Upload Brake Temperature
+            Guid wda_BrakeTemperature = await avm.UploadWheelDataArrayAsync(ts.BrakeTemperature);
+            string set_BrakeTemperature = "BrakeTemperature=cast('" + wda_BrakeTemperature.ToString() + "' as uniqueidentifier)";
+
+            //Upload Tyre Surface Temperature
+            Guid wda_TyreSurfaceTemperature = await avm.UploadWheelDataArrayAsync(ts.TyreSurfaceTemperature);
+            string set_TyreSurfaceTemperature = "TyreSurfaceTemperature=cast('" + wda_TyreSurfaceTemperature.ToString() + "' as uniqueidentifier)";
+
+            //Upload Tyre Inner Temperature
+            Guid wda_TyreInnerTemperature = await avm.UploadWheelDataArrayAsync(ts.TyreInnerTemperature);
+            string set_TyreInnerTemperature = "TyreInnerTemperature=cast('" + wda_TyreInnerTemperature.ToString() + "' as uniqueidentifier)";
+
+            //Upload Tyre Wear Percentage
+            Guid wda_TyreWearPercentage = await avm.UploadWheelDataArrayAsync(ts.TyreWearPercentage);
+            string set_TyreWearPercentage = "TyreWearPercentage=cast('" + wda_TyreWearPercentage.ToString() + "' as uniqueidentifier)";
+
+            //Upload Tyre Damage Percentage
+            Guid wda_TyreDamagePercentage = await avm.UploadWheelDataArrayAsync(ts.TyreDamagePercent);
+            string set_TyreDamagePercentage = "TyreDamagePercentage=cast('" + wda_TyreDamagePercentage.ToString() + "' as uniqueidentifier)";
+
+            //Update the TS to plug in these values
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            string cmd = "update TelemetrySnapshot set " + set_BrakeTemperature + ", " + set_TyreSurfaceTemperature + ", " + set_TyreInnerTemperature + ", " + set_TyreWearPercentage + ", " + set_TyreDamagePercentage + " where Id=cast('" + ts_guid.ToString() + "' as uniqueidentifier)";
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            await sqlcmd.ExecuteNonQueryAsync();
+            sqlcon.Close();
+            
+            return ts_guid;
+        }
+
         #endregion
 
         #region "Helper functions"
