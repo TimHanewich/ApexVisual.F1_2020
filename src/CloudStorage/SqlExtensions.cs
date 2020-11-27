@@ -438,13 +438,13 @@ namespace ApexVisual.F1_2020.CloudStorage
             ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageGear", lpa.AverageGear.ToString()));
 
             //Average distance to apex
-            if (lpa.AverageDistanceToApex != float.NaN)
+            if (lpa.AverageDistanceToApex.ToString() != "NaN")
             {
                 ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageDistanceToApex", lpa.AverageDistanceToApex.ToString()));
             }
 
             //Inconsistency rating
-            if (lpa.InconsistencyRating != float.NaN)
+            if (lpa.InconsistencyRating.ToString() != "NaN")
             {
                 ColumnValuePairs.Add(new KeyValuePair<string, string>("InconsistencyRating", lpa.InconsistencyRating.ToString()));
             }
