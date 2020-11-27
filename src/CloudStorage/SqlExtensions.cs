@@ -177,6 +177,66 @@ namespace ApexVisual.F1_2020.CloudStorage
             return session_id;
         }
 
+        public static async Task<TelemetrySnapshot> CascadeDownloadTelemetrySnapshotAsync(this ApexVisualManager avm, Guid ts_id)
+        {
+            //Download TS
+            TelemetrySnapshot ts = await avm.DownloadTelemetrySnapshotAsync(ts_id);
+
+            //Get the accompanying WheelDataArrays for this TelemetrySnapshot
+            string cmd = "select BrakeTemperature, TyreSurfaceTemperature, TyreInnerTemperature, TyreWearPercent, TyreDamagePercent from TelemetrySnapshot where Id='" + ts_id.ToString() + "'";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+            await dr.ReadAsync();
+
+            //Get each of them
+            
+            //BrakeTemperature
+            if (dr.IsDBNull(0) == false)
+            {
+                Guid id = dr.GetGuid(0);
+                WheelDataArray wda = await avm.DownloadWheelDataArrayAsync(id);
+                ts.BrakeTemperature = wda;
+            }
+
+            //TyreSurfaceTemperature
+            if (dr.IsDBNull(1) == false)
+            {
+                Guid id = dr.GetGuid(1);
+                WheelDataArray wda = await avm.DownloadWheelDataArrayAsync(id);
+                ts.TyreSurfaceTemperature = wda;
+            }
+
+            //TyreInnerTemperature
+            if (dr.IsDBNull(2) == false)
+            {
+                Guid id = dr.GetGuid(2);
+                WheelDataArray wda = await avm.DownloadWheelDataArrayAsync(id);
+                ts.TyreInnerTemperature = wda;
+            }
+
+            //TyreWearPercent
+            if (dr.IsDBNull(3) == false)
+            {
+                Guid id = dr.GetGuid(3);
+                WheelDataArray wda = await avm.DownloadWheelDataArrayAsync(id);
+                ts.TyreWearPercent = wda;
+            }
+
+            //TyreDamagePercent
+            if (dr.IsDBNull(4) == false)
+            {
+                Guid id = dr.GetGuid(4);
+                WheelDataArray wda = await avm.DownloadWheelDataArrayAsync(id);
+                ts.TyreDamagePercent = wda;
+            }
+
+            sqlcon.Close();
+
+            return ts;
+        }
+
         public static async Task<Guid> CascadeUploadTelemetrySnapshotAsync(this ApexVisualManager avm, TelemetrySnapshot ts)
         {
             //Upload the TS
