@@ -91,7 +91,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         #endregion
 
-        #region "Full Session operations"
+        #region "Existance Check operations"
 
         public static async Task<bool> SessionExistsAsync(this ApexVisualManager avm, string session_id)
         {
@@ -108,6 +108,11 @@ namespace ApexVisual.F1_2020.CloudStorage
 
             return exists;
         }
+
+
+        #endregion
+
+        #region "Full Cascade operations"
 
         public static async Task<ulong> CascadeUploadSessionAsync(this ApexVisualManager avm, Session s, string owner_username = null)
         {
