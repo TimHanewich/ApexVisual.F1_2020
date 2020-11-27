@@ -595,7 +595,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             ToReturn.CarPosition = dr.GetByte(14);
             ToReturn.LapInvalid = dr.GetBoolean(15);
             ToReturn.Penalties = dr.GetByte(16);
-            ToReturn.SpeedKph = Convert.ToUInt16(dr.GetInt16(17));
+            ToReturn.SpeedKph = Convert.ToUInt16(dr.GetInt32(17));
             ToReturn.Throttle = dr.GetFloat(18);
             ToReturn.Steer = dr.GetFloat(19);
             ToReturn.Brake = dr.GetFloat(20);
