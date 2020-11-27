@@ -125,7 +125,7 @@ namespace ApexVisual.F1_2020.CloudStorage
                 sqlcon.Close();
             }
 
-            //Upload all lap
+            //Upload all laps and their children
             foreach (Lap l in s.Laps)
             {
                 //Upload the lap
@@ -153,6 +153,13 @@ namespace ApexVisual.F1_2020.CloudStorage
                     await sqlcmd.ExecuteNonQueryAsync();
                     sqlcon.Close();
                 }
+            }
+
+            //Upload all LocationPerformanceAnalysis
+            foreach (LocationPerformanceAnalysis lpa in s.Corners)
+            {
+                //Upload it
+                Guid g = await avm.uploadLocationp
             }
 
             return session_id;
@@ -242,43 +249,6 @@ namespace ApexVisual.F1_2020.CloudStorage
             sqlcon.Close();
 
             return to_upload.SessionId;
-        }
-
-        public async static Task<Guid> UploadLocationPerformanceAnalysis(this ApexVisualManager avm, LocationPerformanceAnalysis lpa)
-        {
-            Guid g = Guid.NewGuid();
-
-            List<KeyValuePair<string, string>> ColumnValuePairs = new List<KeyValuePair<string, string>>();
-
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("Id", "cast('" + g.ToString() + "' as uniqueidentifier)"));
-            //Skip SessionId (reference to parent. This can be done later)
-            //Skip LocationType (this is a SQL-level only property. This will be done by the Session upload method)
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("LocationNumber", lpa.LocationNumber.ToString()));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageSpeedKph", lpa.AverageSpeedKph.ToString()));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageGear", lpa.AverageGear.ToString()));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageDistanceToApex", lpa.AverageDistanceToApex.ToString()));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("InconsistencyRating", lpa.InconsistencyRating.ToString()));
-
-            //Prepare the command string
-            string Component_Columns = "";
-            string Component_Values = "";
-            foreach (KeyValuePair<string, string> kvp in ColumnValuePairs)
-            {
-                Component_Columns = Component_Columns + kvp.Key + ",";
-                Component_Values = Component_Values + kvp.Value + ",";
-            }
-            Component_Columns = Component_Columns.Substring(0, Component_Columns.Length-1); //Remove the last comma
-            Component_Values = Component_Values.Substring(0, Component_Values.Length - 1);//Remove the last comma
-
-            //Make the call
-            string cmd = "insert into LocationPerformanceAnalysis (" + Component_Columns + ") values (" + Component_Values + ")";
-            SqlConnection connection = GetSqlConnection(avm);
-            connection.Open();
-            SqlCommand sqlcmd = new SqlCommand(cmd, connection);
-            await sqlcmd.ExecuteNonQueryAsync();
-            connection.Close();
-
-            return g;
         }
 
         public async static Task<Guid> UploadLapAsync(this ApexVisualManager avm, Lap l)
