@@ -296,7 +296,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             #region "TelemetrySnapshot - Corners"
 
             //Make the command
-            string cmd_corners = "select Id from Telemetry where LapId='" + lap_id.ToString() + "' and LocationType=1";
+            string cmd_corners = "select Id from TelemetrySnapshot where LapId='" + lap_id.ToString() + "' and LocationType=1";
             sqlcon.Open();
             SqlCommand sqlcmd_corners = new SqlCommand(cmd_corners, sqlcon);
             SqlDataReader dr_corners = await sqlcmd_corners.ExecuteReaderAsync();
