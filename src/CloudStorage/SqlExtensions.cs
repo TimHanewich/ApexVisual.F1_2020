@@ -557,6 +557,66 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn;
         }
 
+        public async static Task<TelemetrySnapshot> DownloadTelemetrySnapshotAsync(this ApexVisualManager avm, Guid id)
+        {
+            //Set the column selector
+            //Get all of the columns that we will use in this object - do not include any sql-only properties or any lookups to other entities (i.e. WheelDataArray)
+            string column_selector = "LocationNumber, PositionX, PositionY, PositionZ, VelocityX, VelocityY, VelocityZ, gForceLateral, gForceLongitudinal, gForceVertical, Yaw, Pitch, Roll, CurrentLapTime, CarPosition, LapInvalid, Penalties, SpeedKph, Throttle, Steer, Brake, Clutch, Gear, EngineRpm, DrsActive, EngineTemperature, SelectedFuelMix, FuelLevel, FrontLeftWingDamage, FrontRightWingDamage, RearWingDamage, ErsStored";
+
+            //Make the call
+            string cmd = "select " + column_selector + " from TelemetrySnapshot where Id='" + id.ToString() + "'";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+
+            if (dr.HasRows == false)
+            {
+                throw new Exception("Unable to find TelemetrySnapshot record with Id '" + id.ToString() + "'");
+            }
+
+            //Get the object
+            await dr.ReadAsync();
+            TelemetrySnapshot ToReturn = new TelemetrySnapshot();
+            ToReturn.LocationNumber = dr.GetByte(0);
+            ToReturn.PositionX = dr.GetFloat(1);
+            ToReturn.PositionY = dr.GetFloat(2);
+            ToReturn.PositionZ = dr.GetFloat(3);
+            ToReturn.VelocityX = dr.GetFloat(4);
+            ToReturn.VelocityY = dr.GetFloat(5);
+            ToReturn.VelocityZ = dr.GetFloat(6);
+            ToReturn.gForceLateral = dr.GetFloat(7);
+            ToReturn.gForceLongitudinal = dr.GetFloat(8);
+            ToReturn.gForceVertical = dr.GetFloat(9);
+            ToReturn.Yaw = dr.GetFloat(10);
+            ToReturn.Pitch = dr.GetFloat(11);
+            ToReturn.Roll = dr.GetFloat(12);
+            ToReturn.CurrentLapTime = dr.GetFloat(13);
+            ToReturn.CarPosition = dr.GetByte(14);
+            ToReturn.LapInvalid = dr.GetBoolean(15);
+            ToReturn.Penalties = dr.GetByte(16);
+            ToReturn.SpeedKph = Convert.ToUInt16(dr.GetInt16(17));
+            ToReturn.Throttle = dr.GetFloat(18);
+            ToReturn.Steer = dr.GetFloat(19);
+            ToReturn.Brake = dr.GetFloat(20);
+            ToReturn.Clutch = dr.GetFloat(21);
+            ToReturn.Gear = Convert.ToSByte(dr.GetInt16(22));
+            ToReturn.EngineRpm = dr.GetInt32(23);
+            ToReturn.DrsActive = dr.GetBoolean(24);
+            ToReturn.EngineTemperature = dr.GetInt32(25);
+            ToReturn.SelectedFuelMix = (FuelMix)dr.GetByte(26);
+            ToReturn.FuelLevel = dr.GetFloat(27);
+            ToReturn.FrontLeftWingDamage = dr.GetFloat(28);
+            ToReturn.FrontRightWingDamage = dr.GetFloat(29);
+            ToReturn.RearWingDamage = dr.GetFloat(30);
+            ToReturn.ErsStored = dr.GetFloat(31);
+
+            sqlcon.Close();
+
+            return ToReturn;
+
+        }
+
         #endregion
     }
 }
