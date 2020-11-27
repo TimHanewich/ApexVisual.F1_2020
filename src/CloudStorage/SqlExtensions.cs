@@ -177,6 +177,83 @@ namespace ApexVisual.F1_2020.CloudStorage
             return session_id;
         }
 
+        public static async Task<Session> CascadeDownloadSessionAsync(this ApexVisualManager avm, ulong session_id)
+        {
+            //Get the session
+            Session ToReturn = await avm.DownloadSessionAsync(session_id);
+
+            #region "Get Laps"
+
+            //Get all of the laps that are associated (attached) to this session
+            string cmd = "select Id from Lap where SessionId='" + session_id.ToString() + "'";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+
+            //Get all of the GUIDs from that
+            List<Guid> AssociatedLapIds = new List<Guid>();
+            while (dr.Read())
+            {
+                Guid lap_id = dr.GetGuid(0);
+                AssociatedLapIds.Add(lap_id);
+            }
+
+            //Close the sql conneciton
+            sqlcon.Close();
+
+            //Download each of the laps and attach them to the session
+            List<Lap> Laps = new List<Lap>();
+            foreach (Guid g in AssociatedLapIds)
+            {
+                Lap this_lap = await avm.CascadeDownloadLapAsync(g);
+                Laps.Add(this_lap);
+            }
+            ToReturn.Laps = Laps.ToArray();
+
+            #endregion
+
+            #region "Get Location Performance Analysis - Corners"
+
+            // //Get all location performance analysis
+            // SqlConnection Lpa_corner_sql_con = GetSqlConnection(avm);
+            // Lpa_corner_sql_con.Open();
+            // string cmd_lpa = "select Id from LocationPerformanceAnalysis where SessionId='" + session_id.ToString() + "' and LocationType=1";
+            // SqlCommand sqlcmd_lpa = new SqlCommand(cmd_lpa, Lpa_corner_sql_con);
+            // SqlDataReader dr_lpa = await sqlcmd_lpa.ExecuteReaderAsync();
+
+            //Get all location performance analysis
+            sqlcon.Open();
+            string cmd_lpa = "select Id from LocationPerformanceAnalysis where SessionId='" + session_id.ToString() + "' and LocationType=1";
+            SqlCommand sqlcmd_lpa = new SqlCommand(cmd_lpa, sqlcon);
+            SqlDataReader dr_lpa = await sqlcmd_lpa.ExecuteReaderAsync();
+
+            //Get a list of all guids
+            List<Guid> LPA_IDs = new List<Guid>();
+            while (dr_lpa.Read())
+            {
+                Guid g = dr_lpa.GetGuid(0);
+                LPA_IDs.Add(g);
+            }
+
+            //Close the connection
+            sqlcon.Close();
+
+            //Download and attach all Location Performance Analyses
+            List<LocationPerformanceAnalysis> LPAs = new List<LocationPerformanceAnalysis>();
+            foreach (Guid g in LPA_IDs)
+            {
+                LocationPerformanceAnalysis lpa = await avm.DownloadLocationPerformanceAnalysisAsync(g);
+                LPAs.Add(lpa);
+            }
+            ToReturn.Corners = LPAs.ToArray();
+
+
+            #endregion
+        
+            return ToReturn;
+        }
+
         public static async Task<Lap> CascadeDownloadLapAsync(this ApexVisualManager avm, Guid lap_id)
         {
 
