@@ -159,7 +159,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             return session_id;
         }
 
-        public static async Task<Guid> CascadeUploadTelemetrySnapshot(this ApexVisualManager avm, TelemetrySnapshot ts)
+        public static async Task<Guid> CascadeUploadTelemetrySnapshotAsync(this ApexVisualManager avm, TelemetrySnapshot ts)
         {
             //Upload the TS
             Guid ts_guid = await avm.UploadTelemetrySnapshotAsync(ts);
