@@ -617,6 +617,50 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         }
 
+        public async static Task<LocationPerformanceAnalysis> DownloadLocationPerformanceAnalysisAsync(this ApexVisualManager avm, Guid id)
+        {
+            string column_selector = "LocationNumber, AverageSpeedKph, AverageGear, AverageDistanceToApex, InconsistencyRating";
+            string cmd = "select " + column_selector + " from LocationPerformanceAnalysis where Id='" + id.ToString() + "'";
+
+            //make the call
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+
+            if (dr.HasRows == false)
+            {
+                throw new Exception("Unable to find LocationPerformanceAnalysis with Id '" + id.ToString() + "'");
+            }
+
+            //Get the object
+            dr.Read();
+            LocationPerformanceAnalysis ToReturn = new LocationPerformanceAnalysis();
+            ToReturn.LocationNumber = dr.GetByte(0);
+            ToReturn.AverageSpeedKph = dr.GetFloat(1);
+            ToReturn.AverageGear = dr.GetFloat(2);
+            if (dr.IsDBNull(3) == false)
+            {
+                ToReturn.AverageDistanceToApex = dr.GetFloat(3);
+            }
+            else
+            {
+                ToReturn.AverageDistanceToApex = float.NaN;
+            }
+            if (dr.IsDBNull(4) == false)
+            {
+                ToReturn.InconsistencyRating = dr.GetFloat(4);
+            }
+            else
+            {
+                ToReturn.InconsistencyRating = float.NaN;
+            }
+            
+            sqlcon.Close();
+
+            return ToReturn;
+        }
+
         #endregion
     }
 }
