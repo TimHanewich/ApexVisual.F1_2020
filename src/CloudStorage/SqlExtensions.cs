@@ -215,13 +215,6 @@ namespace ApexVisual.F1_2020.CloudStorage
 
             #region "Get Location Performance Analysis - Corners"
 
-            // //Get all location performance analysis
-            // SqlConnection Lpa_corner_sql_con = GetSqlConnection(avm);
-            // Lpa_corner_sql_con.Open();
-            // string cmd_lpa = "select Id from LocationPerformanceAnalysis where SessionId='" + session_id.ToString() + "' and LocationType=1";
-            // SqlCommand sqlcmd_lpa = new SqlCommand(cmd_lpa, Lpa_corner_sql_con);
-            // SqlDataReader dr_lpa = await sqlcmd_lpa.ExecuteReaderAsync();
-
             //Get all location performance analysis
             sqlcon.Open();
             string cmd_lpa = "select Id from LocationPerformanceAnalysis where SessionId='" + session_id.ToString() + "' and LocationType=1";
