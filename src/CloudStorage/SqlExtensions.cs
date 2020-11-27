@@ -60,7 +60,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             //TelemetrySnapshot
             if (TablesThatAlreadyExist.Contains("TelemetrySnapshot") == false)
             {
-                TableCreationCommands.Add("create table TelemetrySnapshot (Id uniqueidentifier not null primary key, LapAnalysisId uniqueidentifier, LocationType tinyint, LocationNumber tinyint, PositionX real, PositionY real, PositionZ real, VelocityX real, VelocityY real, VelocityZ real, gForceLateral real, gForceLongitudinal real, gForceVertical real, Yaw real, Pitch real, Roll real, CurrentLapTime real, CarPosition tinyint, LapInvalid bit, Penalties tinyint, SpeedKph int, Throttle real, Steer real, Brake real, Clutch real, Gear smallint, EngineRpm int, DrsActive bit, BrakeTemperature uniqueidentifier, TyreSurfaceTemperature uniqueidentifier, TyreInnerTemperature uniqueidentifier, EngineTemperature int, SelectedFuelMix tinyint, FuelLevel real, TyreWearPercentage uniqueidentifier, TyreDamagePercent uniqueidentifier, FrontLeftWingDamage real, FrontRightWingDamage real, RearWingDamage real, ErsStored real)");
+                TableCreationCommands.Add("create table TelemetrySnapshot (Id uniqueidentifier not null primary key, LapId uniqueidentifier, LocationType tinyint, LocationNumber tinyint, PositionX real, PositionY real, PositionZ real, VelocityX real, VelocityY real, VelocityZ real, gForceLateral real, gForceLongitudinal real, gForceVertical real, Yaw real, Pitch real, Roll real, CurrentLapTime real, CarPosition tinyint, LapInvalid bit, Penalties tinyint, SpeedKph int, Throttle real, Steer real, Brake real, Clutch real, Gear smallint, EngineRpm int, DrsActive bit, BrakeTemperature uniqueidentifier, TyreSurfaceTemperature uniqueidentifier, TyreInnerTemperature uniqueidentifier, EngineTemperature int, SelectedFuelMix tinyint, FuelLevel real, TyreWearPercentage uniqueidentifier, TyreDamagePercent uniqueidentifier, FrontLeftWingDamage real, FrontRightWingDamage real, RearWingDamage real, ErsStored real)");
             }
                
             //WheelDataArray
@@ -141,19 +141,19 @@ namespace ApexVisual.F1_2020.CloudStorage
                 await sqlcmdal.ExecuteNonQueryAsync();
                 sqlcon.Close();
 
-                // //Upload all of the corners
-                // foreach (TelemetrySnapshot ts in l.Corners)
-                // {
-                //     //Upload the corner
-                //     Guid ts_id = await avm.UploadTelemetrySnapshotAsync(ts);
+                //Upload all of the corners
+                foreach (TelemetrySnapshot ts in l.Corners)
+                {
+                    //Upload the corner
+                    Guid ts_id = await avm.UploadTelemetrySnapshotAsync(ts);
 
-                //     //Set the corner's parent lap id
-                //     sqlcon.Open();
-                //     SqlCommand sqlcmd = new SqlCommand("update TelemetrySnapshot set LapAlaysisId = cast('" + lap_id.ToString() + "' as uniqueidentifier) where Id = cast('" + ts_id.ToString() + "' as uniqueidentifier)", sqlcon);
-                //     await sqlcmd.ExecuteNonQueryAsync();
-                //     sqlcon.Close();
+                    //Set the corner's parent lap id
+                    sqlcon.Open();
+                    SqlCommand sqlcmd = new SqlCommand("update TelemetrySnapshot set LapAlaysisId = cast('" + lap_id.ToString() + "' as uniqueidentifier) where Id = cast('" + ts_id.ToString() + "' as uniqueidentifier)", sqlcon);
+                    await sqlcmd.ExecuteNonQueryAsync();
+                    sqlcon.Close();
 
-                // }
+                }
             }
 
             return session_id;
