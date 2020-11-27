@@ -185,7 +185,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             #region "Get Laps"
 
             //Get all of the laps that are associated (attached) to this session
-            string cmd = "select Id from Lap where SessionId='" + session_id.ToString() + "'";
+            string cmd = "select Id from Lap where SessionId='" + session_id.ToString() + "' order by LapNumber";
             SqlConnection sqlcon = GetSqlConnection(avm);
             sqlcon.Open();
             SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
