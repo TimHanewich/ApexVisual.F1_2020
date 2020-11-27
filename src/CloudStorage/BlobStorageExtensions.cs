@@ -114,7 +114,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         #region "Basic session downloading"
 
-        public static async Task<List<byte[]>> DownloadSessionAsync(this ApexVisualManager avm, string sessionID)
+        public static async Task<List<byte[]>> DownloadSessionDataAsync(this ApexVisualManager avm, string sessionID)
         {
             CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("sessions");
