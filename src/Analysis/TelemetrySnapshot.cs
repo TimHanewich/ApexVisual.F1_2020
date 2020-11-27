@@ -39,7 +39,7 @@ namespace ApexVisual.F1_2020.Analysis
         public int EngineTemperature {get; set;}
         public FuelMix SelectedFuelMix {get; set;}
         public float FuelLevel {get; set;}
-        public WheelDataArray TyreWearPercentage {get; set;}
+        public WheelDataArray TyreWearPercent {get; set;}
         public WheelDataArray TyreDamagePercent {get; set;}
         public float FrontLeftWingDamage {get; set;}
         public float FrontRightWingDamage {get; set;}

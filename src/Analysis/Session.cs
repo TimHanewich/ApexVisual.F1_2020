@@ -235,7 +235,7 @@ namespace ApexVisual.F1_2020.Analysis
                         ca.FuelLevel = winner.CarStatus.FieldCarStatusData[driver_index].FuelLevel;
 
                         //Other wheel data arrays
-                        ca.TyreWearPercentage = winner.CarStatus.FieldCarStatusData[driver_index].TyreWearPercentage;
+                        ca.TyreWearPercent = winner.CarStatus.FieldCarStatusData[driver_index].TyreWearPercentage;
                         ca.TyreDamagePercent = winner.CarStatus.FieldCarStatusData[driver_index].TyreDamagePercentage;
 
                         //Other data
