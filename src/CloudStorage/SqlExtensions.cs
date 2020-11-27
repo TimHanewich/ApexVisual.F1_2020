@@ -176,13 +176,13 @@ namespace ApexVisual.F1_2020.CloudStorage
             Guid wda_TyreInnerTemperature = await avm.UploadWheelDataArrayAsync(ts.TyreInnerTemperature);
             string set_TyreInnerTemperature = "TyreInnerTemperature=cast('" + wda_TyreInnerTemperature.ToString() + "' as uniqueidentifier)";
 
-            //Upload Tyre Wear Percentage
+            //Upload Tyre Wear Percent
             Guid wda_TyreWearPercentage = await avm.UploadWheelDataArrayAsync(ts.TyreWearPercent);
-            string set_TyreWearPercentage = "TyreWearPercentage=cast('" + wda_TyreWearPercentage.ToString() + "' as uniqueidentifier)";
+            string set_TyreWearPercentage = "TyreWearPercent=cast('" + wda_TyreWearPercentage.ToString() + "' as uniqueidentifier)";
 
-            //Upload Tyre Damage Percentage
+            //Upload Tyre Damage Percent
             Guid wda_TyreDamagePercentage = await avm.UploadWheelDataArrayAsync(ts.TyreDamagePercent);
-            string set_TyreDamagePercentage = "TyreDamagePercentage=cast('" + wda_TyreDamagePercentage.ToString() + "' as uniqueidentifier)";
+            string set_TyreDamagePercentage = "TyreDamagePercent=cast('" + wda_TyreDamagePercentage.ToString() + "' as uniqueidentifier)";
 
             //Update the TS to plug in these values
             SqlConnection sqlcon = GetSqlConnection(avm);
