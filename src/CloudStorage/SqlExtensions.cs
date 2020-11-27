@@ -177,6 +177,51 @@ namespace ApexVisual.F1_2020.CloudStorage
             return session_id;
         }
 
+        public static async Task<Lap> CascadeDownloadLapAsync(this ApexVisualManager avm, Guid lap_id)
+        {
+
+            //Get the Lap
+            Lap ToReturn = await avm.DownloadLapAsync(lap_id, false);
+
+            string column_selector = "IncrementalTyreWear, BeginningTyreWear";
+            string cmd = "select " + column_selector + " from Lap where Id='" + lap_id.ToString() + "'";
+            
+            //Make the call to get the key values
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+            
+            //Check for no records
+            if (dr.HasRows == false)
+            {
+                throw new Exception("Unable to find Lap record with Id '" + lap_id.ToString() + "'");
+            }
+
+            //Get the values
+            await dr.ReadAsync();
+            
+            //Incremental tyre wear
+            if (dr.IsDBNull(0) == false)
+            {
+                Guid id = dr.GetGuid(0);
+                WheelDataArray wda = await avm.DownloadWheelDataArrayAsync(id);
+                ToReturn.IncrementalTyreWear = wda;
+            }
+
+            //Beginning tyre wear
+            if (dr.IsDBNull(1) == false)
+            {
+                Guid id = dr.GetGuid(1);
+                WheelDataArray wda = await avm.DownloadWheelDataArrayAsync(id);
+                ToReturn.BeginningTyreWear = wda;
+            }
+
+            sqlcon.Close();
+
+            return ToReturn;
+        }
+
         public static async Task<TelemetrySnapshot> CascadeDownloadTelemetrySnapshotAsync(this ApexVisualManager avm, Guid ts_id)
         {
             //Download TS
