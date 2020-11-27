@@ -159,7 +159,14 @@ namespace ApexVisual.F1_2020.CloudStorage
             foreach (LocationPerformanceAnalysis lpa in s.Corners)
             {
                 //Upload it
-                Guid g = await avm.uploadLocationp
+                Guid g = await avm.UploadLocationPerformanceAnalysisAsync(lpa);
+
+                //Update it with the location type (corner) and the parent session
+                string lpa_update_cmd = "update LocationPerformanceAnalysis set SessionId='" + session_id.ToString() + "', LocationType=1 where Id='" + g.ToString() + "'";
+                sqlcon.Open();
+                SqlCommand sqlcmd = new SqlCommand(lpa_update_cmd, sqlcon);
+                await sqlcmd.ExecuteNonQueryAsync();
+                sqlcon.Close();
             }
 
             return session_id;
