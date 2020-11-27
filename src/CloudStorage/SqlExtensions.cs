@@ -253,6 +253,8 @@ namespace ApexVisual.F1_2020.CloudStorage
             //Get the Lap
             Lap ToReturn = await avm.DownloadLapAsync(lap_id, false);
 
+            #region "WheelDataArrays - IncrementalTyreWear, BeginningTyreWear"
+
             string column_selector = "IncrementalTyreWear, BeginningTyreWear";
             string cmd = "select " + column_selector + " from Lap where Id='" + lap_id.ToString() + "'";
             
@@ -288,6 +290,37 @@ namespace ApexVisual.F1_2020.CloudStorage
             }
 
             sqlcon.Close();
+
+            #endregion
+
+            #region "TelemetrySnapshot - Corners"
+
+            //Make the command
+            string cmd_corners = "select Id from Telemetry where LapId='" + lap_id.ToString() + "' and LocationType=1";
+            sqlcon.Open();
+            SqlCommand sqlcmd_corners = new SqlCommand(cmd_corners, sqlcon);
+            SqlDataReader dr_corners = await sqlcmd_corners.ExecuteReaderAsync();
+
+            //Get a list of the GUIDs
+            List<Guid> AssociatedCorners = new List<Guid>();
+            while (dr_corners.Read())
+            {
+                Guid g = dr_corners.GetGuid(0);
+                AssociatedCorners.Add(g);
+            }
+
+            sqlcon.Close();
+
+            //Download and attach them to the SessionAnalysis
+            List<TelemetrySnapshot> Corners = new List<TelemetrySnapshot>();
+            foreach (Guid g in AssociatedCorners)
+            {
+                TelemetrySnapshot ts = await avm.CascadeDownloadTelemetrySnapshotAsync(g);
+                Corners.Add(ts);
+            }
+            ToReturn.Corners = Corners.ToArray();
+
+            #endregion
 
             return ToReturn;
         }
