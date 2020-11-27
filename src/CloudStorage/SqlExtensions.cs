@@ -72,7 +72,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             //LocationPerformanceAnalysis
             if (TablesThatAlreadyExist.Contains("LocationPerformanceAnalysis") == false)
             {
-                TableCreationCommands.Add("create table LocationPerformanceAnalysis (Id uniqueidentifier not null primary key, SessionId varchar(30), LocationType tinyint, LocationNumber tinyint, AverageSpeedKph real, AverageGear real, AverageDistanceToApex real, CornerConsistencyRating real)");
+                TableCreationCommands.Add("create table LocationPerformanceAnalysis (Id uniqueidentifier not null primary key, SessionId varchar(30), LocationType tinyint, LocationNumber tinyint, AverageSpeedKph real, AverageGear real, AverageDistanceToApex real, InconsistencyRating real)");
             }
 
             #endregion
@@ -257,7 +257,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageSpeedKph", lpa.AverageSpeedKph.ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageGear", lpa.AverageGear.ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageDistanceToApex", lpa.AverageDistanceToApex.ToString()));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("CornerConsistencyRating", lpa.CornerConsistencyRating.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("InconsistencyRating", lpa.InconsistencyRating.ToString()));
 
             //Prepare the command string
             string Component_Columns = "";
@@ -446,6 +446,23 @@ namespace ApexVisual.F1_2020.CloudStorage
             sqlcon.Close();
 
             return g;
+        }
+
+        public async static Task<Guid> UploadLocationPerformanceAnalysisAsync(this ApexVisualManager avm, LocationPerformanceAnalysis lpa)
+        {
+            Guid g = Guid.NewGuid();
+
+            List<KeyValuePair<string, string>> ColumnValuePairs = new List<KeyValuePair<string, string>>();
+
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Id", "'" + g.ToString() + "'"));
+            //Skip location type (this can be done after the fact by a parent cascading method)
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("LocationNumber", lpa.LocationNumber.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageSpeedKph", lpa.AverageSpeedKph.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageGear", lpa.AverageGear.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageDistanceToApex", lpa.AverageDistanceToApex.ToString()));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("InconsistencyRating", lpa.InconsistencyRating.ToString()));
+
+            
         }
 
         #endregion

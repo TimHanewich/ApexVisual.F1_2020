@@ -820,11 +820,11 @@ namespace ApexVisual.F1_2020.Analysis
                     ConsistencyRatingAgg.Add(rating_Distances * 0.35f);
                     
                     //Plug in the consistency rating
-                    cpa.CornerConsistencyRating = ConsistencyRatingAgg.Sum();
+                    cpa.InconsistencyRating = ConsistencyRatingAgg.Sum();
                 }
                 else
                 {
-                    cpa.CornerConsistencyRating = float.NaN;
+                    cpa.InconsistencyRating = float.NaN;
                 }
 
                 
