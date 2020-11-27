@@ -661,6 +661,37 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn;
         }
 
+        public async static Task<Session> DownloadSessionAsync(this ApexVisualManager avm, ulong session_id)
+        {
+            string column_selector = "Circuit, SessionMode, SelectedTeam, SelectedDriver, DriverName, SessionCreatedAt";
+            string cmd = "select " + column_selector + " from Session where SessionId='" + session_id + "'";
+
+            //Make the call
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+
+            if (dr.HasRows == false)
+            {
+                throw new Exception("Unable to find Session with SessionId '" + session_id.ToString() + "'");
+            }
+
+            //Get the return package
+            await dr.ReadAsync();
+            Session ToReturn = new Session();
+            ToReturn.Circuit = (Track)dr.GetByte(0);
+            ToReturn.SessionMode = (SessionPacket.SessionType)dr.GetByte(1);
+            ToReturn.SelectedTeam = (Team)dr.GetByte(2);
+            ToReturn.SelectedDriver = (Driver)dr.GetByte(3);
+            ToReturn.DriverName = dr.GetString(4);
+            ToReturn.SessionCreatedAt = dr.GetDateTime(5);
+
+            sqlcon.Close();
+
+            return ToReturn;
+        }
+
         #endregion
     }
 }
