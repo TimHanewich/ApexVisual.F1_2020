@@ -391,7 +391,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             #region "Delete the two WheelDataArrays that are associated"
 
             //Delete the two WheelDataArrays (IncrementalTyreWear and BeginningTyreWear) that are associatd with this field.
-            string cmd_WDAs = "select IncrementalTyreWear, BeginningTyre from Lap where Id='" + lap_id.ToString() + "'";
+            string cmd_WDAs = "select IncrementalTyreWear, BeginningTyreWear from Lap where Id='" + lap_id.ToString() + "'";
             SqlCommand sqlcmd = new SqlCommand(cmd_WDAs, sqlcon);
             SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
 
