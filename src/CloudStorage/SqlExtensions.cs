@@ -1021,6 +1021,16 @@ namespace ApexVisual.F1_2020.CloudStorage
             sqlcon.Close();
         }
 
+        public async static Task DeleteLocationPerformanceAnalysis(this ApexVisualManager avm, Guid id)
+        {
+            string cmd = "delete from LocationPerformanceAnalysis where Id='" + id.ToString() + "'";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            await sqlcmd.ExecuteNonQueryAsync();
+            sqlcon.Close();
+        }
+
         #endregion
     }
 }
