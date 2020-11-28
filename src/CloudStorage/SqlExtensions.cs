@@ -402,7 +402,9 @@ namespace ApexVisual.F1_2020.CloudStorage
             
             #endregion
 
+            #region "Delete all associated Telemetry snaposhot"
 
+            #endregion
 
         }
 
@@ -500,6 +502,51 @@ namespace ApexVisual.F1_2020.CloudStorage
             sqlcon.Close();
             
             return ts_guid;
+        }
+
+        public static async Task CascadeDeleteTelemetrySnapshot(this ApexVisualManager avm, Guid id)
+        {
+            //Get the Id's of the WheelDataArrays this is referencing
+            string cmd = "select BrakeTemperature, TyreSurfaceTemperature, TyreInnerTemperature, TyreWearPercent, TyreDamagePercent from TelemetrySnapshot where Id='" + id.ToString() + "'";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+
+            dr.Read();
+
+            if (dr.IsDBNull(0) == false)
+            {
+                Guid thisid = dr.GetGuid(0);
+                await avm.DeleteTelemetrySnapshotAsync(thisid);
+            }
+
+            if (dr.IsDBNull(1) == false)
+            {
+                Guid thisid = dr.GetGuid(1);
+                await avm.DeleteTelemetrySnapshotAsync(thisid);
+            }
+
+            if (dr.IsDBNull(2) == false)
+            {
+                Guid thisid = dr.GetGuid(2);
+                await avm.DeleteTelemetrySnapshotAsync(thisid);
+            }
+
+            if (dr.IsDBNull(3) == false)
+            {
+                Guid thisid = dr.GetGuid(3);
+                await avm.DeleteTelemetrySnapshotAsync(thisid);
+            }
+
+            if (dr.IsDBNull(4) == false)
+            {
+                Guid thisid = dr.GetGuid(4);
+                await avm.DeleteTelemetrySnapshotAsync(thisid);
+            }
+
+            //Now delete the telemetry snapshot itself
+            await avm.DeleteTelemetrySnapshotAsync(id);
+
         }
 
         #endregion
