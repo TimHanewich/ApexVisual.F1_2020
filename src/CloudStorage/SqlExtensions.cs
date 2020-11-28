@@ -386,9 +386,11 @@ namespace ApexVisual.F1_2020.CloudStorage
         public static async Task CascadeDeleteLapAsync(this ApexVisualManager avm, Guid lap_id)
         {
             SqlConnection sqlcon = GetSqlConnection(avm);
-            sqlcon.Open();
+            
 
             #region "Delete the two WheelDataArrays that are associated"
+
+            sqlcon.Open();
 
             //Delete the two WheelDataArrays (IncrementalTyreWear and BeginningTyreWear) that are associatd with this field.
             string cmd_WDAs = "select IncrementalTyreWear, BeginningTyreWear from Lap where Id='" + lap_id.ToString() + "'";
@@ -409,9 +411,13 @@ namespace ApexVisual.F1_2020.CloudStorage
                 await avm.DeleteWheelDataArrayAsync(id2);
             }
             
+            sqlcon.Close();
+
             #endregion
 
             #region "Delete all associated Telemetry snaposhot"
+
+            sqlcon.Open();
 
             string cmd_TSs = "select Id from TelemetrySnapshot where LapId='" + lap_id.ToString() + "'";
             SqlCommand sqlcmd_GetTSs = new SqlCommand(cmd_TSs, sqlcon);
@@ -430,9 +436,11 @@ namespace ApexVisual.F1_2020.CloudStorage
                 await avm.CascadeDeleteTelemetrySnapshot(g);
             }
 
+            sqlcon.Close();
+
             #endregion
 
-            sqlcon.Close();
+            
         }
 
         public static async Task<TelemetrySnapshot> CascadeDownloadTelemetrySnapshotAsync(this ApexVisualManager avm, Guid ts_id)
