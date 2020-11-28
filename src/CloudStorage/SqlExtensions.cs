@@ -991,6 +991,14 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn;
         }
 
+        public async static Task DeleteWheelDataArray(this ApexVisualManager avm, Guid id)
+        {
+            string cmd = "delete from WheelDataArray where Id='" + id.ToString() + "'";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            await sqlcmd.ExecuteNonQueryAsync();
+        }
+
         #endregion
     }
 }
