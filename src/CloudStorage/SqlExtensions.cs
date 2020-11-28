@@ -301,8 +301,8 @@ namespace ApexVisual.F1_2020.CloudStorage
 
             #endregion
 
-            
-
+            //Delete the session itself
+            await avm.DeleteSessionAsync(session_id);
         }
 
         public static async Task<Lap> CascadeDownloadLapAsync(this ApexVisualManager avm, Guid lap_id)
