@@ -293,7 +293,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             //Delete each of them
             foreach (Guid g in Ids_Laps)
             {
-                await avm.DeleteLapAsync(g);
+                await avm.CascadeDeleteLapAsync(g);
             }
 
             #endregion
