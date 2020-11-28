@@ -544,6 +544,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             //Get the Id's of the WheelDataArrays this is referencing
             string cmd = "select BrakeTemperature, TyreSurfaceTemperature, TyreInnerTemperature, TyreWearPercent, TyreDamagePercent from TelemetrySnapshot where Id='" + id.ToString() + "'";
             SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
             SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
             SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
 
@@ -579,9 +580,12 @@ namespace ApexVisual.F1_2020.CloudStorage
                 await avm.DeleteTelemetrySnapshotAsync(thisid);
             }
 
+            sqlcon.Close();
+
             //Now delete the telemetry snapshot itself
             await avm.DeleteTelemetrySnapshotAsync(id);
 
+            
         }
 
         #endregion
