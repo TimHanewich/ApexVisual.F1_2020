@@ -247,6 +247,55 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn;
         }
 
+        public static async Task<int> CascadeDeleteSessionAsync(this ApexVisualManager avm, ulong session_id)
+        {
+            SqlConnection sqlcon = GetSqlConnection(avm);
+
+            #region "Associated LocationPerformanceAnalysis"
+
+            //Make the command
+            string cmd_LPA = "select Id from LocationPerformanceAnalysis where SessionId='" + session_id.ToString() + "'";
+            sqlcon.Open();
+            SqlCommand sqlcmd_LPA = new SqlCommand(cmd_LPA, sqlcon);
+            SqlDataReader dr_LPA = await sqlcmd_LPA.ExecuteReaderAsync();
+            
+
+            //Get all of the LPA GUID's
+            List<Guid> Ids_LPA = new List<Guid>();
+            while (dr_LPA.Read())
+            {
+                Ids_LPA.Add(dr_LPA.GetGuid(0));
+            }
+
+            //Delete all of them
+            foreach (Guid g in Ids_LPA)
+            {
+                string cmd_delete_LPA = "delete from LocationPerformanceAnalysis where Id='" + g.ToString() + "'";
+                SqlCommand sqlcmd_delete_LPA = new SqlCommand(cmd_delete_LPA, sqlcon);
+                await sqlcmd_delete_LPA.ExecuteNonQueryAsync();
+            }
+
+            
+
+            #endregion
+            
+            #region "Cascade Delete Associated Laps"
+
+            string cmd_Lap = "select Id from Lap where SessionId='" + session_id.ToString() + "'";
+            SqlCommand sqlcmd_Lap = new SqlCommand(cmd_Lap, sqlcon);
+            SqlDataReader dr_Lap = await sqlcmd_Lap.ExecuteReaderAsync();
+            
+            //Get all of the GUID's
+            List<Guid> Ids_Laps = new List<Guid>();
+            while (dr_Lap.Read())
+            {
+                Ids_Laps.Add(dr_Lap.GetGuid(0));
+            }
+
+            sqlcon.Close();
+
+        }
+
         public static async Task<Lap> CascadeDownloadLapAsync(this ApexVisualManager avm, Guid lap_id)
         {
 
