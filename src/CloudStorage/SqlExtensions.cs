@@ -290,6 +290,12 @@ namespace ApexVisual.F1_2020.CloudStorage
                 Ids_Laps.Add(dr_Lap.GetGuid(0));
             }
 
+            //Delete each of them
+            foreach (Guid g in Ids_Laps)
+            {
+                await avm.DeleteLapAsync(g);
+            }
+
             #endregion
 
             sqlcon.Close();
