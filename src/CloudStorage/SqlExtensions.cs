@@ -391,17 +391,13 @@ namespace ApexVisual.F1_2020.CloudStorage
             if (dr.IsDBNull(0) == false)
             {
                 Guid id1 = dr.GetGuid(0);
-                string cmd_del_id1 = "delete from WheelDataArray where Id='" + id1.ToString() + "'";
-                SqlCommand sqlcmd_del_id1 = new SqlCommand(cmd_del_id1, sqlcon);
-                await sqlcmd_del_id1.ExecuteNonQueryAsync();
+                await avm.DeleteWheelDataArrayAsync(id1);
             }
             
             if (dr.IsDBNull(1) == false)
             {
                 Guid id2 = dr.GetGuid(1);
-                string cmd_del_id2 = "delete from WheelDataArray where Id='" + id2.ToString() + "'";
-                SqlCommand sqlcmd_del_id2 = new SqlCommand(cmd_del_id2, sqlcon);
-                await sqlcmd_del_id2.ExecuteNonQueryAsync();
+                await avm.DeleteWheelDataArrayAsync(id2);
             }
             
             #endregion
@@ -991,7 +987,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn;
         }
 
-        public async static Task DeleteWheelDataArray(this ApexVisualManager avm, Guid id)
+        public async static Task DeleteWheelDataArrayAsync(this ApexVisualManager avm, Guid id)
         {
             string cmd = "delete from WheelDataArray where Id='" + id.ToString() + "'";
             SqlConnection sqlcon = GetSqlConnection(avm);
@@ -1021,7 +1017,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             sqlcon.Close();
         }
 
-        public async static Task DeleteLocationPerformanceAnalysis(this ApexVisualManager avm, Guid id)
+        public async static Task DeleteLocationPerformanceAnalysisAsync(this ApexVisualManager avm, Guid id)
         {
             string cmd = "delete from LocationPerformanceAnalysis where Id='" + id.ToString() + "'";
             SqlConnection sqlcon = GetSqlConnection(avm);
