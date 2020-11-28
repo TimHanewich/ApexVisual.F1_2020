@@ -292,6 +292,8 @@ namespace ApexVisual.F1_2020.CloudStorage
                 Ids_Laps.Add(dr_Lap.GetGuid(0));
             }
 
+            #endregion
+
             sqlcon.Close();
 
         }
@@ -404,7 +406,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             
             #endregion
 
-            
+
 
         }
 
