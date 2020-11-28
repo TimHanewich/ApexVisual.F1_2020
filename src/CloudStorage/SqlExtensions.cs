@@ -999,6 +999,14 @@ namespace ApexVisual.F1_2020.CloudStorage
             await sqlcmd.ExecuteNonQueryAsync();
         }
 
+        public async static Task DeleteLapAsync(this ApexVisualManager avm, Guid id)
+        {
+            string cmd = "delete from Lap where Id='" + id.ToString() + "'";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            await sqlcmd.ExecuteNonQueryAsync();
+        }
+
         #endregion
     }
 }
