@@ -555,31 +555,31 @@ namespace ApexVisual.F1_2020.CloudStorage
             if (dr.IsDBNull(0) == false)
             {
                 Guid thisid = dr.GetGuid(0);
-                await avm.DeleteTelemetrySnapshotAsync(thisid);
+                await avm.DeleteWheelDataArrayAsync(thisid);
             }
 
             if (dr.IsDBNull(1) == false)
             {
                 Guid thisid = dr.GetGuid(1);
-                await avm.DeleteTelemetrySnapshotAsync(thisid);
+                await avm.DeleteWheelDataArrayAsync(thisid);
             }
 
             if (dr.IsDBNull(2) == false)
             {
                 Guid thisid = dr.GetGuid(2);
-                await avm.DeleteTelemetrySnapshotAsync(thisid);
+                await avm.DeleteWheelDataArrayAsync(thisid);
             }
 
             if (dr.IsDBNull(3) == false)
             {
                 Guid thisid = dr.GetGuid(3);
-                await avm.DeleteTelemetrySnapshotAsync(thisid);
+                await avm.DeleteWheelDataArrayAsync(thisid);
             }
 
             if (dr.IsDBNull(4) == false)
             {
                 Guid thisid = dr.GetGuid(4);
-                await avm.DeleteTelemetrySnapshotAsync(thisid);
+                await avm.DeleteWheelDataArrayAsync(thisid);
             }
 
             sqlcon.Close();
