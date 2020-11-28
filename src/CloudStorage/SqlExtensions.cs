@@ -410,8 +410,26 @@ namespace ApexVisual.F1_2020.CloudStorage
 
             #region "Delete all associated Telemetry snaposhot"
 
+            string cmd_TSs = "select Id from TelemetrySnapshot where LapId='" + lap_id.ToString() + "'";
+            SqlCommand sqlcmd_GetTSs = new SqlCommand(cmd_TSs, sqlcon);
+            SqlDataReader dr_TSs = await sqlcmd_GetTSs.ExecuteReaderAsync();
+            
+            //Get a list of all associated TS Id's
+            List<Guid> TS_Ids = new List<Guid>();
+            while (dr_TSs.Read())
+            {
+                TS_Ids.Add(dr_TSs.GetGuid(0));
+            }
+
+            //Delete all of them
+            foreach (Guid g in TS_Ids)
+            {
+                await avm.CascadeDeleteTelemetrySnapshot(g);
+            }
+
             #endregion
 
+            sqlcon.Close();
         }
 
         public static async Task<TelemetrySnapshot> CascadeDownloadTelemetrySnapshotAsync(this ApexVisualManager avm, Guid ts_id)
