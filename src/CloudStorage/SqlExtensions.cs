@@ -270,9 +270,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             //Delete all of them
             foreach (Guid g in Ids_LPA)
             {
-                string cmd_delete_LPA = "delete from LocationPerformanceAnalysis where Id='" + g.ToString() + "'";
-                SqlCommand sqlcmd_delete_LPA = new SqlCommand(cmd_delete_LPA, sqlcon);
-                await sqlcmd_delete_LPA.ExecuteNonQueryAsync();
+                await avm.DeleteLocationPerformanceAnalysisAsync(g);
             }
 
             
