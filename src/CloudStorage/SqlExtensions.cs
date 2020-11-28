@@ -440,6 +440,8 @@ namespace ApexVisual.F1_2020.CloudStorage
 
             #endregion
 
+            //Delete the lap itself
+            await avm.DeleteLapAsync(lap_id);
             
         }
 
