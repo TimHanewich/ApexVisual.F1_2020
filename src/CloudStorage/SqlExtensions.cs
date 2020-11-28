@@ -273,13 +273,14 @@ namespace ApexVisual.F1_2020.CloudStorage
                 await avm.DeleteLocationPerformanceAnalysisAsync(g);
             }
 
-            
+            sqlcon.Close();
 
             #endregion
             
             #region "Cascade Delete Associated Laps"
 
             string cmd_Lap = "select Id from Lap where SessionId='" + session_id.ToString() + "'";
+            sqlcon.Open();
             SqlCommand sqlcmd_Lap = new SqlCommand(cmd_Lap, sqlcon);
             SqlDataReader dr_Lap = await sqlcmd_Lap.ExecuteReaderAsync();
             
@@ -296,9 +297,11 @@ namespace ApexVisual.F1_2020.CloudStorage
                 await avm.CascadeDeleteLapAsync(g);
             }
 
+            sqlcon.Close();
+
             #endregion
 
-            sqlcon.Close();
+            
 
         }
 
