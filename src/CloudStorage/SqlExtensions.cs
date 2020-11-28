@@ -247,7 +247,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn;
         }
 
-        public static async Task<int> CascadeDeleteSessionAsync(this ApexVisualManager avm, ulong session_id)
+        public static async Task CascadeDeleteSessionAsync(this ApexVisualManager avm, ulong session_id)
         {
             SqlConnection sqlcon = GetSqlConnection(avm);
 
@@ -372,6 +372,40 @@ namespace ApexVisual.F1_2020.CloudStorage
             #endregion
 
             return ToReturn;
+        }
+
+        public static async Task CascadeDeleteLapAsync(this ApexVisualManager avm, Guid lap_id)
+        {
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+
+            #region "Delete the two WheelDataArrays that are associated"
+
+            //Delete the two WheelDataArrays (IncrementalTyreWear and BeginningTyreWear) that are associatd with this field.
+            string cmd_WDAs = "select IncrementalTyreWear, BeginningTyre from Lap where lap_id='" + lap_id.ToString() + "'";
+            SqlCommand sqlcmd = new SqlCommand(cmd_WDAs, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+            
+            if (dr.IsDBNull(0) == false)
+            {
+                Guid id1 = dr.GetGuid(0);
+                string cmd_del_id1 = "delete from WheelDataArray where Id='" + id1.ToString() + "'";
+                SqlCommand sqlcmd_del_id1 = new SqlCommand(cmd_del_id1, sqlcon);
+                await sqlcmd_del_id1.ExecuteNonQueryAsync();
+            }
+            
+            if (dr.IsDBNull(1) == false)
+            {
+                Guid id2 = dr.GetGuid(1);
+                string cmd_del_id2 = "delete from WheelDataArray where Id='" + id2.ToString() + "'";
+                SqlCommand sqlcmd_del_id2 = new SqlCommand(cmd_del_id2, sqlcon);
+                await sqlcmd_del_id2.ExecuteNonQueryAsync();
+            }
+            
+            #endregion
+
+            
+
         }
 
         public static async Task<TelemetrySnapshot> CascadeDownloadTelemetrySnapshotAsync(this ApexVisualManager avm, Guid ts_id)
