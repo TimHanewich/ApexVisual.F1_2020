@@ -995,24 +995,30 @@ namespace ApexVisual.F1_2020.CloudStorage
         {
             string cmd = "delete from WheelDataArray where Id='" + id.ToString() + "'";
             SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
             SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
             await sqlcmd.ExecuteNonQueryAsync();
+            sqlcon.Close();
         }
 
         public async static Task DeleteLapAsync(this ApexVisualManager avm, Guid id)
         {
             string cmd = "delete from Lap where Id='" + id.ToString() + "'";
             SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
             SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
             await sqlcmd.ExecuteNonQueryAsync();
+            sqlcon.Close();
         }
 
         public async static Task DeleteTelemetrySnapshotAsync(this ApexVisualManager avm, Guid id)
         {
             string cmd = "delete from TelemetrySnapshot where Id='" + id.ToString() + "'";
             SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
             SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
             await sqlcmd.ExecuteNonQueryAsync();
+            sqlcon.Close();
         }
 
         #endregion
