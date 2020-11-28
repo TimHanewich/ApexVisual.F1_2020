@@ -387,6 +387,8 @@ namespace ApexVisual.F1_2020.CloudStorage
             string cmd_WDAs = "select IncrementalTyreWear, BeginningTyre from Lap where lap_id='" + lap_id.ToString() + "'";
             SqlCommand sqlcmd = new SqlCommand(cmd_WDAs, sqlcon);
             SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+
+            await dr.ReadAsync();
             
             if (dr.IsDBNull(0) == false)
             {
