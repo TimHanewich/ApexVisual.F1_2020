@@ -738,6 +738,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
             ColumnValuePairs.Add(new KeyValuePair<string, string>("SessionId", "'" + to_upload.SessionId.ToString() + "'"));
             //Skip the "Owner" field right now - that is a lookup to the user, so that can be done later.
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Game", "2020"));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("Circuit", Convert.ToInt32(to_upload.Circuit).ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("SessionMode", Convert.ToInt32(to_upload.SessionMode).ToString()));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("SelectedTeam", Convert.ToInt32(to_upload.SelectedTeam).ToString()));
