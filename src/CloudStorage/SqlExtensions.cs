@@ -121,6 +121,21 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         #region "User operations"
 
+        public static async Task<bool> UserAccountExists(this ApexVisualManager avm, string username)
+        {
+            string cmd = "select Username from UserAccount where Username='" + username + "'";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+
+            bool ToReturn = dr.HasRows;
+
+            sqlcon.Close();
+
+            return ToReturn;
+        }
+
         public static async Task<ApexVisualUserAccount> DownloadUserAccountAsync(this ApexVisualManager avm, string username)
         {
             string cmd = "select * from UserAccount where Username='" + username + "'";
@@ -161,6 +176,65 @@ namespace ApexVisual.F1_2020.CloudStorage
             sqlcon.Close();
 
             return ToReturn;
+        }
+
+        public static async Task UploadUserAccountAsync(this ApexVisualManager avm, ApexVisualUserAccount useraccount)
+        {
+            //Error check
+            if (useraccount.Username == null || useraccount.Username == "")
+            {
+                throw new Exception("Unable to upload user account: Username was null or blank.");
+            }
+            if (useraccount.Password == null || useraccount.Password == "")
+            {
+                throw new Exception("Unable to uplod user account: password was null or blank.");
+            }
+
+            
+            //Prepare the KVP's for this record insert/update
+            List<KeyValuePair<string, string>> ColumnValuePairs = new List<KeyValuePair<string, string>>();
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Username", "'" + useraccount.Username + "'"));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Password", "'" + useraccount.Password + "'"));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("AccountCreatedAt", "'" + useraccount.AccountCreatedAt.Year.ToString("0000") + "-" + useraccount.AccountCreatedAt.Month.ToString("00") + "-" + useraccount.AccountCreatedAt.Day.ToString("00") + " " + useraccount.AccountCreatedAt.Hour.ToString("00") + ":" + useraccount.AccountCreatedAt.Minute.ToString("00") + "." + useraccount.AccountCreatedAt.Second.ToString() + "'"));
+            if (useraccount.PhotoBlobId != null && useraccount.PhotoBlobId != "")
+            {
+                ColumnValuePairs.Add(new KeyValuePair<string, string>("PhotoBlobId", useraccount.PhotoBlobId));
+            }
+
+            //Get the appropriate cmd to send
+            string cmd = "";
+            bool AlreadyExists = await avm.UserAccountExists(useraccount.Username);
+            if (AlreadyExists == false) //It is a new account
+            {
+                //Prepare the command string
+                string Component_Columns = "";
+                string Component_Values = "";
+                foreach (KeyValuePair<string, string> kvp in ColumnValuePairs)
+                {
+                    Component_Columns = Component_Columns + kvp.Key + ",";
+                    Component_Values = Component_Values + kvp.Value + ",";
+                }
+                Component_Columns = Component_Columns.Substring(0, Component_Columns.Length-1); //Remove the last comma
+                Component_Values = Component_Values.Substring(0, Component_Values.Length - 1);//Remove the last comma
+                cmd = "insert into UserAccount (" + Component_Columns + ") values (" + Component_Values + ")"; 
+            }
+            else
+            {
+                string setter_portion = "";
+                foreach (KeyValuePair<string, string> kvp in ColumnValuePairs)
+                {
+                    setter_portion = setter_portion + kvp.Key + " = " + kvp.Value + ",";
+                }
+                setter_portion = setter_portion.Substring(0, setter_portion.Length - 1);
+                cmd = "update UserAccount set " + setter_portion + " where " + "Username='" + useraccount.Username + "'";
+            }
+
+            //Send the command
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            await sqlcmd.ExecuteNonQueryAsync();
+            sqlcon.Close();
         }
 
         #endregion
