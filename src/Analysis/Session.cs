@@ -85,7 +85,7 @@ namespace ApexVisual.F1_2020.Analysis
             LoadSummary(packets, driver_index);
             
             //Summon this track
-            Track ToLoad = Track.Unknown;
+            Track ToLoad = Track.Melbourne;
             foreach (Packet p in packets)
             {
                 if (p.PacketType == PacketType.Session)
@@ -95,10 +95,6 @@ namespace ApexVisual.F1_2020.Analysis
                     SessionId = sp.UniqueSessionId;
                     break;
                 }
-            }
-            if (ToLoad == Track.Unknown)
-            {
-                throw new Exception("The track you are racing on in this session is unkown!");
             }
             TrackDataContainer tdc = TrackDataContainer.LoadTrack(ToLoad);
 
