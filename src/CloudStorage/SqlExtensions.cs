@@ -81,7 +81,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
             if (TablesThatAlreadyExist.Contains("User") == false)
             {
-                TableCreationCommands.Add("create table User (Username varchar(15) not null primary key, Email varchar(64), AccountCreatedAt datetime, PhotoBlobId varchar(50))");
+                TableCreationCommands.Add("create table UserAccount (Username varchar(15) not null primary key, Email varchar(64), AccountCreatedAt datetime, PhotoBlobId varchar(50))");
             }
 
             #endregion
