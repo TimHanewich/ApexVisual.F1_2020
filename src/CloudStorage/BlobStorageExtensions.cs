@@ -31,7 +31,7 @@ namespace ApexVisual.F1_2020.CloudStorage
         }
         #endregion
 
-        #region "Basic session uploading"
+        #region "Basic session data uploading/downloading"
 
         public static async Task UploadSessionDataAsync(this ApexVisualManager avm, List<byte[]> session_data)
         {
@@ -68,10 +68,6 @@ namespace ApexVisual.F1_2020.CloudStorage
             await blb.UploadFromStreamAsync(ms);
         }
 
-        #endregion
-
-        #region "Basic session downloading"
-
         public static async Task<List<byte[]>> DownloadSessionDataAsync(this ApexVisualManager avm, string sessionID)
         {
             CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
@@ -105,6 +101,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
             return data_to_return;
         }
+
 
         #endregion
 
