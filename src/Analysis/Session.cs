@@ -7,25 +7,85 @@ using TimHanewich.Toolkit;
 
 namespace ApexVisual.F1_2020.Analysis
 {
-    public class SessionAnalysis
+    public class Session
     {
+        //Session data
         public ulong SessionId {get; set;}
-        public LapAnalysis[] Laps {get; set;}
-        public CornerPerformanceAnalysis[] Corners {get; set;}
+        public Track Circuit {get; set;}
+        public SessionPacket.SessionType SessionMode {get; set;}
+        public Team SelectedTeam {get; set;}
+        public Driver SelectedDriver {get; set;}
+        public string DriverName {get; set;}
+        public DateTimeOffset SessionCreatedAt {get; set;}
+
+        //Analysis objects
+        public Lap[] Laps {get; set;}
+        public LocationPerformanceAnalysis[] Corners {get; set;}
 
         //For reporting purposes
         public float PercentLoadComplete;
         public bool LoadComplete;
+
+        public void LoadSummary(Packet[] packets, byte driver_index)
+        {
+            if (packets.Length == 0)
+            {
+                throw new Exception("The length of the supplied packet array was 0!");
+            }
+
+            SessionId = packets[0].UniqueSessionId;
+            
+            //Get circuit
+            foreach (Packet p in packets)
+            {
+                if (p.PacketType == PacketType.Session)
+                {
+                    SessionPacket sp = (SessionPacket)p;
+
+                    //Circuit
+                    Circuit = sp.SessionTrack;
+
+                    //Session mode
+                    SessionMode = sp.SessionTypeMode;
+                }
+
+                if (p.PacketType == PacketType.Participants)
+                {
+                    ParticipantPacket pp = (ParticipantPacket)p;
+
+                    //Selected team
+                    SelectedTeam = pp.FieldParticipantData[driver_index].ManufacturingTeam;
+
+                    //Selected Driver
+                    SelectedDriver = pp.FieldParticipantData[driver_index].PilotingDriver;
+
+                    //Name
+                    string driver_name = pp.FieldParticipantData[driver_index].Name.TrimEnd('\0');
+                    string driver_name_clean = "";
+                    foreach (char c in driver_name)
+                    {
+                        int as_int = Convert.ToInt32(c);
+                        if ((as_int < 127 && as_int != 92) == true || as_int == 160) //It is in the normal character range and not a backward slash OR it is a blank space.
+                        {
+                            driver_name_clean = driver_name_clean + c.ToString();
+                        }
+                    }
+                    DriverName = driver_name_clean;
+                }
+            }
+            SessionCreatedAt = DateTimeOffset.Now;
+        }
 
         public void Load(Packet[] packets, byte driver_index)
         {
             PercentLoadComplete = 0;
             LoadComplete = false;
 
+            //Load the session summary data first
+            LoadSummary(packets, driver_index);
             
-
             //Summon this track
-            Track ToLoad = Track.Unknown;
+            Track ToLoad = Track.Melbourne;
             foreach (Packet p in packets)
             {
                 if (p.PacketType == PacketType.Session)
@@ -35,10 +95,6 @@ namespace ApexVisual.F1_2020.Analysis
                     SessionId = sp.UniqueSessionId;
                     break;
                 }
-            }
-            if (ToLoad == Track.Unknown)
-            {
-                throw new Exception("The track you are racing on in this session is unkown!");
             }
             TrackDataContainer tdc = TrackDataContainer.LoadTrack(ToLoad);
 
@@ -71,11 +127,11 @@ namespace ApexVisual.F1_2020.Analysis
             //Create the lap analysis objects and fill it with corner analysis data.
             //This process also fills in the LapNumber property
             //This process below should take up the % complete from 15% to 90%
-            List<LapAnalysis> _LapAnalysis = new List<LapAnalysis>();
+            List<Lap> _Lap = new List<Lap>();
             foreach (byte lap_num in AllLaps)
             {
 
-                LapAnalysis this_lap_analysis = new LapAnalysis();
+                Lap this_lap_analysis = new Lap();
 
                 //Fill in the lap number
                 this_lap_analysis.LapNumber = lap_num;
@@ -93,7 +149,7 @@ namespace ApexVisual.F1_2020.Analysis
 
 
                 //Find the best packetframe for each corner
-                List<CornerAnalysis> _CornerAnalysis = new List<CornerAnalysis>();
+                List<TelemetrySnapshot> _TelemetrySnapshot = new List<TelemetrySnapshot>();
                 int c = 1;
                 for (c=1;c<=tdc.Corners.Length;c++)
                 {
@@ -122,26 +178,77 @@ namespace ApexVisual.F1_2020.Analysis
                     }
 
                     //Add the corner analysis
-                    CornerAnalysis ca = new CornerAnalysis();
-                    ca.CornerNumber = (byte)c;
-                    ca.CornerData = this_corner;
-                    if (min_distance_found < float.MaxValue) //we found a suitable packet, so therefore the min distance shold be less than max
+                    TelemetrySnapshot ca = new TelemetrySnapshot();
+                    ca.LocationNumber = (byte)c;
+                    if (min_distance_found < float.MaxValue) //we found a suitable packet, so therefore the min distance shold be less than max. Fill in the details
                     {
-                        ca.Motion = winner.Motion.FieldMotionData[driver_index];
-                        ca.Lap = winner.Lap.FieldLapData[driver_index];
-                        ca.Telemetry = winner.Telemetry.FieldTelemetryData[driver_index];
-                        ca.CarStatus = winner.CarStatus.FieldCarStatusData[driver_index];
+                        //Position
+                        ca.PositionX = winner.Motion.FieldMotionData[driver_index].PositionX;
+                        ca.PositionY = winner.Motion.FieldMotionData[driver_index].PositionY;
+                        ca.PositionZ = winner.Motion.FieldMotionData[driver_index].PositionZ;
+
+                        //Velocity
+                        ca.VelocityX = winner.Motion.FieldMotionData[driver_index].VelocityX;
+                        ca.VelocityY = winner.Motion.FieldMotionData[driver_index].VelocityY;
+                        ca.VelocityZ = winner.Motion.FieldMotionData[driver_index].VelocityZ;
+
+                        //gForce
+                        ca.gForceLateral = winner.Motion.FieldMotionData[driver_index].gForceLateral;
+                        ca.gForceLongitudinal = winner.Motion.FieldMotionData[driver_index].gForceLongitudinal;
+                        ca.gForceVertical = winner.Motion.FieldMotionData[driver_index].gForceVertical;
+
+                        //Yaw, pitch, roll
+                        ca.Yaw = winner.Motion.FieldMotionData[driver_index].Yaw;
+                        ca.Pitch = winner.Motion.FieldMotionData[driver_index].Pitch;
+                        ca.Roll = winner.Motion.FieldMotionData[driver_index].Roll;
+
+                        //Lap data
+                        ca.CurrentLapTime = winner.Lap.FieldLapData[driver_index].CurrentLapTime;
+                        ca.CarPosition = winner.Lap.FieldLapData[driver_index].CarPosition;
+                        ca.LapInvalid = winner.Lap.FieldLapData[driver_index].CurrentLapInvalid;
+                        ca.Penalties = winner.Lap.FieldLapData[driver_index].Penalties;
+                        
+                        //Telemetry data
+                        ca.SpeedKph = winner.Telemetry.FieldTelemetryData[driver_index].SpeedKph;
+                        ca.Throttle = winner.Telemetry.FieldTelemetryData[driver_index].Throttle;
+                        ca.Steer = winner.Telemetry.FieldTelemetryData[driver_index].Steer;
+                        ca.Brake = winner.Telemetry.FieldTelemetryData[driver_index].Brake;
+                        ca.Clutch = winner.Telemetry.FieldTelemetryData[driver_index].Clutch;
+                        ca.Gear = winner.Telemetry.FieldTelemetryData[driver_index].Gear;
+                        ca.EngineRpm = winner.Telemetry.FieldTelemetryData[driver_index].EngineRpm;
+                        ca.DrsActive = winner.Telemetry.FieldTelemetryData[driver_index].DrsActive;
+                        
+                        //Wheel data arrays
+                        ca.BrakeTemperature = winner.Telemetry.FieldTelemetryData[driver_index].BrakeTemperature;
+                        ca.TyreSurfaceTemperature = winner.Telemetry.FieldTelemetryData[driver_index].TyreSurfaceTemperature;
+                        ca.TyreInnerTemperature = winner.Telemetry.FieldTelemetryData[driver_index].TyreInnerTemperature;
+
+                        //Other data
+                        ca.EngineTemperature = winner.Telemetry.FieldTelemetryData[driver_index].EngineTemperature;
+                        
+                        //Car status
+                        ca.SelectedFuelMix = winner.CarStatus.FieldCarStatusData[driver_index].SelectedFuelMix;
+                        ca.FuelLevel = winner.CarStatus.FieldCarStatusData[driver_index].FuelLevel;
+
+                        //Other wheel data arrays
+                        ca.TyreWearPercent = winner.CarStatus.FieldCarStatusData[driver_index].TyreWearPercentage;
+                        ca.TyreDamagePercent = winner.CarStatus.FieldCarStatusData[driver_index].TyreDamagePercentage;
+
+                        //Other data
+                        ca.FrontLeftWingDamage = winner.CarStatus.FieldCarStatusData[driver_index].FrontLeftWingDamagePercent;
+                        ca.FrontRightWingDamage = winner.CarStatus.FieldCarStatusData[driver_index].FrontRightWingDamagePercent;
+                        ca.RearWingDamage = winner.CarStatus.FieldCarStatusData[driver_index].RearWingDamagePercent;
+                        ca.ErsStored = winner.CarStatus.FieldCarStatusData[driver_index].ErsStoredEnergyJoules;
+
+                        //Add it to the list. (This is in this block because nothing should be added to the list if the corner was not found. So NO EMPTY TelemetrySnapshots in this array to represent a corner that was not found)
+                        _TelemetrySnapshot.Add(ca);
                     }
                     else //if we were not able to find a suitable packet for that corner, populate it with just a blank PacketFrame as a place holder.
                     {
-                        ca.Motion = null;
-                        ca.Lap = null;
-                        ca.Telemetry = null;
-                        ca.CarStatus = null;
+                        //Do nothing (that Lap just won't have data for that corner. It can scan through all of the track locations )
                     }
-                    _CornerAnalysis.Add(ca);
                 }
-                this_lap_analysis.Corners = _CornerAnalysis.ToArray();
+                this_lap_analysis.Corners = _TelemetrySnapshot.ToArray();
                 
 
                 //Get the tyre compound that is being used for this lap
@@ -193,7 +300,7 @@ namespace ApexVisual.F1_2020.Analysis
 
 
                 //Add this to the list of lap analyses
-                _LapAnalysis.Add(this_lap_analysis);
+                _Lap.Add(this_lap_analysis);
 
                 //Update the percent complete
                 float AdditionalPercentCompletePerLap = (0.90f - 0.15f) / (float)AllLaps.Count;
@@ -255,11 +362,11 @@ namespace ApexVisual.F1_2020.Analysis
                     }
 
 
-                    //If any of the numbers up there changed (are not 0), it means that we either changed sector or changed lap. If we did, we need to plug that data into the lapanalysis
+                    //If any of the numbers up there changed (are not 0), it means that we either changed sector or changed lap. If we did, we need to plug that data into the Lap
                     if (S1_Time_S > 0 || S2_Time_S > 0 || S3_Time_S > 0 || Lap_Invalid_In_Last_Frame)
                     {
                         //Find the lap analysis
-                        foreach (LapAnalysis la in _LapAnalysis)
+                        foreach (Lap la in _Lap)
                         {
                             if (la.LapNumber == last_frame.Lap.FieldLapData[driver_index].CurrentLapNumber)
                             {
@@ -277,11 +384,6 @@ namespace ApexVisual.F1_2020.Analysis
                                 if (S3_Time_S > 0)
                                 {
                                     la.Sector3Time = S3_Time_S;
-                                }
-
-                                if (LapTime_S > 0)
-                                {
-                                    la.LapTime = LapTime_S;
                                 }
 
                                 if (Lap_Invalid_In_Last_Frame)
@@ -322,7 +424,7 @@ namespace ApexVisual.F1_2020.Analysis
                     float fuel_used = fuel_end - fuel_start;
                     fuel_used = fuel_used * -1;
 
-                    foreach (LapAnalysis la in _LapAnalysis)
+                    foreach (Lap la in _Lap)
                     {
                         if (la.LapNumber == lapnum)
                         {
@@ -402,7 +504,7 @@ namespace ApexVisual.F1_2020.Analysis
                 float full_brake = (float)FullBrake / (float)lap_frames.Count;
 
                 //plug them in
-                foreach (LapAnalysis la in _LapAnalysis)
+                foreach (Lap la in _Lap)
                 {
                     if (la.LapNumber == lapnum)
                     {
@@ -436,7 +538,7 @@ namespace ApexVisual.F1_2020.Analysis
                 float ers_har = lap_frames[lap_frames.Count-1].CarStatus.FieldCarStatusData[driver_index].ErsHarvestedThisLapByMGUH + lap_frames[lap_frames.Count-1].CarStatus.FieldCarStatusData[driver_index].ErsHarvestedThisLapByMGUK;
 
                 //plug them in
-                foreach (LapAnalysis la in _LapAnalysis)
+                foreach (Lap la in _Lap)
                 {
                     if (la.LapNumber == lapnum)
                     {
@@ -480,7 +582,7 @@ namespace ApexVisual.F1_2020.Analysis
                 }
 
                 //Plug it in
-                foreach (LapAnalysis la in _LapAnalysis)
+                foreach (Lap la in _Lap)
                 {
                     if (la.LapNumber == lapnum)
                     {
@@ -523,12 +625,11 @@ namespace ApexVisual.F1_2020.Analysis
                 }
 
                 //Plug it in
-                foreach (LapAnalysis la in _LapAnalysis)
+                foreach (Lap la in _Lap)
                 {
                     if (la.LapNumber == lapnum)
                     {
                         la.TopSpeedKph = max_kph;
-                        la.TopSpeedMph = max_mph;
                     }
                 }
 
@@ -558,12 +659,11 @@ namespace ApexVisual.F1_2020.Analysis
                 float avginctyrewear = AvgTyreWear_End - AvgTyreWear_Start;
 
                 //Plug it in
-                foreach (LapAnalysis la in _LapAnalysis)
+                foreach (Lap la in _Lap)
                 {
                     if (la.LapNumber == lapnum)
                     {
                         //Incremental tyre wear
-                        la.IncrementalAverageTyreWear = avginctyrewear;
                         la.IncrementalTyreWear = new WheelDataArray();
                         la.IncrementalTyreWear.RearLeft = tyrewear_end.RearLeft - tyrewear_start.RearLeft;
                         la.IncrementalTyreWear.RearRight = tyrewear_end.RearRight - tyrewear_start.RearRight;
@@ -571,7 +671,6 @@ namespace ApexVisual.F1_2020.Analysis
                         la.IncrementalTyreWear.FrontRight = tyrewear_end.FrontRight - tyrewear_start.FrontRight;
 
                         //Beginning (snapshot) tyre wear
-                        la.BeginningAverageTyreWear = AvgTyreWear_Start;
                         la.BeginningTyreWear = new WheelDataArray();
                         la.BeginningTyreWear.RearLeft = tyrewear_start.RearLeft;
                         la.BeginningTyreWear.RearRight = tyrewear_start.RearRight;
@@ -585,43 +684,46 @@ namespace ApexVisual.F1_2020.Analysis
             #endregion
 
             //Close off the laps
-            Laps = _LapAnalysis.ToArray();
+            Laps = _Lap.ToArray();
 
             #region "Now that we have the lap analyses, generate the corner performance analyses (Lap Analyses MUST BE DONE before this)"
 
             //Generate all of the corner performances
-            List<CornerPerformanceAnalysis> corner_performances = new List<CornerPerformanceAnalysis>();
+            List<LocationPerformanceAnalysis> corner_performances = new List<LocationPerformanceAnalysis>();
             for (int c = 0; c < tdc.Corners.Length; c++)
             {
-                CornerPerformanceAnalysis cpa = new CornerPerformanceAnalysis();
+                LocationPerformanceAnalysis cpa = new LocationPerformanceAnalysis();
 
                 //Copy over the data from the TrackLocationOptima (by doing a quick Json serialization/deserialization)
-                cpa = JsonConvert.DeserializeObject<CornerPerformanceAnalysis>(JsonConvert.SerializeObject(tdc.Corners[c]));
+                cpa = JsonConvert.DeserializeObject<LocationPerformanceAnalysis>(JsonConvert.SerializeObject(tdc.Corners[c]));
 
                 //Plug in the corner #
-                cpa.CornerNumber = (byte)(c + 1);
+                cpa.LocationNumber = (byte)(c + 1);
 
                 List<ushort> Speeds = new List<ushort>(); //A list of speeds that were carried through this corner
                 List<sbyte> Gears = new List<sbyte>(); //A list of gears that the driver used through this corner
                 List<float> Distances = new List<float>();
 
                 //Collect the data for each lap
-                foreach (LapAnalysis la in Laps)
+                foreach (Lap la in Laps)
                 {
-                    //Collect speed and gear
-                    TelemetryPacket.CarTelemetryData ctd = la.Corners[c].Telemetry;
-                    if (ctd != null) //If we have telemetry data for this corner (the only way this would be null is if we did not get close enough to the apex or if we did not complete the lap)
+                    //Go through all of the corners for this lap. If you find a corner that matches the corner number that we are analyzing, add the details to the list.
+                    foreach (TelemetrySnapshot ts in la.Corners)
                     {
-                        Speeds.Add(ctd.SpeedMph);
-                        Gears.Add(ctd.Gear);
+                        if (ts.LocationNumber == (c + 1))
+                        {
+                            Speeds.Add(ts.SpeedKph);
+                            Gears.Add(ts.Gear);
+                        }
                     }
 
-                    //Collect the distance to apex
-                    CornerAnalysis ca = la.Corners[c];
-                    if (ca.Motion != null) //The motion packet is required to calculate distance to apex BECAUSE the motion packet contains position data
-                    {
-                        Distances.Add(ca.DistanceToApex());
-                    }
+                    // Had to comment out the below on 11/24/2020. The distance to apex method is removed.
+                    // //Collect the distance to apex
+                    // TelemetrySnapshot ca = la.Corners[c];
+                    // if (ca.Motion != null) //The motion packet is required to calculate distance to apex BECAUSE the motion packet contains position data
+                    // {
+                    //     Distances.Add(ca.DistanceToApex());
+                    // }
                 }
 
                 //Get the average speed
@@ -633,11 +735,11 @@ namespace ApexVisual.F1_2020.Analysis
                         speed_avg = speed_avg + (float)us;
                     }
                     speed_avg = speed_avg / (float)Speeds.Count;
-                    cpa.AverageSpeed = speed_avg;
+                    cpa.AverageSpeedKph = speed_avg;
                 }
                 else
                 {
-                    cpa.AverageSpeed = float.NaN;
+                    cpa.AverageSpeedKph = float.NaN;
                 }
 
                 //Get the average gear
@@ -707,11 +809,11 @@ namespace ApexVisual.F1_2020.Analysis
                     ConsistencyRatingAgg.Add(rating_Distances * 0.35f);
                     
                     //Plug in the consistency rating
-                    cpa.CornerConsistencyRating = ConsistencyRatingAgg.Sum();
+                    cpa.InconsistencyRating = ConsistencyRatingAgg.Sum();
                 }
                 else
                 {
-                    cpa.CornerConsistencyRating = float.NaN;
+                    cpa.InconsistencyRating = float.NaN;
                 }
 
                 

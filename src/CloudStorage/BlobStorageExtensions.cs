@@ -22,38 +22,15 @@ namespace ApexVisual.F1_2020.CloudStorage
         {  
             CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             await cbc.GetContainerReference("sessions").CreateIfNotExistsAsync();
-            await cbc.GetContainerReference("sessionsummaries").CreateIfNotExistsAsync();
-            await cbc.GetContainerReference("sessionanalyses").CreateIfNotExistsAsync();
-            await cbc.GetContainerReference("useraccounts").CreateIfNotExistsAsync();
             await cbc.GetContainerReference("userphotos").CreateIfNotExistsAsync();
             await cbc.GetContainerReference("activitylogs").CreateIfNotExistsAsync();
             await cbc.GetContainerReference("messagesubmissions").CreateIfNotExistsAsync();
         }
         #endregion
 
-        #region "Listing session-related data"    
-        public static async Task<string[]> ListSessionNamesAsync(this ApexVisualManager avm)
-        {
-            string[] tr = await GetBlobNamesInContainerAsync(avm, "sessions");
-            return tr;
-        }
-    
-        public static async Task<string[]> ListSessionSummaryNamesAsync(this ApexVisualManager avm)
-        {
-            string[] tr = await GetBlobNamesInContainerAsync(avm, "sessionsummaries");
-            return tr;
-        }
-    
-        public static async Task<string[]> ListSessionAnalysisNamesAsync(this ApexVisualManager avm)
-        {
-            string[] tr = await GetBlobNamesInContainerAsync(avm, "sessionanalyses");
-            return tr;
-        }
-        #endregion
+        #region "Basic session data uploading/downloading"
 
-        #region "Basic session uploading"
-
-        public static async Task UploadSessionAsync(this ApexVisualManager avm, List<byte[]> session_data)
+        public static async Task UploadSessionDataAsync(this ApexVisualManager avm, List<byte[]> session_data)
         {
             //Get unique session
             string file_name = "";
@@ -88,33 +65,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             await blb.UploadFromStreamAsync(ms);
         }
 
-        public static async Task UploadSessionSummaryAsync(this ApexVisualManager avm, SessionSummary summary)
-        {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
-            CloudBlobContainer cont = cbc.GetContainerReference("sessionsummaries");
-            await cont.CreateIfNotExistsAsync();
-
-            CloudBlockBlob blb = cont.GetBlockBlobReference(summary.SessionId.ToString());
-            string json = JsonConvert.SerializeObject(summary);
-            await blb.UploadTextAsync(json);
-        }
-
-        public static async Task UploadSessionAnalysisAsync(this ApexVisualManager avm, SessionAnalysis analysis)
-        {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
-            CloudBlobContainer cont = cbc.GetContainerReference("sessionanalyses");
-            await cont.CreateIfNotExistsAsync();
-
-            CloudBlockBlob blb = cont.GetBlockBlobReference(analysis.SessionId.ToString());
-            string json = JsonConvert.SerializeObject(analysis);
-            await blb.UploadTextAsync(json);
-        }
-
-        #endregion
-
-        #region "Basic session downloading"
-
-        public static async Task<List<byte[]>> DownloadSessionAsync(this ApexVisualManager avm, string sessionID)
+        public static async Task<List<byte[]>> DownloadSessionDataAsync(this ApexVisualManager avm, string sessionID)
         {
             CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("sessions");
@@ -148,90 +99,6 @@ namespace ApexVisual.F1_2020.CloudStorage
             return data_to_return;
         }
 
-        public static async Task<SessionSummary> DownloadSessionSummaryAsync(this ApexVisualManager avm, string sessionID)
-        {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
-            CloudBlobContainer cont = cbc.GetContainerReference("sessionsummaries");
-            await cont.CreateIfNotExistsAsync();
-
-            CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
-            if (blb.Exists() == false)
-            {
-                throw new Exception("Unable to find session summary with title '" + sessionID + "'.");
-            }
-
-            string content = await blb.DownloadTextAsync();
-            SessionSummary data_to_return;
-            try
-            {
-                data_to_return = JsonConvert.DeserializeObject<SessionSummary>(content);
-            }
-            catch
-            {
-                throw new Exception("Failure while deserializing content for session summary '" + sessionID.ToString() + "'.");
-            }
-
-            return data_to_return;
-        }
-
-        public static async Task<SessionAnalysis> DownloadSessionAnalysisAsync(this ApexVisualManager avm, string sessionID)
-        {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
-            CloudBlobContainer cont = cbc.GetContainerReference("sessionanalyses");
-            await cont.CreateIfNotExistsAsync();
-
-            CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
-            if (blb.Exists() == false)
-            {
-                throw new Exception("Unable to find session analysis with title '" + sessionID + "'.");
-            }
-
-            string content = await blb.DownloadTextAsync();
-            SessionAnalysis data_to_return;
-            try
-            {
-                data_to_return = JsonConvert.DeserializeObject<SessionAnalysis>(content);
-            }
-            catch
-            {
-                throw new Exception("Failure while deserializing content for session analysis '" + sessionID.ToString() + "'.");
-            }
-
-            return data_to_return;
-        }
-
-        
-
-        #endregion
-
-        #region "Basic session Existance checks"
-
-        public static async Task<bool> SessionExistsAsync(this ApexVisualManager avm, string sessionID)
-        {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
-            CloudBlobContainer cont = cbc.GetContainerReference("sessions");
-            await cont.CreateIfNotExistsAsync();
-            CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
-            return await blb.ExistsAsync();
-        }
-
-        public static async Task<bool> SessionSummaryExistsAsync(this ApexVisualManager avm, string sessionID)
-        {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
-            CloudBlobContainer cont = cbc.GetContainerReference("sessionsummaries");
-            await cont.CreateIfNotExistsAsync();
-            CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
-            return await blb.ExistsAsync();
-        }
-
-        public static async Task<bool> SessionAnalysisExistsAsync(this ApexVisualManager avm, string sessionID)
-        {
-            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
-            CloudBlobContainer cont = cbc.GetContainerReference("sessionanalyses");
-            await cont.CreateIfNotExistsAsync();
-            CloudBlockBlob blb = cont.GetBlockBlobReference(sessionID);
-            return await blb.ExistsAsync();
-        }
 
         #endregion
 
@@ -264,7 +131,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         #endregion
 
-        #region "Downloading profile picture image"
+        #region "Downloading/Uploading profile picture image"
 
         public static async Task<Stream> DownloadProfilePictureAsync(this ApexVisualManager avm, string id)
         {
@@ -288,10 +155,6 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ms;
         }
 
-        #endregion
-
-        #region "Uploading profile picture image"
-
         /// <summary>
         /// This uploads the image to Azure and then provides you with the unique ID that the image is called. You can then use this ID by plugging into the Apex Visual User account as the image ID. 
         /// </summary>
@@ -309,6 +172,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             
             return ToReturnId;
         }
+
 
         #endregion
 
