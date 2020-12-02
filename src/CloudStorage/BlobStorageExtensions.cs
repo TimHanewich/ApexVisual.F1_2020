@@ -22,9 +22,6 @@ namespace ApexVisual.F1_2020.CloudStorage
         {  
             CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             await cbc.GetContainerReference("sessions").CreateIfNotExistsAsync();
-            await cbc.GetContainerReference("sessionsummaries").CreateIfNotExistsAsync();
-            await cbc.GetContainerReference("sessionanalyses").CreateIfNotExistsAsync();
-            await cbc.GetContainerReference("useraccounts").CreateIfNotExistsAsync();
             await cbc.GetContainerReference("userphotos").CreateIfNotExistsAsync();
             await cbc.GetContainerReference("activitylogs").CreateIfNotExistsAsync();
             await cbc.GetContainerReference("messagesubmissions").CreateIfNotExistsAsync();
