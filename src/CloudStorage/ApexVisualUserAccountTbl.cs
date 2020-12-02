@@ -33,7 +33,6 @@ namespace ApexVisual.F1_2020.CloudStorage
             to_return.Password = account.Password;
             to_return.Email = account.Email;
             to_return.AccountCreatedAt = account.AccountCreatedAt;
-            to_return.OwnedSessionIds = JsonConvert.SerializeObject(account.OwnedSessionIds.ToArray());
             to_return.PhotoBlobId = account.PhotoBlobId;
             return to_return;
         } 
@@ -46,7 +45,6 @@ namespace ApexVisual.F1_2020.CloudStorage
             ToReturn.Password = Password;
             ToReturn.Email = Email;
             ToReturn.AccountCreatedAt = AccountCreatedAt;
-            ToReturn.OwnedSessionIds = JsonConvert.DeserializeObject<List<string>>(OwnedSessionIds);
             ToReturn.PhotoBlobId = PhotoBlobId;
 
             return ToReturn;

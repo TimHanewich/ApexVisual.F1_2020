@@ -159,20 +159,6 @@ namespace ApexVisual.F1_2020.CloudStorage
             ToReturn.PhotoBlobId = dr.GetString(3);
             dr.Close();
 
-            //Get the list of sessions that this user owns
-            string cmd_sessions = "select SessionId from Session where Owner='" + dr.GetString(0) + "'";
-            SqlCommand sqlcmd_sessions = new SqlCommand(cmd_sessions, sqlcon);
-            SqlDataReader dr_sessions = await sqlcmd_sessions.ExecuteReaderAsync();
-
-            List<string> OwnedSessions = new List<string>();
-            while (dr_sessions.Read())
-            {
-                OwnedSessions.Add(dr_sessions.GetString(0));
-            }
-
-            //Plug it in
-            ToReturn.OwnedSessionIds = OwnedSessions;
-
             sqlcon.Close();
 
             return ToReturn;
