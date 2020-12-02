@@ -137,7 +137,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         #endregion
 
-        #region "Downloading profile picture image"
+        #region "Downloading/Uploading profile picture image"
 
         public static async Task<Stream> DownloadProfilePictureAsync(this ApexVisualManager avm, string id)
         {
@@ -161,10 +161,6 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ms;
         }
 
-        #endregion
-
-        #region "Uploading profile picture image"
-
         /// <summary>
         /// This uploads the image to Azure and then provides you with the unique ID that the image is called. You can then use this ID by plugging into the Apex Visual User account as the image ID. 
         /// </summary>
@@ -182,6 +178,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             
             return ToReturnId;
         }
+
 
         #endregion
 
