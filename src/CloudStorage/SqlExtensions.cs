@@ -223,6 +223,29 @@ namespace ApexVisual.F1_2020.CloudStorage
             sqlcon.Close();
         }
 
+        public static async Task<string[]> ListOwnedSessionsAsync(this ApexVisualManager avm, string username)
+        {
+            string cmd = "select SessionId from Session where Owner='" + username + "'";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+            
+            List<string> ToReturn = new List<string>();
+
+            if (dr.HasRows)
+            {
+                while (dr.Read())
+                {
+                    ToReturn.Add(dr.GetString(0));
+                }
+            }
+
+            sqlcon.Close();
+
+            return ToReturn.ToArray();
+        }
+
         #endregion
 
         #region "Full Cascade operations"
