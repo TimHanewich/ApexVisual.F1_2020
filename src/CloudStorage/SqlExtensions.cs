@@ -184,7 +184,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             ColumnValuePairs.Add(new KeyValuePair<string, string>("AccountCreatedAt", "'" + useraccount.AccountCreatedAt.Year.ToString("0000") + "-" + useraccount.AccountCreatedAt.Month.ToString("00") + "-" + useraccount.AccountCreatedAt.Day.ToString("00") + " " + useraccount.AccountCreatedAt.Hour.ToString("00") + ":" + useraccount.AccountCreatedAt.Minute.ToString("00") + "." + useraccount.AccountCreatedAt.Second.ToString() + "'"));
             if (useraccount.PhotoBlobId != null && useraccount.PhotoBlobId != "")
             {
-                ColumnValuePairs.Add(new KeyValuePair<string, string>("PhotoBlobId", useraccount.PhotoBlobId));
+                ColumnValuePairs.Add(new KeyValuePair<string, string>("PhotoBlobId", "'" + useraccount.PhotoBlobId + "'"));
             }
 
             //Get the appropriate cmd to send
