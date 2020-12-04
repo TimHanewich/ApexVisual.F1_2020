@@ -59,8 +59,16 @@ namespace ApexVisual.F1_2020
     
         public static bool PasswordValid(string password)
         {
-            //Rules: Password length must be <= 30
+            //Rules: 
+            //Password length must be <= 30
+            //Password length must be >= 1
             //Cannot contains equal sign
+
+            //Length
+            if (password.Length < 1)
+            {
+                return false;
+            }
 
             //Length
             if (password.Length > 30)
