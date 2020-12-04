@@ -84,5 +84,32 @@ namespace ApexVisual.F1_2020
 
             return true;
         }
+    
+        public static string ModifyUsernameToValid(string username)
+        {
+            //Strip it down to the allowed characters
+            string ToReturn = "";
+            foreach (char c in username)
+            {
+                if (UsernameAllowedCharacters.Contains(c.ToString()))
+                {
+                    ToReturn = ToReturn + c.ToString();
+                }
+            }
+
+            //If the stripped is too small, throw an error
+            if (ToReturn.Length < UsernameMinLength)
+            {
+                throw new Exception("There are not enough valid characters in username '" + username + "' to convert it to a valid username.");
+            }
+
+            //If it is too long, shorten it
+            if (ToReturn.Length > UsernameMaxLength)
+            {
+                ToReturn = ToReturn.Substring(0, UsernameMaxLength);
+            }
+
+            return ToReturn;
+        }
     }
 }
