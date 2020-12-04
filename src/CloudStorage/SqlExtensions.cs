@@ -153,12 +153,37 @@ namespace ApexVisual.F1_2020.CloudStorage
 
             //Prepare the return assets
             ApexVisualUserAccount ToReturn = new ApexVisualUserAccount();
-            ToReturn.Username = dr.GetString(0);
-            ToReturn.Email = dr.GetString(1);
-            ToReturn.AccountCreatedAt = dr.GetDateTime(2);
-            ToReturn.PhotoBlobId = dr.GetString(3);
-            dr.Close();
 
+            //Username
+            if (dr.IsDBNull(0) == false)
+            {
+                ToReturn.Username = dr.GetString(0);
+            }
+
+            //Password
+            if (dr.IsDBNull(1) == false)
+            {
+                ToReturn.Password = dr.GetString(1);
+            }
+
+            //Email
+            if (dr.IsDBNull(2) == false)
+            {
+                ToReturn.Email = dr.GetString(2); 
+            }
+            
+            //Account created at
+            if (dr.IsDBNull(3) == false)
+            {
+                ToReturn.AccountCreatedAt = dr.GetDateTime(3);
+            }
+
+            //Photo blob id
+            if (dr.IsDBNull(4) == false)
+            {
+                ToReturn.PhotoBlobId = dr.GetString(4);
+            }
+            
             sqlcon.Close();
 
             return ToReturn;
