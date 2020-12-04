@@ -49,5 +49,25 @@ namespace ApexVisual.F1_2020
 
             return true;
         }
+    
+        public static bool PasswordValid(string password)
+        {
+            //Rules: Password length must be <= 30
+            //Cannot contains equal sign
+
+            //Length
+            if (password.Length > 30)
+            {
+                return false;
+            }
+
+            //Equals sign
+            if (password.Contains("="))
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
