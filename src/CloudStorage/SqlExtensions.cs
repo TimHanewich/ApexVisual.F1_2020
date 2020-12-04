@@ -198,14 +198,18 @@ namespace ApexVisual.F1_2020.CloudStorage
             }
             if (useraccount.Password == null || useraccount.Password == "")
             {
-                throw new Exception("Unable to uplod user account: password was null or blank.");
+                throw new Exception("Unable to upload user account: password was null or blank.");
             }
-
+            if (useraccount.Email == null || useraccount.Email == "")
+            {
+                throw new Exception("Unable to upload user account: email was null or blank.");
+            }
             
             //Prepare the KVP's for this record insert/update
             List<KeyValuePair<string, string>> ColumnValuePairs = new List<KeyValuePair<string, string>>();
             ColumnValuePairs.Add(new KeyValuePair<string, string>("Username", "'" + useraccount.Username + "'"));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("Password", "'" + useraccount.Password + "'"));
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Email", "'" + useraccount.Email + "'"));
             ColumnValuePairs.Add(new KeyValuePair<string, string>("AccountCreatedAt", "'" + useraccount.AccountCreatedAt.Year.ToString("0000") + "-" + useraccount.AccountCreatedAt.Month.ToString("00") + "-" + useraccount.AccountCreatedAt.Day.ToString("00") + " " + useraccount.AccountCreatedAt.Hour.ToString("00") + ":" + useraccount.AccountCreatedAt.Minute.ToString("00") + "." + useraccount.AccountCreatedAt.Second.ToString() + "'"));
             if (useraccount.PhotoBlobId != null && useraccount.PhotoBlobId != "")
             {
