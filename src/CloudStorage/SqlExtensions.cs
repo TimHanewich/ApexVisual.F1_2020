@@ -982,9 +982,19 @@ namespace ApexVisual.F1_2020.CloudStorage
             ColumnValuePairs.Add(new KeyValuePair<string, string>("Id", "'" + g.ToString() + "'"));
             //Skip location type (this can be done after the fact by a parent cascading method)
             ColumnValuePairs.Add(new KeyValuePair<string, string>("LocationNumber", lpa.LocationNumber.ToString()));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageSpeedKph", lpa.AverageSpeedKph.ToString()));
-            ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageGear", lpa.AverageGear.ToString()));
 
+            //Average speed kph
+            if (lpa.AverageSpeedKph.ToString() != "NaN")
+            {
+                ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageSpeedKph", lpa.AverageSpeedKph.ToString()));
+            }
+            
+            //Average gear
+            if (lpa.AverageGear.ToString() != "NaN")
+            {
+                ColumnValuePairs.Add(new KeyValuePair<string, string>("AverageGear", lpa.AverageGear.ToString()));
+            }
+            
             //Average distance to apex
             if (lpa.AverageDistanceToApex.ToString() != "NaN")
             {
