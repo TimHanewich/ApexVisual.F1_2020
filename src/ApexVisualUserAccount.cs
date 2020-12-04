@@ -12,6 +12,7 @@ namespace ApexVisual.F1_2020
         private static string UsernameAllowedCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
         private static int UsernameMaxLength = 15;
         private static int UsernameMinLength = 1;
+        private static string PasswordDisallowedCharacters = "= ";
         private static int PasswordMaxLength = 30;
         private static int PasswordMinLength = 1;
 
@@ -77,9 +78,12 @@ namespace ApexVisual.F1_2020
             }
 
             //Equals sign
-            if (password.Contains("="))
+            foreach (char c in PasswordDisallowedCharacters)
             {
-                return false;
+                if (password.Contains(c.ToString()))
+                {
+                    return false;
+                }
             }
 
             return true;
@@ -114,8 +118,16 @@ namespace ApexVisual.F1_2020
     
         public static string ModifyPasswordToValid(string password)
         {
-            //If it contains an equal sign, pull it out
-            string ToReturn = password.Replace("=", "");
+            string ToReturn = "";
+
+            //Take out any disallowed characters
+            foreach (char c in PasswordDisallowedCharacters)
+            {
+                if (password.Contains(c.ToString()) == false)
+                {
+                    ToReturn = ToReturn + c.ToString();
+                }
+            }
 
             //Is it of proper length? if not, throw an error
             if (ToReturn.Length < PasswordMinLength)
