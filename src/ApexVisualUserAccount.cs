@@ -111,5 +111,25 @@ namespace ApexVisual.F1_2020
 
             return ToReturn;
         }
+    
+        public static string ModifyPasswordToValid(string password)
+        {
+            //If it contains an equal sign, pull it out
+            string ToReturn = password.Replace("=", "");
+
+            //Is it of proper length? if not, throw an error
+            if (ToReturn.Length < PasswordMinLength)
+            {
+                throw new Exception("The number of valid characters in password '" + password + "' is not long enough for the password to be valid.");
+            }
+
+            //Is it too long? if it is, trim it
+            if (ToReturn.Length > PasswordMaxLength)
+            {
+                ToReturn = ToReturn.Substring(0, PasswordMaxLength);
+            }
+
+            return ToReturn;
+        }
     }
 }
