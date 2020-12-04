@@ -121,9 +121,9 @@ namespace ApexVisual.F1_2020
             string ToReturn = "";
 
             //Take out any disallowed characters
-            foreach (char c in PasswordDisallowedCharacters)
+            foreach (char c in password)
             {
-                if (password.Contains(c.ToString()) == false)
+                if (PasswordDisallowedCharacters.Contains(c.ToString()) == false)
                 {
                     ToReturn = ToReturn + c.ToString();
                 }
