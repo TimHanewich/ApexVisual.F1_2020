@@ -9,6 +9,13 @@ namespace ApexVisual.F1_2020
 {
     public class ApexVisualUserAccount
     {
+        private static string UsernameAllowedCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
+        private static int UsernameMaxLength = 15;
+        private static int UsernameMinLength = 1;
+        private static int PasswordMaxLength = 30;
+        private static int PasswordMinLength = 1;
+
+
         public string Username { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
@@ -22,29 +29,24 @@ namespace ApexVisual.F1_2020
 
         public static bool UsernameValid(string username)
         {
-            //Current rules:
-            //Length must be > 1
-            //Length cannot be over 15 characters
-            //Characters allowed: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_
 
             //Does it have at least one character?
-            if (username.Length < 1)
+            if (username.Length < UsernameMinLength)
             {
                 return false;
             }
 
             //Is it too long?
-            if (username.Length > 15)
+            if (username.Length > UsernameMaxLength)
             {
                 return false;
             }
 
             //Does it contain the right letters?
-            string allowed = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
             string stripped = "";
             foreach (char c in username)
             {
-                if (allowed.Contains(c.ToString()))
+                if (UsernameAllowedCharacters.Contains(c.ToString()))
                 {
                     stripped = stripped + c.ToString();
                 }
@@ -59,19 +61,17 @@ namespace ApexVisual.F1_2020
     
         public static bool PasswordValid(string password)
         {
-            //Rules: 
-            //Password length must be <= 30
-            //Password length must be >= 1
+            //Unique Rules: 
             //Cannot contains equal sign
 
             //Length
-            if (password.Length < 1)
+            if (password.Length < PasswordMinLength)
             {
                 return false;
             }
 
             //Length
-            if (password.Length > 30)
+            if (password.Length > PasswordMaxLength)
             {
                 return false;
             }
