@@ -23,8 +23,15 @@ namespace ApexVisual.F1_2020
         public static bool UsernameValid(string username)
         {
             //Current rules:
+            //Length must be > 1
             //Length cannot be over 15 characters
             //Characters allowed: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_
+
+            //Does it have at least one character?
+            if (username.Length < 1)
+            {
+                return false;
+            }
 
             //Is it too long?
             if (username.Length > 15)
