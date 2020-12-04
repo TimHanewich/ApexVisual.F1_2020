@@ -19,5 +19,35 @@ namespace ApexVisual.F1_2020
         {
             AccountCreatedAt = DateTimeOffset.Now;
         }
+
+        public static bool UsernameValid(string username)
+        {
+            //Current rules:
+            //Length cannot be over 15 characters
+            //Characters allowed: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_
+
+            //Is it too long?
+            if (username.Length > 15)
+            {
+                return false;
+            }
+
+            //Does it contain the right letters?
+            string allowed = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
+            string stripped = "";
+            foreach (char c in username)
+            {
+                if (allowed.Contains(c.ToString()))
+                {
+                    stripped = stripped + c.ToString();
+                }
+            }
+            if (username != stripped)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
