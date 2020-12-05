@@ -102,35 +102,6 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         #endregion
 
-        #region "Activity logging"
-
-        public static async Task UploadActivityLogAsync(this ApexVisualManager avm, ActivityLog log)
-        {
-            //Get the container
-            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
-            CloudBlobContainer cont = cbc.GetContainerReference("activitylogs");
-            await cont.CreateIfNotExistsAsync();
-
-            //Get the append blob
-            string blob_name = DateTime.UtcNow.Year.ToString() + "." + DateTime.UtcNow.Month.ToString() + "." + DateTime.UtcNow.Day.ToString();
-            CloudAppendBlob blob = cont.GetAppendBlobReference(blob_name);
-            
-            //If the blob doesn't exist, start it off with something.
-            if (blob.Exists() == false)
-            {
-                blob.UploadText("");
-            }
-
-            //Prepare the content to append
-            string as_json = JsonConvert.SerializeObject(log);
-            string to_append = as_json + "<:::SPLIT:::>";
-            
-            //Append it
-            await blob.AppendTextAsync(to_append);
-        }
-
-        #endregion
-
         #region "Downloading/Uploading profile picture image"
 
         public static async Task<Stream> DownloadProfilePictureAsync(this ApexVisualManager avm, string id)
