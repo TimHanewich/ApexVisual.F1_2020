@@ -86,6 +86,15 @@ namespace ApexVisual.F1_2020.CloudStorage
 
             #endregion
 
+            #region "Activity logging"
+
+            if (TablesThatAlreadyExist.Contains("ActivityLog") == false)
+            {
+                TableCreationCommands.Add("create table ActivityLog (Id uniqueidentifier not null primary key, SessionId uniqueidentifier, Username varchar(15), TimeStamp datetime, ApplicationId tinyint, ActivityId int, PackageVersionMajor smallint, PackageVersionMinor smallint, PackageVersionBuild smallint, PackageVersionRevision smallint)");
+            }
+
+            #endregion
+
             //Create the tables
             foreach (string cmd in TableCreationCommands)
             {
