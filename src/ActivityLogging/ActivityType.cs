@@ -4,7 +4,7 @@ namespace ApexVisual.F1_2020.ActivityLogging
 {
     public enum ActivityType
     {
-        Launch,
-        Other
+        Launch = 0, //The game/website (application) being launched
+        Other = 1,
     }
 }
