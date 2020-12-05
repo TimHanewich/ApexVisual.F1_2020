@@ -308,7 +308,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             //Username
             if (log.Username != null & log.Username != "")
             {
-                ColumnValuePairs.Add(new KeyValuePair<string, string>("Username", log.Username));
+                ColumnValuePairs.Add(new KeyValuePair<string, string>("Username", "'" + log.Username + "'"));
             }
 
             //TimeStamp
