@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using ApexVisual.F1_2020.Analysis;
 using Codemasters.F1_2020;
+using ApexVisual.F1_2020.ActivityLogging;
 
 namespace ApexVisual.F1_2020.CloudStorage
 {
@@ -282,6 +283,75 @@ namespace ApexVisual.F1_2020.CloudStorage
             sqlcon.Close();
 
             return ToReturn.ToArray();
+        }
+
+        #endregion
+
+        #region "Activity log operations"
+
+        public async static Task<Guid> UploadActivityLogAsync(this ApexVisualManager avm, ActivityLog log)
+        {
+            Guid ToReturn = Guid.NewGuid();
+
+            List<KeyValuePair<string, string>> ColumnValuePairs = new List<KeyValuePair<string, string>>();
+
+            //This unique id (primary key)
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Id", "'" + ToReturn.ToString() + "'"));
+
+            //Session id
+            if (log.SessionId == null)
+            {
+                log.SessionId = new Guid(); //Blank (000000, etc.)
+            }
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("SessionId", "'" + log.SessionId.ToString() + "'"));
+            
+            //Username
+            if (log.Username != null & log.Username != "")
+            {
+                ColumnValuePairs.Add(new KeyValuePair<string, string>("Username", log.Username));
+            }
+
+            //TimeStamp
+            if (log.TimeStamp != null)
+            {
+                log.TimeStamp = DateTimeOffset.Now;
+            }
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("TimeStamp", "'" + log.TimeStamp.Year.ToString("0000") + "-" + log.TimeStamp.Month.ToString("00") + "-" + log.TimeStamp.Day.ToString("00") + " " + log.TimeStamp.Hour.ToString("00") + ":" + log.TimeStamp.Minute.ToString("00") + "." + log.TimeStamp.Second.ToString() + "'"));
+
+            //ApplicationId
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("ApplicationId", Convert.ToInt32(log.ApplicationId).ToString()));
+
+            //ActivityId
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("ActivityId", Convert.ToInt32(log.ActivityId).ToString()));
+
+            //Package versions
+            if (log.PackageVersion != null)
+            {
+                ColumnValuePairs.Add(new KeyValuePair<string, string>("PackageVersionMajor", log.PackageVersion.Major.ToString()));
+                ColumnValuePairs.Add(new KeyValuePair<string, string>("PackageVersionMinor", log.PackageVersion.Minor.ToString()));
+                ColumnValuePairs.Add(new KeyValuePair<string, string>("PackageVersionBuild", log.PackageVersion.Build.ToString()));
+                ColumnValuePairs.Add(new KeyValuePair<string, string>("PackageVersionRevision", log.PackageVersion.Revision.ToString()));
+            }
+
+            //Prepare the command string
+            string Component_Columns = "";
+            string Component_Values = "";
+            foreach (KeyValuePair<string, string> kvp in ColumnValuePairs)
+            {
+                Component_Columns = Component_Columns + kvp.Key + ",";
+                Component_Values = Component_Values + kvp.Value + ",";
+            }
+            Component_Columns = Component_Columns.Substring(0, Component_Columns.Length-1); //Remove the last comma
+            Component_Values = Component_Values.Substring(0, Component_Values.Length - 1);//Remove the last comma
+
+            string cmd = "insert into ActivityLog (" + Component_Columns + ") values (" + Component_Values + ")";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            await sqlcon.OpenAsync();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            await sqlcmd.ExecuteNonQueryAsync();
+            sqlcon.Close();
+
+            return ToReturn;
         }
 
         #endregion
