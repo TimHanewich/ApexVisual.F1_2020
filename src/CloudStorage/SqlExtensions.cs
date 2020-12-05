@@ -91,7 +91,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
             if (TablesThatAlreadyExist.Contains("ActivityLog") == false)
             {
-                TableCreationCommands.Add("create table ActivityLog (Id uniqueidentifier not null primary key, SessionId uniqueidentifier, Username varchar(15), TimeStamp datetime, ApplicationId tinyint, ActivityId int, PackageVersionMajor smallint, PackageVersionMinor smallint, PackageVersionBuild smallint, PackageVersionRevision smallint)");
+                TableCreationCommands.Add("create table ActivityLog (Id uniqueidentifier not null primary key, SessionId uniqueidentifier, Username varchar(15), TimeStamp datetime, ApplicationId tinyint, ActivityId int, PackageVersionMajor smallint, PackageVersionMinor smallint, PackageVersionBuild smallint, PackageVersionRevision smallint, Note varchar(255))");
             }
 
             #endregion
@@ -333,6 +333,21 @@ namespace ApexVisual.F1_2020.CloudStorage
                 ColumnValuePairs.Add(new KeyValuePair<string, string>("PackageVersionRevision", log.PackageVersion.Revision.ToString()));
             }
 
+            //Note
+            if (log.Note != null && log.Note != "")
+            {
+                string NoteToWrite = "";
+                if (log.Note.Length > 255)
+                {
+                    NoteToWrite = log.Note.Substring(0, 255);
+                }
+                else
+                {
+                    NoteToWrite = log.Note;
+                }
+                ColumnValuePairs.Add(new KeyValuePair<string, string>("Note", "'" + log.Note + "'"));
+            }
+
             //Prepare the command string
             string Component_Columns = "";
             string Component_Values = "";
@@ -356,7 +371,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         public static async Task<ActivityLog[]> DownloadActivityLogsBySession(this ApexVisualManager avm, Guid session_id)
         {
-            string cmd = "select Username, TimeStamp, ApplicationId, ActivityId, PackageVersionMajor, PackageVersionMinor, PackageVersionBuild, PackageVersionRevision from ActivityLog where SessionId='" + session_id + "'";
+            string cmd = "select Username, TimeStamp, ApplicationId, ActivityId, PackageVersionMajor, PackageVersionMinor, PackageVersionBuild, PackageVersionRevision, Note from ActivityLog where SessionId='" + session_id + "'";
             SqlConnection sqlcon = GetSqlConnection(avm);
             await sqlcon.OpenAsync();
             SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
@@ -423,6 +438,12 @@ namespace ApexVisual.F1_2020.CloudStorage
                         al.PackageVersion = new PackageVersion();
                     }
                     al.PackageVersion.Revision = (int)dr.GetInt16(7);
+                }
+
+                //Note
+                if (dr.IsDBNull(8) == false)
+                {
+                    al.Note = dr.GetString(8);
                 }
 
                 ToReturn.Add(al);

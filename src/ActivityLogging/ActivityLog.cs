@@ -10,6 +10,7 @@ namespace ApexVisual.F1_2020.ActivityLogging
         public ApplicationType ApplicationId {get; set;}
         public ActivityType ActivityId {get; set;}
         public PackageVersion PackageVersion {get; set;}
+        public string Note {get; set;}
 
         public ActivityLog(Guid? use_id = null)
         {
