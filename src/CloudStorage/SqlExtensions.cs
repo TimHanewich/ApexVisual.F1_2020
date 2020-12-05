@@ -354,6 +354,85 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn;
         }
 
+        public static async Task<ActivityLog[]> DownloadActivityLogsBySession(this ApexVisualManager avm, Guid session_id)
+        {
+            string cmd = "select Username, TimeStamp, ApplicationId, ActivityId, PackageVersionMajor, PackageVersionMinor, PackageVersionBuild, PackageVersionRevision from ActivityLog where SessionId='" + session_id + "'";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            await sqlcon.OpenAsync();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+
+            List<ActivityLog> ToReturn = new List<ActivityLog>();
+            while (dr.Read())
+            {
+                ActivityLog al = new ActivityLog();
+
+                //If there is a username
+                if (dr.IsDBNull(0) == false)
+                {
+                    al.Username = dr.GetString(0);
+                }
+
+                //if There is a timestamp
+                if (dr.IsDBNull(1) == false)
+                {
+                    al.TimeStamp = dr.GetDateTime(1);
+                }
+
+                //ApplicationId
+                al.ApplicationId = (ApplicationType)dr.GetByte(2);
+
+                //ActivityId
+                al.ActivityId = (ActivityType)dr.GetInt32(3);
+
+                //Package major version
+                if (dr.IsDBNull(4) == false)
+                {
+                    if (al.PackageVersion == null)
+                    {
+                        al.PackageVersion = new PackageVersion();
+                    }
+                    al.PackageVersion.Major = (int)dr.GetInt16(4);
+                }
+
+                //Package minor version
+                if (dr.IsDBNull(5) == false)
+                {
+                    if (al.PackageVersion == null)
+                    {
+                        al.PackageVersion = new PackageVersion();
+                    }
+                    al.PackageVersion.Minor = (int)dr.GetInt16(5);
+                }
+
+                //Package build version
+                if (dr.IsDBNull(6) == false)
+                {
+                    if (al.PackageVersion == null)
+                    {
+                        al.PackageVersion = new PackageVersion();
+                    }
+                    al.PackageVersion.Build = (int)dr.GetInt16(6);
+                }
+
+                //Package revision version
+                if (dr.IsDBNull(7) == false)
+                {
+                    if (al.PackageVersion == null)
+                    {
+                        al.PackageVersion = new PackageVersion();
+                    }
+                    al.PackageVersion.Revision = (int)dr.GetInt16(7);
+                }
+
+                ToReturn.Add(al);
+            }
+
+            sqlcon.Close();
+
+            return ToReturn.ToArray();
+        }
+
         #endregion
 
         #region "Full Cascade operations"
