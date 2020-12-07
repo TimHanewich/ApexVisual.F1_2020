@@ -496,6 +496,33 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn;
         }
 
+        public static async Task<Guid[]> GetUniqueActivitySessionIdsAsync(this ApexVisualManager avm, DateTime date, ApplicationType? app_type = null)
+        {
+            //Date
+            string datetime_filter = GetTimeStampDayFilter(date);
+
+            //Application type filter
+            string app_type_filter = "";
+            if (app_type.HasValue)
+            {
+                app_type_filter = " and ApplicationId = " + Convert.ToString((int)app_type.Value);
+            }
+
+            string cmd = "select distinct SessionId from ActivityLog where " + datetime_filter + app_type_filter;
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+            
+            List<Guid> ToReturn = new List<Guid>();
+            while (dr.Read())
+            {
+                ToReturn.Add(dr.GetGuid(0));
+            }
+            sqlcon.Close();
+            return ToReturn.ToArray();
+        }
+
         private static string GetTimeStampDayFilter(DateTime date)
         {
             string date_START = date.Year.ToString("0000") + "-" + date.Month.ToString("00") + "-" + date.Day.ToString("00");
