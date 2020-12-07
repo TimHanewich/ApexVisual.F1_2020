@@ -454,6 +454,30 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn.ToArray();
         }
 
+        public static async Task<int> CountActivityLogs(this ApexVisualManager avm, DateTime date)
+        {  
+            string cmd = "select count(Id) from ActivityLog where " + GetTimeStampDayFilter(date);
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+            int ToReturn = 0;
+            while (dr.Read())
+            {
+                ToReturn = dr.GetInt32(0);
+            }
+            sqlcon.Close();
+            return ToReturn;
+        }
+
+        private static string GetTimeStampDayFilter(DateTime date)
+        {
+            string date_START = date.Year.ToString("0000") + "-" + date.Month.ToString("00") + "-" + date.Day.ToString("00");
+            string date_END = (date.AddDays(1)).Year.ToString("0000") + "-" + (date.AddDays(1)).Month.ToString("00") + "-" + (date.AddDays(1)).Day.ToString("00");
+            string ToReturn = "TimeStamp >= '" + date_START + "' and TimeStamp < '" + date_END + "'";
+            return ToReturn;
+        }
+
         #endregion
 
         #region "Full Cascade operations"
