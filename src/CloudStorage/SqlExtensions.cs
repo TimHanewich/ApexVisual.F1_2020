@@ -553,7 +553,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         public static async Task<int> CountActivityLogsAsync(this ApexVisualManager avm, DateTime date)
         {  
-            string cmd = "select count(Id) from ActivityLog where " + GetTimeStampDayFilter(date);
+            string cmd = "select count(Id) from ActivityLog where " + GetTimeStampDayFilter("TimeStamp", date);
             SqlConnection sqlcon = GetSqlConnection(avm);
             sqlcon.Open();
             SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
@@ -570,7 +570,7 @@ namespace ApexVisual.F1_2020.CloudStorage
         public static async Task<int> CountDistinctActivitySessionsAsync(this ApexVisualManager avm, DateTime date, ApplicationType? app_type = null)
         {
             //Date
-            string datetime_filter = GetTimeStampDayFilter(date);
+            string datetime_filter = GetTimeStampDayFilter("TimeStamp", date);
 
             //Application type filter
             string app_type_filter = "";
@@ -596,7 +596,7 @@ namespace ApexVisual.F1_2020.CloudStorage
         public static async Task<Guid[]> GetUniqueActivitySessionIdsAsync(this ApexVisualManager avm, DateTime date, ApplicationType? app_type = null)
         {
             //Date
-            string datetime_filter = GetTimeStampDayFilter(date);
+            string datetime_filter = GetTimeStampDayFilter("TimeStamp", date);
 
             //Application type filter
             string app_type_filter = "";
@@ -620,14 +620,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn.ToArray();
         }
 
-        private static string GetTimeStampDayFilter(DateTime date)
-        {
-            string date_START = date.Year.ToString("0000") + "-" + date.Month.ToString("00") + "-" + date.Day.ToString("00");
-            string date_END = (date.AddDays(1)).Year.ToString("0000") + "-" + (date.AddDays(1)).Month.ToString("00") + "-" + (date.AddDays(1)).Day.ToString("00");
-            string ToReturn = "TimeStamp >= '" + date_START + "' and TimeStamp < '" + date_END + "'";
-            return ToReturn;
-        }
-
+        
         #endregion
 
         #region "Full Cascade operations"
@@ -1116,6 +1109,14 @@ namespace ApexVisual.F1_2020.CloudStorage
         {
             SqlConnection con = new SqlConnection(avm.AzureSqlDbConnectionString);
             return con;
+        }
+
+        private static string GetTimeStampDayFilter(string column_name, DateTime date)
+        {
+            string date_START = date.Year.ToString("0000") + "-" + date.Month.ToString("00") + "-" + date.Day.ToString("00");
+            string date_END = (date.AddDays(1)).Year.ToString("0000") + "-" + (date.AddDays(1)).Month.ToString("00") + "-" + (date.AddDays(1)).Day.ToString("00");
+            string ToReturn = column_name + " >= '" + date_START + "' and " + column_name + " < '" + date_END + "'";
+            return ToReturn;
         }
 
         #endregion
