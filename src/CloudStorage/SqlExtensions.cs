@@ -468,7 +468,7 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         public static async Task<ActivityLog[]> DownloadActivityLogsBySessionAsync(this ApexVisualManager avm, Guid session_id)
         {
-            string cmd = "select Username, TimeStamp, ApplicationId, ActivityId, PackageVersionMajor, PackageVersionMinor, PackageVersionBuild, PackageVersionRevision, Note from ActivityLog where SessionId='" + session_id + "'";
+            string cmd = "select Username, TimeStamp, ApplicationId, ActivityId, PackageVersionMajor, PackageVersionMinor, PackageVersionBuild, PackageVersionRevision, Note from ActivityLog where SessionId='" + session_id + "' order by TimeStamp asc";
             SqlConnection sqlcon = GetSqlConnection(avm);
             await sqlcon.OpenAsync();
             SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
