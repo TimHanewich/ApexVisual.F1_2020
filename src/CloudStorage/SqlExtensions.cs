@@ -335,6 +335,19 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn.ToArray();
         }
 
+        public static async Task<int> CountNewlyRegisteredUsersAsync(this ApexVisualManager avm, DateTime date)
+        {
+            string cmd = "select count(Username) from UserAccount where " + GetTimeStampDayFilter("AccountCreatedAt", date);
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+            dr.Read();
+            int ToReturn = dr.GetInt32(0);
+            sqlcon.Close();
+            return ToReturn;
+        }
+
         #endregion
 
         #region "Activity log operations"
