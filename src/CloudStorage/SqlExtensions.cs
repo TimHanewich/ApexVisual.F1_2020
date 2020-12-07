@@ -369,6 +369,103 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn;
         }
 
+        public async static Task<ActivityLog> DownloadActivityLogAsync(this ApexVisualManager avm, Guid id)
+        {
+            string cmd = "select SessionId,Username,TimeStamp,ApplicationId,ActivityId,PackageVersionMajor,PackageVersionMinor,PackageVersionBuild,PackageVersionRevision,Note from ActivityLog where Id='" + id.ToString() + "'";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+
+            if (dr.HasRows == false)
+            {
+                throw new Exception("Activity log with ID '" + id.ToString() + "' does not exist.");
+            }
+
+            dr.Read();
+
+            ActivityLog ToReturn = new ActivityLog();
+            
+            //SessionId
+            if (dr.IsDBNull(0) == false)
+            {
+                ToReturn.SessionId = dr.GetGuid(0);
+            }
+
+            //Username
+            if (dr.IsDBNull(1) == false)
+            {
+                ToReturn.Username = dr.GetString(1);
+            }
+
+            //Timestamp
+            if (dr.IsDBNull(2) == false)
+            {
+                ToReturn.TimeStamp = dr.GetDateTime(2);
+            }
+            
+            //ApplicationId
+            if (dr.IsDBNull(3) == false)
+            {
+                ToReturn.ApplicationId = (ApplicationType)dr.GetByte(3);
+            }
+
+            //ActivityId
+            if (dr.IsDBNull(4) == false)
+            {
+                ToReturn.ActivityId = (ActivityType)dr.GetInt16(4);
+            }
+
+            //Major
+            if (dr.IsDBNull(5) == false)
+            {
+                if (ToReturn.PackageVersion == null)
+                {
+                    ToReturn.PackageVersion = new PackageVersion();
+                }
+                ToReturn.PackageVersion.Major = (int)dr.GetInt16(5);
+            }
+
+            //Minor
+            if (dr.IsDBNull(6) == false)
+            {
+                if (ToReturn.PackageVersion == null)
+                {
+                    ToReturn.PackageVersion = new PackageVersion();
+                }
+                ToReturn.PackageVersion.Minor = (int)dr.GetInt16(6);
+            }
+
+            //Build
+            if (dr.IsDBNull(7) == false)
+            {
+                if (ToReturn.PackageVersion == null)
+                {
+                    ToReturn.PackageVersion = new PackageVersion();
+                }
+                ToReturn.PackageVersion.Build = (int)dr.GetInt16(7);
+            }
+
+            //Revision
+            if (dr.IsDBNull(8) == false)
+            {
+                if (ToReturn.PackageVersion == null)
+                {
+                    ToReturn.PackageVersion = new PackageVersion();
+                }
+                ToReturn.PackageVersion.Revision = (int)dr.GetInt16(8);
+            }
+
+            //Note
+            if (dr.IsDBNull(9) == false)
+            {
+                ToReturn.Note = dr.GetString(9);
+            }
+
+            sqlcon.Close();
+            return ToReturn;
+        }
+
         public static async Task<ActivityLog[]> DownloadActivityLogsBySessionAsync(this ApexVisualManager avm, Guid session_id)
         {
             string cmd = "select Username, TimeStamp, ApplicationId, ActivityId, PackageVersionMajor, PackageVersionMinor, PackageVersionBuild, PackageVersionRevision, Note from ActivityLog where SessionId='" + session_id + "'";
