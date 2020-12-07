@@ -332,6 +332,7 @@ namespace ApexVisual.F1_2020.CloudStorage
                 ToReturn.Add(avua);
             }
 
+            sqlcon.Close();
             return ToReturn.ToArray();
         }
 
