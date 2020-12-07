@@ -413,7 +413,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             //ActivityId
             if (dr.IsDBNull(4) == false)
             {
-                ToReturn.ActivityId = (ActivityType)dr.GetInt16(4);
+                ToReturn.ActivityId = (ActivityType)dr.GetInt32(4);
             }
 
             //Major
