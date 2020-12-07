@@ -454,7 +454,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn.ToArray();
         }
 
-        public static async Task<int> CountActivityLogs(this ApexVisualManager avm, DateTime date)
+        public static async Task<int> CountActivityLogsAsync(this ApexVisualManager avm, DateTime date)
         {  
             string cmd = "select count(Id) from ActivityLog where " + GetTimeStampDayFilter(date);
             SqlConnection sqlcon = GetSqlConnection(avm);
