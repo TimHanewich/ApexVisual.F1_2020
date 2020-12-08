@@ -147,6 +147,25 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         #endregion
 
+        #region "Upload/Download Message Submission bodies"
+
+        public static async Task<Guid> UploadMessageSubmissionBodyAsync(this ApexVisualManager avm, string body)
+        {
+            Guid g = Guid.NewGuid();
+
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
+            CloudBlobContainer cont = cbc.GetContainerReference("messagesubmissions");
+            await cont.CreateIfNotExistsAsync();
+
+            //Upload it
+            CloudBlockBlob blb = cont.GetBlockBlobReference(g.ToString());
+            await blb.UploadTextAsync(body);
+
+            return g;
+        }
+
+        #endregion
+
         #region "Utility Functions"
 
         public static CloudBlobClient GetCloudBlobClient(string connection_string)
