@@ -721,7 +721,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             {
                 if (msg.Email != "")
                 {
-                    ColumnValuePairs.Add(new KeyValuePair<string, string>("Enail", "'" + msg.Email + "'"));
+                    ColumnValuePairs.Add(new KeyValuePair<string, string>("Email", "'" + msg.Email + "'"));
                 }
             }
 
