@@ -149,9 +149,14 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         #region "Upload/Download Message Submission bodies"
 
-        public static async Task<Guid> UploadMessageSubmissionBodyAsync(this ApexVisualManager avm, string body)
+        public static async Task<Guid> UploadMessageSubmissionBodyAsync(this ApexVisualManager avm, string body, Guid? as_id = null)
         {
+            //If an ID is supplied, use that. If it is not supplied, use a random one.
             Guid g = Guid.NewGuid();
+            if (as_id != null)
+            {
+                g = as_id.Value;
+            }
 
             CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
             CloudBlobContainer cont = cbc.GetContainerReference("messagesubmissions");
