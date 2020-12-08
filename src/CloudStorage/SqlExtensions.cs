@@ -698,9 +698,14 @@ namespace ApexVisual.F1_2020.CloudStorage
 
         #region "Message Submission operations"
 
-        public static async Task<Guid> UploadMessageSubmissionAsync(this ApexVisualManager avm, MessageSubmission msg)
+        public static async Task<Guid> UploadMessageSubmissionAsync(this ApexVisualManager avm, MessageSubmission msg, Guid? as_id = null)
         {
+            //If an ID is supplied, use it. If not, just use a random one.
             Guid ToReturn = Guid.NewGuid();
+            if (as_id != null)
+            {
+                ToReturn = as_id.Value;
+            }
 
             List<KeyValuePair<string, string>> ColumnValuePairs = new List<KeyValuePair<string, string>>();
 
