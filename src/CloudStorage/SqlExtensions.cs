@@ -96,6 +96,15 @@ namespace ApexVisual.F1_2020.CloudStorage
 
             #endregion
 
+            #region "Message Submission"
+
+            if (TablesThatAlreadyExist.Contains("MessageSubmission") == false)
+            {
+                TableCreationCommands.Add("create table MessageSubmission (Id uniqueidentifier not null primary key, Username varchar(15), Email varchar(64), MessageType tinyint, CreatedAt datetime, BodyId uniqueidentifier)");
+            }
+
+            #endregion
+
             //Create the tables
             foreach (string cmd in TableCreationCommands)
             {
