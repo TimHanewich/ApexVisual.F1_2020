@@ -696,6 +696,66 @@ namespace ApexVisual.F1_2020.CloudStorage
         
         #endregion
 
+        #region "Message Submission operations"
+
+        public static async Task<Guid> UploadMessageSubmissionAsync(this ApexVisualManager avm, MessageSubmission msg)
+        {
+            Guid ToReturn = Guid.NewGuid();
+
+            List<KeyValuePair<string, string>> ColumnValuePairs = new List<KeyValuePair<string, string>>();
+
+            //The ID
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("Id", "'" + ToReturn.ToString() + "'"));
+
+            //Username
+            if (msg.Username != null)
+            {
+                if (msg.Username != "")
+                {
+                    ColumnValuePairs.Add(new KeyValuePair<string, string>("Username", "'" + msg.Username + "'"));
+                }
+            }
+
+            //Email
+            if (msg.Email != null)
+            {
+                if (msg.Email != "")
+                {
+                    ColumnValuePairs.Add(new KeyValuePair<string, string>("Enail", "'" + msg.Email + "'"));
+                }
+            }
+
+            //Message Type
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("MessageType", Convert.ToString((int)msg.MessageType)));
+
+            //Created At
+            string cas = msg.CreatedAt.Year.ToString("0000") + "-" + msg.CreatedAt.Month.ToString("00") + "-" + msg.CreatedAt.Day.ToString("00") + " " + msg.CreatedAt.Hour.ToString("00") + ":" + msg.CreatedAt.Minute.ToString("00") + ":" + msg.CreatedAt.Second.ToString("00") + "." + msg.CreatedAt.Millisecond.ToString();
+            ColumnValuePairs.Add(new KeyValuePair<string, string>("CreatedAt", "'" + cas + "'"));
+
+            //Prepare the command string
+            string Component_Columns = "";
+            string Component_Values = "";
+            foreach (KeyValuePair<string, string> kvp in ColumnValuePairs)
+            {
+                Component_Columns = Component_Columns + kvp.Key + ",";
+                Component_Values = Component_Values + kvp.Value + ",";
+            }
+            Component_Columns = Component_Columns.Substring(0, Component_Columns.Length-1); //Remove the last comma
+            Component_Values = Component_Values.Substring(0, Component_Values.Length - 1);//Remove the last comma
+
+            //Make the command
+            string cmd = "insert into MessageSubmission (" + Component_Columns + ") values (" + Component_Values + ")";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            await sqlcmd.ExecuteNonQueryAsync();
+            sqlcon.Close();
+            
+            return ToReturn;
+        }
+
+        #endregion
+
         #region "Full Cascade operations"
 
         public static async Task<ulong> CascadeUploadSessionAsync(this ApexVisualManager avm, Session s, string owner_username = null)
