@@ -4,7 +4,7 @@ namespace ApexVisual.F1_2020
 {
     public enum MessageType
     {
-        BugReport,
-        FeatureRecommendation
+        BugReport = 0,
+        FeatureRecommendation = 1
     }
 }
