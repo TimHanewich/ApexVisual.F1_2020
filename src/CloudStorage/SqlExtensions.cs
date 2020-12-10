@@ -640,6 +640,19 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn;
         }
 
+        public static async Task<int> CountActivityLogsOfTypeAsync(this ApexVisualManager avm, DateTime date, ActivityType activity_type)
+        {
+            string cmd = "select count(Id) from ActivityLog where " + GetTimeStampDayFilter("TimeStamp", date) + " and ActivityId = " + Convert.ToInt32(activity_type).ToString();
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+            await dr.ReadAsync();
+            int ToReturn = dr.GetInt32(0);
+            sqlcon.Close();
+            return ToReturn;
+        }
+
         public static async Task<int> CountDistinctActivitySessionsAsync(this ApexVisualManager avm, DateTime date, ApplicationType? app_type = null)
         {
             //Date
