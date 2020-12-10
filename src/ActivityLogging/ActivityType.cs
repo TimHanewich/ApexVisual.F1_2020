@@ -29,6 +29,7 @@ namespace ApexVisual.F1_2020.ActivityLogging
 
         //Analysis
         AnalysisOpened = 5, //User pressed on analysis on the home page
+        AnalysisSessionLoaded = 19, //The user opened a Session in the analysis module. Should put the session id in the note maybe.
 
         //My account
         MyAccountOpened = 6, //User pressed on account on the home page
