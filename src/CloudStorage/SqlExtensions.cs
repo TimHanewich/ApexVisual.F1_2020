@@ -385,7 +385,7 @@ namespace ApexVisual.F1_2020.CloudStorage
             }
 
             //TimeStamp
-            if (log.TimeStamp != null)
+            if (log.TimeStamp == null)
             {
                 log.TimeStamp = DateTimeOffset.Now;
             }
