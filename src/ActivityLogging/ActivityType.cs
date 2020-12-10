@@ -40,7 +40,7 @@ namespace ApexVisual.F1_2020.ActivityLogging
 
         //Send message to developer
         SendMessageToDeveloperOpened = 16, //The user opened the send message to developer pane
-        SentMessageToDeveloperClicked = 17, //The user clicked 'submit' and therefore tried to send a message to developer
+        SendMessageToDeveloperClicked = 17, //The user clicked 'submit' and therefore tried to send a message to developer
 
         #endregion
 
