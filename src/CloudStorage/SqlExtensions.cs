@@ -772,6 +772,45 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn;
         }
 
+        public static async Task<MessageSubmission> DownloadMessageSubmissionAsync(this ApexVisualManager avm, Guid id)
+        {
+            string cmd = "select Username, Email, MessageType, CreatedAt from MessageSubmission where Id='" + id.ToString() + "'";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+
+            MessageSubmission ToReturn = new MessageSubmission();
+
+            //Username
+            if (dr.IsDBNull(0) == false)
+            {
+                ToReturn.Username = dr.GetString(0);
+            }
+
+            //Email
+            if (dr.IsDBNull(1) == false)
+            {
+                ToReturn.Email = dr.GetString(1);
+            }
+
+            //MessageType
+            if (dr.IsDBNull(2) == false)
+            {
+                ToReturn.MessageType = (MessageType)dr.GetByte(2);
+            }
+
+            //CreatedAt
+            if (dr.IsDBNull(3) == false)
+            {
+                ToReturn.CreatedAt = dr.GetDateTime(3);
+            }
+
+            sqlcon.Close();
+
+            return ToReturn;
+        }
+
         #endregion
 
         #region "Full Cascade operations"
