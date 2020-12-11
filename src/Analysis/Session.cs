@@ -839,5 +839,131 @@ namespace ApexVisual.F1_2020.Analysis
 
         }
 
+        //Get times between corners
+        //This will return an array of float values. These float values indicate the gaps between the corners.
+        //First value will be gap between the start of lap (start line) and the first corner
+        //Lat value will be gap between the last corner and end of lap (start line)
+        //In the senario that a corner is missed (i.e. they did not hit corner 2), the values that would have been 1-2 and 2-3 will be NaN
+        public float[] CornerGapTimes(byte lap_num)
+        {
+            #region "Error Checking"
+
+            if (lap_num < 1)
+            {
+                throw new Exception("Lap #" + lap_num.ToString() + " is invalid.");
+            }
+
+            //make sure we have that lap
+            bool HasLap = false;
+            foreach (Lap l in Laps)
+            {
+                if (l.LapNumber == lap_num)
+                {
+                    HasLap = true;
+                }
+            }
+            if (HasLap == false)
+            {
+                throw new Exception("This session does not have lap #" + lap_num.ToString() + " so it is impossible to calculate the corner gap times.");
+            }
+
+            #endregion
+
+            //Find the lap in question
+            Lap SubjectLap = null;
+            foreach (Lap l in Laps)
+            {
+                if (l.LapNumber == lap_num)
+                {
+                    SubjectLap = l;
+                }
+            }
+
+            //Get the track so we know how many corners should exist here
+            TrackDataContainer tdc = TrackDataContainer.LoadTrack(Circuit);
+            
+            List<float> ToReturn = new List<float>();
+            for (int c = 0; c < (tdc.Corners.Length+1); c++)
+            {
+                //In this C loop:
+                // 0 = Start - 1
+                // 1 = 1 - 2
+                // 2 = 2 - 3
+                // 3 = 3 - 4
+                // etc...
+                //Last corner # = Last corner - Lap end
+
+                //Find this corner
+                TelemetrySnapshot Corner1 = null;
+                TelemetrySnapshot Corner2 = null;
+                foreach (TelemetrySnapshot ts in SubjectLap.Corners)
+                {
+                    if (ts.LocationNumber == c) //Corner 1 (corrner at start of gap)
+                    {
+                        Corner1 = ts;
+                    }
+                    else if (ts.LocationNumber == (c+1)) //Corner 2 (corner at end of gap)
+                    {
+                        Corner2 = ts;
+                    }
+                }
+                
+                //If it is the first corner, get the current lap time (time it has been since it crossed the start/finish line)
+                if (c == 0)
+                {
+                    //if we have the corner (they hit the apex), write the time
+                    if (Corner2 != null)
+                    {
+                        ToReturn.Add(Corner2.CurrentLapTime);
+                    }
+                    else //If we weren't able to find one (one doesn't exist)
+                    {
+                        ToReturn.Add(float.NaN);
+                    }
+                }
+                else if (c > 0 && c < tdc.Corners.Length) // This is for any other middle corner (not the first corner, not the last corner)
+                {
+                    //Even though we try and go find it, it is possible that the next corner will not be there
+                    //This would be caused by the driver not getting close enough to the apex to trigger it to register as a corner.
+
+                    //If either the current corner or next corner are null, just plug in a NaN value
+                    if (Corner1 == null || Corner2 == null)
+                    {
+                        ToReturn.Add(float.NaN);
+                    }
+                    else
+                    {
+                        ToReturn.Add(Corner2.CurrentLapTime - Corner1.CurrentLapTime);
+                    }
+                }
+                else if (c == tdc.Corners.Length) // If this is the last corner in the lap (we need to measure the time until it took to get to the start line from the last corner)
+                {
+                    //If we have the last corner (they hit the apex)
+                    if (Corner1 != null)
+                    {
+                        //The way we can measure the amount of time from the apex of the last corner to the finish line for this lap: This lap time - the current lap time at the time they were at the apex of the last corner
+                        
+                        //If all 3 sectors have time (they FINISHED the lap!)
+                        if (SubjectLap.Sector1Time > 0 && SubjectLap.Sector2Time > 0 && SubjectLap.Sector3Time > 0)
+                        {
+                            ToReturn.Add(SubjectLap.LapTime() - Corner1.CurrentLapTime);
+                        }
+                        else //If the lap was never comleted, return NaN
+                        {
+                            ToReturn.Add(float.NaN);
+                        }
+                    }
+                    else //If the last corner was not found
+                    {
+                        ToReturn.Add(float.NaN);
+                    }
+                }
+                
+                
+
+            }
+
+            return ToReturn.ToArray();
+        }
     }
 }
