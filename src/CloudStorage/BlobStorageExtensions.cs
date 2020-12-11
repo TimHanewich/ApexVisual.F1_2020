@@ -169,6 +169,21 @@ namespace ApexVisual.F1_2020.CloudStorage
             return g;
         }
 
+        public static async Task<string> DownloadMessageSubmissionBodyAsync(this ApexVisualManager avm, Guid id)
+        {
+            CloudBlobClient cbc = GetCloudBlobClient(avm.AzureStorageConnectionString);
+            CloudBlobContainer cont = cbc.GetContainerReference("messagesubmissions");
+            CloudBlockBlob blb = cont.GetBlockBlobReference(id.ToString());
+
+            if (blb.Exists() == false)
+            {
+                throw new Exception("Message submission body with ID '" + id.ToString() + "' does not exist in blob storage.");
+            }
+
+            string content = await blb.DownloadTextAsync();
+            return content;
+        }
+
         #endregion
 
         #region "Utility Functions"
