@@ -780,6 +780,13 @@ namespace ApexVisual.F1_2020.CloudStorage
             SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
             SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
 
+            if (dr.HasRows == false)
+            {
+                throw new Exception("Message submission with ID '" + id.ToString() + "' does not exist in SQL storage.");
+            }
+
+            await dr.ReadAsync();
+
             MessageSubmission ToReturn = new MessageSubmission();
 
             //Username
