@@ -818,6 +818,37 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn;
         }
 
+        public static async Task<int> CountMessageSubmissionsFromDateAsync(this ApexVisualManager avm, DateTime date)
+        {
+            string cmd = "select count(Id) from MessageSubmission where " + GetTimeStampDayFilter("CreatedAt", date);
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+            await dr.ReadAsync();
+            int ToReturn = dr.GetInt32(0);
+            sqlcon.Close();
+            return ToReturn;
+        }
+
+        public static async Task<Guid[]> ListMessageSubmissionIdsFromDateAsync(this ApexVisualManager avm, DateTime date)
+        {
+            string cmd = "select Id from MessageSubmission where " + GetTimeStampDayFilter("CreatedAt", date);
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+
+            List<Guid> ToReturn = new List<Guid>();
+            while (dr.Read())
+            {
+                ToReturn.Add(dr.GetGuid(0));
+            }
+
+            sqlcon.Close();
+            return ToReturn.ToArray();
+        }
+
         #endregion
 
         #region "Full Cascade operations"
