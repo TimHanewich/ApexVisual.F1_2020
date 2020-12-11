@@ -24,5 +24,13 @@ namespace ApexVisual.F1_2020.CloudStorage
             
             return id_SQL;
         }
+    
+        public static async Task<MessageSubmission> CascadeDownloadMessageSubmissionAsync(this ApexVisualManager avm, Guid id)
+        {
+            MessageSubmission ToReturn = await avm.DownloadMessageSubmissionAsync(id);
+            string body = await avm.DownloadMessageSubmissionBodyAsync(id);
+            ToReturn.Body = body;
+            return ToReturn;
+        }
     }
 }
