@@ -1884,5 +1884,125 @@ namespace ApexVisual.F1_2020.CloudStorage
         }
 
         #endregion
+    
+        #region "Session Search"
+
+        public static async Task<string[]> SearchSessionsAsync(this ApexVisualManager avm, string owner_username = null, SessionPacket.SessionType[] session_types = null, Track[] tracks = null, DateTime? date = null)
+        {
+
+            #region "Prepare filters"
+
+            List<string> Filters = new List<string>();
+
+            //Owners name (Username)
+            if (owner_username != null)
+            {
+                Filters.Add("Owner = '" + owner_username + "'");
+            }
+
+            //Session types
+            if (session_types != null)
+            {
+                //Get the filters
+                List<string> SessionTypeFilters = new List<string>();
+                foreach (SessionPacket.SessionType st in session_types)
+                {
+                    SessionTypeFilters.Add("SessionMode = " + Convert.ToInt32(st).ToString());
+                }
+
+                //Prepare it
+                string SessionTypePortion = "(";
+                foreach (string s in SessionTypeFilters)
+                {
+                    SessionTypePortion = SessionTypePortion + s + " OR ";
+                }
+
+                //Remove the last " OR "
+                SessionTypePortion = SessionTypePortion.Substring(0, SessionTypePortion.Length - 4);
+
+                //Close it off
+                SessionTypePortion = SessionTypePortion + ")";
+
+                //Add it
+                Filters.Add(SessionTypePortion);
+            }
+
+            //Tracks
+            if (tracks != null)
+            {
+                //Get the filters
+                List<string> TrackFilters = new List<string>();
+                foreach (Track t in tracks)
+                {
+                    TrackFilters.Add("Circuit = " + Convert.ToInt32(t).ToString());
+                }
+
+                //Prepare it
+                string TrackTypePortion = "(";
+                foreach (string s in TrackFilters)
+                {
+                    TrackTypePortion = TrackTypePortion + s + " OR ";
+                }
+
+                //Remove the last " OR "
+                TrackTypePortion = TrackTypePortion.Substring(0, TrackTypePortion.Length - 4);
+
+                //Close it off
+                TrackTypePortion = TrackTypePortion + ")";
+
+                //Add it
+                Filters.Add(TrackTypePortion);
+            }
+
+            //Date
+            if (date != null)
+            {
+                Filters.Add(GetTimeStampDayFilter("SessionCreatedAt", date.Value));
+            }
+
+
+
+            #endregion
+
+            #region "Prepare Command"
+
+            string full_filter = "";
+            foreach (string s in Filters)
+            {
+                full_filter = full_filter + s + " AND ";
+            }
+
+            //Remove the last and
+            if (Filters.Count > 0)
+            {
+                full_filter = full_filter.Substring(0, full_filter.Length - 5);
+            }
+            
+            string cmd = "select SessionId from Session";
+            
+            if (Filters.Count > 0)
+            {
+                cmd = cmd + " where " + full_filter;
+            }
+             
+            #endregion
+
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+
+            List<string> ToReturn = new List<string>();
+            while (dr.Read())
+            {
+                ToReturn.Add(dr.GetString(0));
+            }
+
+            sqlcon.Close();
+
+            return ToReturn.ToArray();
+        }
+
+        #endregion
     }
 }
