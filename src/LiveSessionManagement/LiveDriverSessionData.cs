@@ -10,6 +10,7 @@ namespace ApexVisual.F1_2020.LiveSessionManagement
         public int Position {get; set;}
         public Color TeamColor {get; set;}
         public string DriverDisplayName {get; set;}
+        public Driver SelectedDriver {get; set;}
         
         //Race specific data
         public int Race_LapNumber {get; set;}
