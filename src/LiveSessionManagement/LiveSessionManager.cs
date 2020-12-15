@@ -25,6 +25,7 @@ namespace ApexVisual.F1_2020.LiveSessionManagement
                     for (int t = 0; t < pp.NumberOfActiveCars; t++)
                     {
                         LiveDriverSessionData ldsd = new LiveDriverSessionData();
+                        ldsd.SelectedDriver = pp.FieldParticipantData[t].PilotingDriver;
                         ldsd.DriverDisplayName = CodemastersToolkit.GetDriverDisplayNameFromDriver(pp.FieldParticipantData[t].PilotingDriver);
                         ldsd.TeamColor =  CodemastersToolkit.GetTeamColorByTeam(pp.FieldParticipantData[t].ManufacturingTeam);
                         NewData.Add(ldsd);
