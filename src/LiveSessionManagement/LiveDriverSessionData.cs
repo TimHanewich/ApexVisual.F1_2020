@@ -154,6 +154,7 @@ namespace ApexVisual.F1_2020.LiveSessionManagement
         public void FeedCarStatusData(CarStatusPacket.CarStatusData csd)
         {
             SelectedTyreCompound = csd.EquippedTyreCompound;
+            TyreAgeLaps = csd.TyreAgeLaps;
         }
     }
 }
