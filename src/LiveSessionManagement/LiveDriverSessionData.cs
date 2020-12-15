@@ -150,5 +150,10 @@ namespace ApexVisual.F1_2020.LiveSessionManagement
             Current_DriverAheadDistance = driver_ahead_distance;
         }
     
+        //For Selected Tyre Compound
+        public void FeedCarStatusData(CarStatusPacket.CarStatusData csd)
+        {
+            SelectedTyreCompound = csd.EquippedTyreCompound;
+        }
     }
 }

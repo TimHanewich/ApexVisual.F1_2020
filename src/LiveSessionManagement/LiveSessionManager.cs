@@ -71,10 +71,15 @@ namespace ApexVisual.F1_2020.LiveSessionManagement
                         ldsd.SetSessionType(sp.SessionTypeMode);
                     }
                 }
-
-
+                else if (p.PacketType == PacketType.CarStatus)
+                {
+                    CarStatusPacket csp = (CarStatusPacket)p;
+                    for (int t = 0; t < LiveDriverData.Length; t++)
+                    {
+                        LiveDriverData[t].FeedCarStatusData(csp.FieldCarStatusData[t]);
+                    }
+                }
             }
         }
-
     }
 }
