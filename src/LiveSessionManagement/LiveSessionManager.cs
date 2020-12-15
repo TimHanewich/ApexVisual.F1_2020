@@ -14,7 +14,7 @@ namespace ApexVisual.F1_2020.LiveSessionManagement
             Initialized = false;
         }
 
-        public void InjestPacket(Packet p)
+        public void IngestPacket(Packet p)
         {
             if (Initialized == false) //We have not set up the array of live driver data yet
             {
