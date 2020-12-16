@@ -28,7 +28,7 @@ namespace ApexVisual.F1_2020.LiveSessionManagement
         public LapPacket.DriverStatus Qualifying_DriverStatus {get; set;}
 
         //Other agnostic data
-        TyreCompound SelectedTyreCompound {get; set;}
+        public TyreCompound SelectedTyreCompound {get; set;}
         public int TyreAgeLaps {get; set;}
 
         #region "Misc Variables for internal tracking"
