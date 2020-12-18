@@ -47,6 +47,10 @@ namespace ApexVisual.F1_2020.ActivityLogging
         SendMessageToDeveloperOpened = 16, //The user opened the send message to developer pane
         SendMessageToDeveloperClicked = 17, //The user clicked 'submit' and therefore tried to send a message to developer
 
+        //Race director
+        RaceDirectorClicked = 23, //The user clicked on race director on the home page
+        RaceDirectorStartListeningClicked = 24, //The user clicked on start listening on the race director.
+
         #endregion
 
     }
