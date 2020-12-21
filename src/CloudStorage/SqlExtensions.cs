@@ -1888,7 +1888,7 @@ namespace ApexVisual.F1_2020.CloudStorage
         /// </summary>
         public async static Task<Lap> DownloadLapCoreAsync(this ApexVisualManager avm, Guid id)
         {
-            string cmd = "select LapNumber, Sector1Time, Sector2Time, Sector3Time, EquippedTyreCompound,  from Lap where Id='" + id.ToString() + "'";
+            string cmd = "select LapNumber, Sector1Time, Sector2Time, Sector3Time, EquippedTyreCompound from Lap where Id='" + id.ToString() + "'";
             SqlConnection sqlcon = GetSqlConnection(avm);
             sqlcon.Open();
             SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
@@ -2055,6 +2055,58 @@ namespace ApexVisual.F1_2020.CloudStorage
             sqlcon.Close();
 
             return ToReturn.ToArray();
+        }
+
+        #endregion
+    
+        #region "Flex downloads - downloads that are specifically designed around a scenario (for example, download session with lap core, or with results for a race)"
+
+        public static async Task<Session> FlexDownloadSessionAsync(this ApexVisualManager avm, ulong session_id)
+        {
+            //Get the session
+            Session ToReturn = null;
+            try
+            {
+                ToReturn = await avm.DownloadSessionAsync(session_id);
+            }
+            catch
+            {
+                throw new Exception("Unable to download session object for session with ID '" + session_id + "'");
+            }
+        
+            //Get a list of this sessions lap guids
+            string cmd = "select Id from Lap where SessionId='" + session_id + "'";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+            List<Guid> AssociatedLaps = new List<Guid>();
+            while (dr.Read())
+            {
+                if (dr.IsDBNull(0) == false)
+                {
+                    AssociatedLaps.Add(dr.GetGuid(0));
+                }
+            }
+
+            //Download core data for each of them
+            List<Lap> CoreLaps = new List<Lap>();
+            foreach (Guid g in AssociatedLaps)
+            {
+                try
+                {
+                    Lap ThisLap = await avm.DownloadLapCoreAsync(g);
+                    CoreLaps.Add(ThisLap);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Unable to download core lap data for lap with ID '" + g.ToString() + "'. Msg: " + ex.Message);
+                }
+            }
+
+            //Return it
+            ToReturn.Laps = CoreLaps.ToArray();
+            return ToReturn;        
         }
 
         #endregion
