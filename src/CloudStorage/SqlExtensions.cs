@@ -1883,6 +1883,60 @@ namespace ApexVisual.F1_2020.CloudStorage
             sqlcon.Close();
         }
 
+        /// <summary>
+        /// Downloads core lap data: lap number, sector times, equipped tyre compound
+        /// </summary>
+        public async static Task<Lap> DownloadLapCoreAsync(this ApexVisualManager avm, Guid id)
+        {
+            string cmd = "select LapNumber, Sector1Time, Sector2Time, Sector3Time, EquippedTyreCompound,  from Lap where Id='" + id.ToString() + "'";
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+            
+            if (dr.HasRows == false)
+            {
+                throw new Exception("Unable to find a lap record with Id '" + id.ToString() + "'");
+            }
+
+            await dr.ReadAsync();
+
+            Lap ToReturn = new Lap();
+            
+            //Lap number
+            if (dr.IsDBNull(0) == false)
+            {
+                ToReturn.LapNumber = dr.GetByte(0);
+            }
+
+            //Sector 1 time
+            if (dr.IsDBNull(1) == false)
+            {
+                ToReturn.Sector1Time = dr.GetFloat(1);
+            }
+
+            //Sector 2 time
+            if (dr.IsDBNull(2) == false)
+            {
+                ToReturn.Sector2Time = dr.GetFloat(2);
+            }
+
+            //Sector 3 time
+            if (dr.IsDBNull(3) == false)
+            {
+                ToReturn.Sector3Time = dr.GetFloat(3);
+            }
+
+            //Selected tyre compound
+            if (dr.IsDBNull(4) == false)
+            {
+                ToReturn.EquippedTyreCompound = (TyreCompound)dr.GetByte(4);
+            }
+
+            sqlcon.Close();
+            return ToReturn;
+        }
+
         #endregion
     
         #region "Session Search"
