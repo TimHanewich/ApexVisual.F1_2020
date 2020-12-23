@@ -31,6 +31,7 @@ namespace ApexVisual.F1_2020.ActivityLogging
         LiveDisplaySaveToLocalClicked = 15, //User clicked on save to local
         LiveDisplaySaveToCloudFailed = 21, //The upload to cloud failed
         LiveDisplaySaveToCloudSucceeded = 22, //The upload to cloud succeeded (it is now in the cloud)
+        LiveDisplayUdpPacketReceived = 25, //A UDP packet was received in the live display module. Obiously this would be inefficient to log every time one was received, so the live display module will log one every 1 or 2 minutes.
 
         //Analysis
         AnalysisOpened = 5, //User pressed on analysis on the home page
@@ -50,6 +51,7 @@ namespace ApexVisual.F1_2020.ActivityLogging
         //Race director
         RaceDirectorClicked = 23, //The user clicked on race director on the home page
         RaceDirectorStartListeningClicked = 24, //The user clicked on start listening on the race director.
+        RaceDirectorUdpPacketReceived = 26, //A UDP packet was received in the race director module. Obiously this would be inefficient to log every time one was received, so the race director module will log one every 1 or 2 minutes.
 
         #endregion
 
