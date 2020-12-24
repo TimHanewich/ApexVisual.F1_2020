@@ -26,9 +26,16 @@ namespace ApexVisual.F1_2020.LiveSessionManagement
                     {
                         LiveDriverSessionData ldsd = new LiveDriverSessionData();
                         ldsd.SelectedDriver = pp.FieldParticipantData[t].PilotingDriver;
-                        ldsd.DriverDisplayName = CodemastersToolkit.GetDriverDisplayNameFromDriver(pp.FieldParticipantData[t].PilotingDriver);
                         ldsd.TeamColor =  CodemastersToolkit.GetTeamColorByTeam(pp.FieldParticipantData[t].ManufacturingTeam);
                         ldsd.SelectedTeam = pp.FieldParticipantData[t].ManufacturingTeam;
+
+                        //The driver display name
+                        ldsd.DriverDisplayName = CodemastersToolkit.GetDriverDisplayNameFromDriver(pp.FieldParticipantData[t].PilotingDriver); //If the driver is not recognized (it is a real player, index 100, 101, 102, etc) this will return "Unknown"
+                        if (pp.FieldParticipantData[t].IsAiControlled == false) //If it is a player (the above most likely made the displat name 'Unknown', use the player name instead)
+                        {
+                            ldsd.DriverDisplayName = ApexVisualToolkit.CleanseString(pp.FieldParticipantData[t].Name);
+                        }
+
                         NewData.Add(ldsd);
                     }
                     LiveDriverData = NewData.ToArray();
