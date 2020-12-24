@@ -14,6 +14,27 @@ namespace ApexVisual.F1_2020
             float dist = (float)Math.Sqrt(x_2 + y_2 + z_2);
             return dist;
         }
+
+        public static string CleanseString(string original, string allowed_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_ ")
+        {
+            string ToReturn = "";
+            foreach (char c in original)
+            {
+                int num = Convert.ToInt32(c);
+                if (num == 160) //160 is a non breaking space.
+                {
+                    ToReturn = ToReturn + " ";
+                }
+                else
+                {
+                    if (allowed_characters.Contains(c.ToString()))
+                    {
+                        ToReturn = ToReturn + c.ToString();
+                    }
+                } 
+            }
+            return ToReturn;
+        }
     }
     
 }
