@@ -53,6 +53,10 @@ namespace ApexVisual.F1_2020.ActivityLogging
         RaceDirectorStartListeningClicked = 24, //The user clicked on start listening on the race director.
         RaceDirectorUdpPacketReceived = 26, //A UDP packet was received in the race director module. Obiously this would be inefficient to log every time one was received, so the race director module will log one every 1 or 2 minutes.
 
+        //Demo videos on home page
+        LiveDisplayDemoVideoClickedOnHomePage = 27, //The user clicked on the live display demo video on the home page
+        RaceDirectorDemoVideoClickedOnHomePage = 28, //The user clicked on the race director demo video on the home page
+
         #endregion
 
     }
