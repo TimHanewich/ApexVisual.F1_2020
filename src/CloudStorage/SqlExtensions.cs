@@ -358,6 +358,24 @@ namespace ApexVisual.F1_2020.CloudStorage
             return ToReturn;
         }
 
+        public static async Task<string[]> ListNewlyRegisteredUsersAsync(this ApexVisualManager avm, DateTime date)
+        {
+            string cmd = "select username from UserAccount where " + GetTimeStampDayFilter("AccountCreatedAt", date);
+            SqlConnection sqlcon = GetSqlConnection(avm);
+            sqlcon.Open();
+            SqlCommand sqlcmd = new SqlCommand(cmd, sqlcon);
+            SqlDataReader dr = await sqlcmd.ExecuteReaderAsync();
+            List<string> ToReturn = new List<string>();
+            while (dr.Read())
+            {
+                if (dr.IsDBNull(0) == false)
+                {
+                    ToReturn.Add(dr.GetString(0));
+                }
+            }
+            return ToReturn.ToArray();
+        }
+
         #endregion
 
         #region "Activity log operations"
